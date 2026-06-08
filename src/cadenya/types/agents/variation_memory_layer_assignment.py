@@ -1,0 +1,46 @@
+# File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
+
+from typing import Optional
+
+from pydantic import Field as FieldInfo
+
+from ..._models import BaseModel
+from ..shared.bare_metadata import BareMetadata
+
+__all__ = ["VariationMemoryLayerAssignment"]
+
+
+class VariationMemoryLayerAssignment(BaseModel):
+    """
+    VariationMemoryLayerAssignment attaches a single MemoryLayer to a
+     variation at a given position in the variation's baseline memory
+     stack. A variation has at most one assignment per memory_layer_id.
+
+     Variations only support whole-layer attachments — entry pinning is an
+     objective-level capability.
+    """
+
+    id: Optional[str] = None
+    """Assignment row id — handle for removing the assignment.
+
+    Distinct from the referenced memory layer's id.
+    """
+
+    memory_layer: Optional[BareMetadata] = FieldInfo(alias="memoryLayer", default=None)
+    """
+    BareMetadata contains the minimal metadata for a resource: the ID and an
+    optional human-readable name. These are used for reference fields where the full
+    metadata (account scoping, timestamps, labels, external IDs) is not needed —
+    e.g., the tool references inside an agent variation spec or the tools assigned
+    to an objective. Both fields are server-populated; clients provide IDs through
+    sibling fields rather than by constructing a BareMetadata themselves.
+    """
+
+    position: Optional[int] = None
+    """Position in the variation's baseline stack.
+
+    Lower values sit lower; the highest-position assignment is on top of the
+    variation's baseline. Gaps are fine — only relative position matters. Positions
+    must be unique within a variation; a request that would collide with an existing
+    assignment's position is rejected with InvalidArgument.
+    """
