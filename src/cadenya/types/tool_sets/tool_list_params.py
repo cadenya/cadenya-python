@@ -45,7 +45,5 @@ class ToolListParams(TypedDict, total=False):
     sort_order: Annotated[str, PropertyInfo(alias="sortOrder")]
     """Sort order for results (asc or desc by creation time)"""
 
-    statuses: List[
-        Literal["TOOL_STATUS_UNSPECIFIED", "TOOL_STATUS_AVAILABLE", "TOOL_STATUS_OMITTED", "TOOL_STATUS_ARCHIVED"]
-    ]
-    """Filter by tool status. Multiple values are OR'd together."""
+    states: List[Literal["STATE_UNSPECIFIED", "STATE_AVAILABLE", "STATE_OMITTED", "STATE_ARCHIVED"]]
+    """Filter by tool state. Multiple values are OR'd together."""

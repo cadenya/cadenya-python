@@ -1,6 +1,7 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import Optional
+from typing_extensions import Literal
 
 from ..._models import BaseModel
 from .agent_schedule_info import AgentScheduleInfo
@@ -23,6 +24,13 @@ class AgentSchedule(BaseModel):
 
     spec: AgentScheduleSpec
     """AgentScheduleSpec is the user-provided configuration for a schedule."""
+
+    state: Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_PAUSED", "STATE_ARCHIVED"]
+    """The current lifecycle state of the schedule.
+
+    Output only. Schedules are created STATE_ACTIVE; use the :pause, :resume, and
+    :archive actions to transition between states.
+    """
 
     info: Optional[AgentScheduleInfo] = None
     """AgentScheduleInfo provides read-only runtime data about a schedule."""

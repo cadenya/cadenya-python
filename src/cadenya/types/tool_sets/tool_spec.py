@@ -1,7 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Dict, Optional
-from typing_extensions import Literal
+from typing import Dict
 
 from pydantic import Field as FieldInfo
 
@@ -23,6 +22,4 @@ class ToolSpec(BaseModel):
 
     parameters: Dict[str, object]
 
-    status: Literal["TOOL_STATUS_UNSPECIFIED", "TOOL_STATUS_AVAILABLE", "TOOL_STATUS_OMITTED", "TOOL_STATUS_ARCHIVED"]
-
-    requires_approval: Optional[bool] = FieldInfo(alias="requiresApproval", default=None)
+    requires_approval: bool = FieldInfo(alias="requiresApproval")

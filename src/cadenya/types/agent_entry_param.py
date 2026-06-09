@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from typing import Dict
-from typing_extensions import Required, TypedDict
+from typing_extensions import Literal, Required, TypedDict
 
 from .agent_spec_param import AgentSpecParam
 from .agent_schedule_entry_param import AgentScheduleEntryParam
@@ -22,6 +22,14 @@ class AgentEntryParam(TypedDict, total=False):
 
     schedules: Dict[str, AgentScheduleEntryParam]
     """Schedules under this agent, keyed by external_id."""
+
+    state: Literal["STATE_UNSPECIFIED", "STATE_DRAFT", "STATE_PUBLISHED", "STATE_ARCHIVED"]
+    """Desired lifecycle state for the agent.
+
+    Defaults to STATE_DRAFT when unspecified. STATE_PUBLISHED publishes the agent
+    once its variations exist; see also
+    BulkWorkspaceApplyData.automatically_publish_agents.
+    """
 
     variations: Dict[str, AgentVariationEntryParam]
     """Variations under this agent, keyed by external_id."""

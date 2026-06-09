@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Annotated, TypedDict
+from typing_extensions import Literal, Annotated, TypedDict
 
 from .._utils import PropertyInfo
 
@@ -30,3 +30,10 @@ class ToolSetListParams(TypedDict, total=False):
 
     sort_order: Annotated[str, PropertyInfo(alias="sortOrder")]
     """Sort order for results (asc or desc by creation time)"""
+
+    state: Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_ARCHIVED"]
+    """Filter by tool set lifecycle state.
+
+    Defaults to STATE_ACTIVE when unspecified; pass STATE_ARCHIVED to list archived
+    tool sets.
+    """

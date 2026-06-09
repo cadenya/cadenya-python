@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from typing import Dict
-from typing_extensions import Required, TypedDict
+from typing_extensions import Literal, Required, TypedDict
 
 from .tool_sets.tool_spec_param import ToolSpecParam
 
@@ -16,3 +16,10 @@ class ToolEntryParam(TypedDict, total=False):
     spec: Required[ToolSpecParam]
 
     labels: Dict[str, str]
+
+    state: Literal["STATE_UNSPECIFIED", "STATE_AVAILABLE", "STATE_OMITTED", "STATE_ARCHIVED"]
+    """Desired lifecycle state for the tool.
+
+    Defaults to STATE_AVAILABLE when unspecified. STATE_ARCHIVED is server-managed
+    and is rejected here.
+    """

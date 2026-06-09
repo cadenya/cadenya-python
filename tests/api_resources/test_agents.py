@@ -24,10 +24,7 @@ class TestAgents:
         agent = client.agents.create(
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "status": "AGENT_STATUS_UNSPECIFIED",
-                "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
-            },
+            spec={"variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED"},
         )
         assert_matches_type(Agent, agent, path=["response"])
 
@@ -43,7 +40,6 @@ class TestAgents:
                 "labels": {"foo": "string"},
             },
             spec={
-                "status": "AGENT_STATUS_UNSPECIFIED",
                 "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
                 "description": "description",
                 "input_data_schema": {"foo": "bar"},
@@ -92,10 +88,7 @@ class TestAgents:
         response = client.agents.with_raw_response.create(
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "status": "AGENT_STATUS_UNSPECIFIED",
-                "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
-            },
+            spec={"variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED"},
         )
 
         assert response.is_closed is True
@@ -109,10 +102,7 @@ class TestAgents:
         with client.agents.with_streaming_response.create(
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "status": "AGENT_STATUS_UNSPECIFIED",
-                "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
-            },
+            spec={"variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED"},
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -129,10 +119,7 @@ class TestAgents:
             client.agents.with_raw_response.create(
                 workspace_id="",
                 metadata={"name": "name"},
-                spec={
-                    "status": "AGENT_STATUS_UNSPECIFIED",
-                    "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
-                },
+                spec={"variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED"},
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -209,7 +196,6 @@ class TestAgents:
                 "labels": {"foo": "string"},
             },
             spec={
-                "status": "AGENT_STATUS_UNSPECIFIED",
                 "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
                 "description": "description",
                 "input_data_schema": {"foo": "bar"},
@@ -283,7 +269,7 @@ class TestAgents:
             prefix="prefix",
             query="query",
             sort_order="sortOrder",
-            status="AGENT_STATUS_UNSPECIFIED",
+            state="STATE_UNSPECIFIED",
             variation_selection_mode="VARIATION_SELECTION_MODE_UNSPECIFIED",
         )
         assert_matches_type(SyncCursorPagination[Agent], agent, path=["response"])
@@ -374,6 +360,214 @@ class TestAgents:
                 workspace_id="workspaceId",
             )
 
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_archive(self, client: Cadenya) -> None:
+        agent = client.agents.archive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_archive(self, client: Cadenya) -> None:
+        response = client.agents.with_raw_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = response.parse()
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_archive(self, client: Cadenya) -> None:
+        with client.agents.with_streaming_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = response.parse()
+            assert_matches_type(Agent, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_archive(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.agents.with_raw_response.archive(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.agents.with_raw_response.archive(
+                id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_publish(self, client: Cadenya) -> None:
+        agent = client.agents.publish(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_publish(self, client: Cadenya) -> None:
+        response = client.agents.with_raw_response.publish(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = response.parse()
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_publish(self, client: Cadenya) -> None:
+        with client.agents.with_streaming_response.publish(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = response.parse()
+            assert_matches_type(Agent, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_publish(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.agents.with_raw_response.publish(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.agents.with_raw_response.publish(
+                id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_unarchive(self, client: Cadenya) -> None:
+        agent = client.agents.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_unarchive(self, client: Cadenya) -> None:
+        response = client.agents.with_raw_response.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = response.parse()
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_unarchive(self, client: Cadenya) -> None:
+        with client.agents.with_streaming_response.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = response.parse()
+            assert_matches_type(Agent, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_unarchive(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.agents.with_raw_response.unarchive(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.agents.with_raw_response.unarchive(
+                id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_unpublish(self, client: Cadenya) -> None:
+        agent = client.agents.unpublish(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_unpublish(self, client: Cadenya) -> None:
+        response = client.agents.with_raw_response.unpublish(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = response.parse()
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_unpublish(self, client: Cadenya) -> None:
+        with client.agents.with_streaming_response.unpublish(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = response.parse()
+            assert_matches_type(Agent, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_unpublish(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.agents.with_raw_response.unpublish(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.agents.with_raw_response.unpublish(
+                id="",
+                workspace_id="workspaceId",
+            )
+
 
 class TestAsyncAgents:
     parametrize = pytest.mark.parametrize(
@@ -386,10 +580,7 @@ class TestAsyncAgents:
         agent = await async_client.agents.create(
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "status": "AGENT_STATUS_UNSPECIFIED",
-                "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
-            },
+            spec={"variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED"},
         )
         assert_matches_type(Agent, agent, path=["response"])
 
@@ -405,7 +596,6 @@ class TestAsyncAgents:
                 "labels": {"foo": "string"},
             },
             spec={
-                "status": "AGENT_STATUS_UNSPECIFIED",
                 "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
                 "description": "description",
                 "input_data_schema": {"foo": "bar"},
@@ -454,10 +644,7 @@ class TestAsyncAgents:
         response = await async_client.agents.with_raw_response.create(
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "status": "AGENT_STATUS_UNSPECIFIED",
-                "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
-            },
+            spec={"variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED"},
         )
 
         assert response.is_closed is True
@@ -471,10 +658,7 @@ class TestAsyncAgents:
         async with async_client.agents.with_streaming_response.create(
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "status": "AGENT_STATUS_UNSPECIFIED",
-                "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
-            },
+            spec={"variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED"},
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -491,10 +675,7 @@ class TestAsyncAgents:
             await async_client.agents.with_raw_response.create(
                 workspace_id="",
                 metadata={"name": "name"},
-                spec={
-                    "status": "AGENT_STATUS_UNSPECIFIED",
-                    "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
-                },
+                spec={"variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED"},
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -571,7 +752,6 @@ class TestAsyncAgents:
                 "labels": {"foo": "string"},
             },
             spec={
-                "status": "AGENT_STATUS_UNSPECIFIED",
                 "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
                 "description": "description",
                 "input_data_schema": {"foo": "bar"},
@@ -645,7 +825,7 @@ class TestAsyncAgents:
             prefix="prefix",
             query="query",
             sort_order="sortOrder",
-            status="AGENT_STATUS_UNSPECIFIED",
+            state="STATE_UNSPECIFIED",
             variation_selection_mode="VARIATION_SELECTION_MODE_UNSPECIFIED",
         )
         assert_matches_type(AsyncCursorPagination[Agent], agent, path=["response"])
@@ -732,6 +912,214 @@ class TestAsyncAgents:
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.agents.with_raw_response.delete(
+                id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_archive(self, async_client: AsyncCadenya) -> None:
+        agent = await async_client.agents.archive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_archive(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.agents.with_raw_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = await response.parse()
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_archive(self, async_client: AsyncCadenya) -> None:
+        async with async_client.agents.with_streaming_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = await response.parse()
+            assert_matches_type(Agent, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_archive(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.agents.with_raw_response.archive(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.agents.with_raw_response.archive(
+                id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_publish(self, async_client: AsyncCadenya) -> None:
+        agent = await async_client.agents.publish(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_publish(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.agents.with_raw_response.publish(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = await response.parse()
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_publish(self, async_client: AsyncCadenya) -> None:
+        async with async_client.agents.with_streaming_response.publish(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = await response.parse()
+            assert_matches_type(Agent, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_publish(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.agents.with_raw_response.publish(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.agents.with_raw_response.publish(
+                id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_unarchive(self, async_client: AsyncCadenya) -> None:
+        agent = await async_client.agents.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_unarchive(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.agents.with_raw_response.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = await response.parse()
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_unarchive(self, async_client: AsyncCadenya) -> None:
+        async with async_client.agents.with_streaming_response.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = await response.parse()
+            assert_matches_type(Agent, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_unarchive(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.agents.with_raw_response.unarchive(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.agents.with_raw_response.unarchive(
+                id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_unpublish(self, async_client: AsyncCadenya) -> None:
+        agent = await async_client.agents.unpublish(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_unpublish(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.agents.with_raw_response.unpublish(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        agent = await response.parse()
+        assert_matches_type(Agent, agent, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_unpublish(self, async_client: AsyncCadenya) -> None:
+        async with async_client.agents.with_streaming_response.unpublish(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            agent = await response.parse()
+            assert_matches_type(Agent, agent, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_unpublish(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.agents.with_raw_response.unpublish(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.agents.with_raw_response.unpublish(
                 id="",
                 workspace_id="workspaceId",
             )

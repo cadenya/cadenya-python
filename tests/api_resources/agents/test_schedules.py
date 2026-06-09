@@ -106,7 +106,6 @@ class TestSchedules:
                 },
                 "data": {},
                 "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
-                "status": "AGENT_SCHEDULE_STATUS_UNSPECIFIED",
                 "variation_id": "variationId",
             },
         )
@@ -322,7 +321,6 @@ class TestSchedules:
                 },
                 "data": {},
                 "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
-                "status": "AGENT_SCHEDULE_STATUS_UNSPECIFIED",
                 "variation_id": "variationId",
             },
             update_mask="updateMask",
@@ -515,6 +513,198 @@ class TestSchedules:
                 agent_id="agentId",
             )
 
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_archive(self, client: Cadenya) -> None:
+        schedule = client.agents.schedules.archive(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_archive(self, client: Cadenya) -> None:
+        response = client.agents.schedules.with_raw_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        schedule = response.parse()
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_archive(self, client: Cadenya) -> None:
+        with client.agents.schedules.with_streaming_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            schedule = response.parse()
+            assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_archive(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.agents.schedules.with_raw_response.archive(
+                id="id",
+                workspace_id="",
+                agent_id="agentId",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `agent_id` but received ''"):
+            client.agents.schedules.with_raw_response.archive(
+                id="id",
+                workspace_id="workspaceId",
+                agent_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.agents.schedules.with_raw_response.archive(
+                id="",
+                workspace_id="workspaceId",
+                agent_id="agentId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_pause(self, client: Cadenya) -> None:
+        schedule = client.agents.schedules.pause(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_pause(self, client: Cadenya) -> None:
+        response = client.agents.schedules.with_raw_response.pause(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        schedule = response.parse()
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_pause(self, client: Cadenya) -> None:
+        with client.agents.schedules.with_streaming_response.pause(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            schedule = response.parse()
+            assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_pause(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.agents.schedules.with_raw_response.pause(
+                id="id",
+                workspace_id="",
+                agent_id="agentId",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `agent_id` but received ''"):
+            client.agents.schedules.with_raw_response.pause(
+                id="id",
+                workspace_id="workspaceId",
+                agent_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.agents.schedules.with_raw_response.pause(
+                id="",
+                workspace_id="workspaceId",
+                agent_id="agentId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_resume(self, client: Cadenya) -> None:
+        schedule = client.agents.schedules.resume(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_resume(self, client: Cadenya) -> None:
+        response = client.agents.schedules.with_raw_response.resume(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        schedule = response.parse()
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_resume(self, client: Cadenya) -> None:
+        with client.agents.schedules.with_streaming_response.resume(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            schedule = response.parse()
+            assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_resume(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.agents.schedules.with_raw_response.resume(
+                id="id",
+                workspace_id="",
+                agent_id="agentId",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `agent_id` but received ''"):
+            client.agents.schedules.with_raw_response.resume(
+                id="id",
+                workspace_id="workspaceId",
+                agent_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.agents.schedules.with_raw_response.resume(
+                id="",
+                workspace_id="workspaceId",
+                agent_id="agentId",
+            )
+
 
 class TestAsyncSchedules:
     parametrize = pytest.mark.parametrize(
@@ -607,7 +797,6 @@ class TestAsyncSchedules:
                 },
                 "data": {},
                 "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
-                "status": "AGENT_SCHEDULE_STATUS_UNSPECIFIED",
                 "variation_id": "variationId",
             },
         )
@@ -823,7 +1012,6 @@ class TestAsyncSchedules:
                 },
                 "data": {},
                 "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
-                "status": "AGENT_SCHEDULE_STATUS_UNSPECIFIED",
                 "variation_id": "variationId",
             },
             update_mask="updateMask",
@@ -1011,6 +1199,198 @@ class TestAsyncSchedules:
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.agents.schedules.with_raw_response.delete(
+                id="",
+                workspace_id="workspaceId",
+                agent_id="agentId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_archive(self, async_client: AsyncCadenya) -> None:
+        schedule = await async_client.agents.schedules.archive(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_archive(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.agents.schedules.with_raw_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        schedule = await response.parse()
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_archive(self, async_client: AsyncCadenya) -> None:
+        async with async_client.agents.schedules.with_streaming_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            schedule = await response.parse()
+            assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_archive(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.agents.schedules.with_raw_response.archive(
+                id="id",
+                workspace_id="",
+                agent_id="agentId",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `agent_id` but received ''"):
+            await async_client.agents.schedules.with_raw_response.archive(
+                id="id",
+                workspace_id="workspaceId",
+                agent_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.agents.schedules.with_raw_response.archive(
+                id="",
+                workspace_id="workspaceId",
+                agent_id="agentId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_pause(self, async_client: AsyncCadenya) -> None:
+        schedule = await async_client.agents.schedules.pause(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_pause(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.agents.schedules.with_raw_response.pause(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        schedule = await response.parse()
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_pause(self, async_client: AsyncCadenya) -> None:
+        async with async_client.agents.schedules.with_streaming_response.pause(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            schedule = await response.parse()
+            assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_pause(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.agents.schedules.with_raw_response.pause(
+                id="id",
+                workspace_id="",
+                agent_id="agentId",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `agent_id` but received ''"):
+            await async_client.agents.schedules.with_raw_response.pause(
+                id="id",
+                workspace_id="workspaceId",
+                agent_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.agents.schedules.with_raw_response.pause(
+                id="",
+                workspace_id="workspaceId",
+                agent_id="agentId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_resume(self, async_client: AsyncCadenya) -> None:
+        schedule = await async_client.agents.schedules.resume(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_resume(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.agents.schedules.with_raw_response.resume(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        schedule = await response.parse()
+        assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_resume(self, async_client: AsyncCadenya) -> None:
+        async with async_client.agents.schedules.with_streaming_response.resume(
+            id="id",
+            workspace_id="workspaceId",
+            agent_id="agentId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            schedule = await response.parse()
+            assert_matches_type(AgentSchedule, schedule, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_resume(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.agents.schedules.with_raw_response.resume(
+                id="id",
+                workspace_id="",
+                agent_id="agentId",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `agent_id` but received ''"):
+            await async_client.agents.schedules.with_raw_response.resume(
+                id="id",
+                workspace_id="workspaceId",
+                agent_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.agents.schedules.with_raw_response.resume(
                 id="",
                 workspace_id="workspaceId",
                 agent_id="agentId",

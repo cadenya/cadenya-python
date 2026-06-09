@@ -81,7 +81,7 @@ class AccountResource(SyncAPIResource):
     ) -> RotateWebhookSigningKeyResponse:
         """Rotates the webhook signing key for the account. Returns only the new key."""
         return self._post(
-            "/v1/account/rotate_webhook_signing_key",
+            "/v1/account:rotateWebhookSigningKey",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -150,7 +150,7 @@ class AsyncAccountResource(AsyncAPIResource):
     ) -> RotateWebhookSigningKeyResponse:
         """Rotates the webhook signing key for the account. Returns only the new key."""
         return await self._post(
-            "/v1/account/rotate_webhook_signing_key",
+            "/v1/account:rotateWebhookSigningKey",
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

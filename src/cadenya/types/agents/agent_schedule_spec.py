@@ -38,16 +38,6 @@ class AgentScheduleSpec(BaseModel):
     )
     """What to do when the previous run is still in flight. Defaults to SKIP."""
 
-    status: Optional[
-        Literal[
-            "AGENT_SCHEDULE_STATUS_UNSPECIFIED",
-            "AGENT_SCHEDULE_STATUS_ACTIVE",
-            "AGENT_SCHEDULE_STATUS_PAUSED",
-            "AGENT_SCHEDULE_STATUS_ARCHIVED",
-        ]
-    ] = None
-    """Lifecycle. Defaults to ACTIVE on create when unspecified."""
-
     variation_id: Optional[str] = FieldInfo(alias="variationId", default=None)
     """Optional explicit variation.
 

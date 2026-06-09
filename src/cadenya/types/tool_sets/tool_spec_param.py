@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from typing import Dict
-from typing_extensions import Literal, Required, Annotated, TypedDict
+from typing_extensions import Required, Annotated, TypedDict
 
 from ..._utils import PropertyInfo
 from .tool_spec_config_param import ToolSpecConfigParam
@@ -23,8 +23,4 @@ class ToolSpecParam(TypedDict, total=False):
 
     parameters: Required[Dict[str, object]]
 
-    status: Required[
-        Literal["TOOL_STATUS_UNSPECIFIED", "TOOL_STATUS_AVAILABLE", "TOOL_STATUS_OMITTED", "TOOL_STATUS_ARCHIVED"]
-    ]
-
-    requires_approval: Annotated[bool, PropertyInfo(alias="requiresApproval")]
+    requires_approval: Required[Annotated[bool, PropertyInfo(alias="requiresApproval")]]

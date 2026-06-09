@@ -1,7 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import Optional
-from typing_extensions import Literal
 
 from pydantic import Field as FieldInfo
 
@@ -28,6 +27,3 @@ class ModelSpec(BaseModel):
 
     provider: Optional[str] = None
     """The model provider (e.g., "anthropic", "openai", "google")"""
-
-    status: Optional[Literal["MODEL_STATUS_UNSPECIFIED", "MODEL_STATUS_ENABLED", "MODEL_STATUS_DISABLED"]] = None
-    """The status of the model in the workspace"""

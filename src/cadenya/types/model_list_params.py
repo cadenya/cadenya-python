@@ -40,5 +40,5 @@ class ModelListParams(TypedDict, total=False):
     sort_order: Annotated[str, PropertyInfo(alias="sortOrder")]
     """Sort order for results (asc or desc by creation time)"""
 
-    status: Literal["MODEL_STATUS_UNSPECIFIED", "MODEL_STATUS_ENABLED", "MODEL_STATUS_DISABLED"]
-    """Filter by model status"""
+    state: Literal["STATE_UNSPECIFIED", "STATE_ENABLED", "STATE_DISABLED"]
+    """Filter by model state"""

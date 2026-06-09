@@ -27,14 +27,13 @@ class BulkWorkspaceApplyData(BaseModel):
 
     automatically_publish_agents: Optional[bool] = FieldInfo(alias="automaticallyPublishAgents", default=None)
     """
-    When true, every agent created or updated by this Apply has its status forced to
-    AGENT_STATUS_PUBLISHED, regardless of the status declared in the agent's
-    AgentSpec. Useful when the bundle represents a production configuration and you
-    want all of its agents live without setting status: AGENT_STATUS_PUBLISHED on
-    each entry.
+    When true, every agent created or updated by this Apply has its state forced to
+    STATE_PUBLISHED, regardless of the state declared on the agent's entry. Useful
+    when the bundle represents a production configuration and you want all of its
+    agents live without setting state: STATE_PUBLISHED on each entry.
 
-    Default false: each agent's AgentSpec.status controls (which is
-    AGENT_STATUS_DRAFT on create when unspecified).
+    Default false: each agent entry's `state` controls (which is STATE_DRAFT on
+    create when unspecified).
     """
 
     memory_layers: Optional[Dict[str, MemoryLayerEntry]] = FieldInfo(alias="memoryLayers", default=None)
