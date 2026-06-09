@@ -261,10 +261,7 @@ class AgentsResource(SyncAPIResource):
         prefix: str | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
-        status: Literal[
-            "AGENT_STATUS_UNSPECIFIED", "AGENT_STATUS_DRAFT", "AGENT_STATUS_PUBLISHED", "AGENT_STATUS_ARCHIVED"
-        ]
-        | Omit = omit,
+        state: Literal["STATE_UNSPECIFIED", "STATE_DRAFT", "STATE_PUBLISHED", "STATE_ARCHIVED"] | Omit = omit,
         variation_selection_mode: Literal[
             "VARIATION_SELECTION_MODE_UNSPECIFIED",
             "VARIATION_SELECTION_MODE_RANDOM",
@@ -297,7 +294,7 @@ class AgentsResource(SyncAPIResource):
 
           sort_order: Sort order for results (asc or desc by creation time)
 
-          status: Filter by agent publication status
+          state: Filter by agent lifecycle state
 
           variation_selection_mode: Filter by variation selection mode
 
@@ -328,7 +325,7 @@ class AgentsResource(SyncAPIResource):
                         "prefix": prefix,
                         "query": query,
                         "sort_order": sort_order,
-                        "status": status,
+                        "state": state,
                         "variation_selection_mode": variation_selection_mode,
                     },
                     agent_list_params.AgentListParams,
@@ -372,6 +369,158 @@ class AgentsResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=NoneType,
+        )
+
+    def archive(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an agent to STATE_ARCHIVED.
+
+        Archived agents are hidden from list
+        results and cannot be used for objectives; active schedules are paused.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:archive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    def publish(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an agent to STATE_PUBLISHED, making it available for objectives.
+
+        The
+        agent must have at least one variation.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:publish", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    def unarchive(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an archived agent back to STATE_DRAFT.
+
+        Publish the agent again to
+        make it available for objectives.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:unarchive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    def unpublish(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions a published agent back to STATE_DRAFT.
+
+        Active schedules for the
+        agent are paused until it is published again.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:unpublish", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
         )
 
 
@@ -577,10 +726,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         prefix: str | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
-        status: Literal[
-            "AGENT_STATUS_UNSPECIFIED", "AGENT_STATUS_DRAFT", "AGENT_STATUS_PUBLISHED", "AGENT_STATUS_ARCHIVED"
-        ]
-        | Omit = omit,
+        state: Literal["STATE_UNSPECIFIED", "STATE_DRAFT", "STATE_PUBLISHED", "STATE_ARCHIVED"] | Omit = omit,
         variation_selection_mode: Literal[
             "VARIATION_SELECTION_MODE_UNSPECIFIED",
             "VARIATION_SELECTION_MODE_RANDOM",
@@ -613,7 +759,7 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           sort_order: Sort order for results (asc or desc by creation time)
 
-          status: Filter by agent publication status
+          state: Filter by agent lifecycle state
 
           variation_selection_mode: Filter by variation selection mode
 
@@ -644,7 +790,7 @@ class AsyncAgentsResource(AsyncAPIResource):
                         "prefix": prefix,
                         "query": query,
                         "sort_order": sort_order,
-                        "status": status,
+                        "state": state,
                         "variation_selection_mode": variation_selection_mode,
                     },
                     agent_list_params.AgentListParams,
@@ -690,6 +836,158 @@ class AsyncAgentsResource(AsyncAPIResource):
             cast_to=NoneType,
         )
 
+    async def archive(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an agent to STATE_ARCHIVED.
+
+        Archived agents are hidden from list
+        results and cannot be used for objectives; active schedules are paused.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:archive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    async def publish(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an agent to STATE_PUBLISHED, making it available for objectives.
+
+        The
+        agent must have at least one variation.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:publish", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    async def unarchive(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an archived agent back to STATE_DRAFT.
+
+        Publish the agent again to
+        make it available for objectives.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:unarchive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    async def unpublish(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions a published agent back to STATE_DRAFT.
+
+        Active schedules for the
+        agent are paused until it is published again.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:unpublish", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
 
 class AgentsResourceWithRawResponse:
     def __init__(self, agents: AgentsResource) -> None:
@@ -709,6 +1007,18 @@ class AgentsResourceWithRawResponse:
         )
         self.delete = to_raw_response_wrapper(
             agents.delete,
+        )
+        self.archive = to_raw_response_wrapper(
+            agents.archive,
+        )
+        self.publish = to_raw_response_wrapper(
+            agents.publish,
+        )
+        self.unarchive = to_raw_response_wrapper(
+            agents.unarchive,
+        )
+        self.unpublish = to_raw_response_wrapper(
+            agents.unpublish,
         )
 
     @cached_property
@@ -757,6 +1067,18 @@ class AsyncAgentsResourceWithRawResponse:
         self.delete = async_to_raw_response_wrapper(
             agents.delete,
         )
+        self.archive = async_to_raw_response_wrapper(
+            agents.archive,
+        )
+        self.publish = async_to_raw_response_wrapper(
+            agents.publish,
+        )
+        self.unarchive = async_to_raw_response_wrapper(
+            agents.unarchive,
+        )
+        self.unpublish = async_to_raw_response_wrapper(
+            agents.unpublish,
+        )
 
     @cached_property
     def feedback(self) -> AsyncFeedbackResourceWithRawResponse:
@@ -804,6 +1126,18 @@ class AgentsResourceWithStreamingResponse:
         self.delete = to_streamed_response_wrapper(
             agents.delete,
         )
+        self.archive = to_streamed_response_wrapper(
+            agents.archive,
+        )
+        self.publish = to_streamed_response_wrapper(
+            agents.publish,
+        )
+        self.unarchive = to_streamed_response_wrapper(
+            agents.unarchive,
+        )
+        self.unpublish = to_streamed_response_wrapper(
+            agents.unpublish,
+        )
 
     @cached_property
     def feedback(self) -> FeedbackResourceWithStreamingResponse:
@@ -850,6 +1184,18 @@ class AsyncAgentsResourceWithStreamingResponse:
         )
         self.delete = async_to_streamed_response_wrapper(
             agents.delete,
+        )
+        self.archive = async_to_streamed_response_wrapper(
+            agents.archive,
+        )
+        self.publish = async_to_streamed_response_wrapper(
+            agents.publish,
+        )
+        self.unarchive = async_to_streamed_response_wrapper(
+            agents.unarchive,
+        )
+        self.unpublish = async_to_streamed_response_wrapper(
+            agents.unpublish,
         )
 
     @cached_property

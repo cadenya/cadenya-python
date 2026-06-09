@@ -110,7 +110,6 @@ from .tool_set_create_params import ToolSetCreateParams as ToolSetCreateParams
 from .tool_set_update_params import ToolSetUpdateParams as ToolSetUpdateParams
 from .memory_entry_item_param import MemoryEntryItemParam as MemoryEntryItemParam
 from .memory_layer_spec_param import MemoryLayerSpecParam as MemoryLayerSpecParam
-from .model_set_status_params import ModelSetStatusParams as ModelSetStatusParams
 from .objective_cancel_params import ObjectiveCancelParams as ObjectiveCancelParams
 from .objective_create_params import ObjectiveCreateParams as ObjectiveCreateParams
 from .tool_approval_requested import ToolApprovalRequested as ToolApprovalRequested

@@ -147,7 +147,6 @@ class TestBulkWorkspaceResources:
                     "foo": {
                         "name": "name",
                         "spec": {
-                            "status": "AGENT_STATUS_UNSPECIFIED",
                             "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
                             "description": "description",
                             "input_data_schema": {"foo": "bar"},
@@ -218,12 +217,13 @@ class TestBulkWorkspaceResources:
                                     },
                                     "data": {},
                                     "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
-                                    "status": "AGENT_SCHEDULE_STATUS_UNSPECIFIED",
                                     "variation_id": "variationId",
                                 },
                                 "labels": {"foo": "string"},
+                                "state": "STATE_UNSPECIFIED",
                             }
                         },
+                        "state": "STATE_UNSPECIFIED",
                         "variations": {
                             "foo": {
                                 "name": "name",
@@ -443,10 +443,10 @@ class TestBulkWorkspaceResources:
                                     },
                                     "description": "description",
                                     "parameters": {"foo": "bar"},
-                                    "status": "TOOL_STATUS_UNSPECIFIED",
                                     "requires_approval": True,
                                 },
                                 "labels": {"foo": "string"},
+                                "state": "STATE_UNSPECIFIED",
                             }
                         },
                     }
@@ -625,7 +625,6 @@ class TestAsyncBulkWorkspaceResources:
                     "foo": {
                         "name": "name",
                         "spec": {
-                            "status": "AGENT_STATUS_UNSPECIFIED",
                             "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
                             "description": "description",
                             "input_data_schema": {"foo": "bar"},
@@ -696,12 +695,13 @@ class TestAsyncBulkWorkspaceResources:
                                     },
                                     "data": {},
                                     "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
-                                    "status": "AGENT_SCHEDULE_STATUS_UNSPECIFIED",
                                     "variation_id": "variationId",
                                 },
                                 "labels": {"foo": "string"},
+                                "state": "STATE_UNSPECIFIED",
                             }
                         },
+                        "state": "STATE_UNSPECIFIED",
                         "variations": {
                             "foo": {
                                 "name": "name",
@@ -921,10 +921,10 @@ class TestAsyncBulkWorkspaceResources:
                                     },
                                     "description": "description",
                                     "parameters": {"foo": "bar"},
-                                    "status": "TOOL_STATUS_UNSPECIFIED",
                                     "requires_approval": True,
                                 },
                                 "labels": {"foo": "string"},
+                                "state": "STATE_UNSPECIFIED",
                             }
                         },
                     }

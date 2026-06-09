@@ -91,7 +91,7 @@ class TestModels:
             prefix="prefix",
             query="query",
             sort_order="sortOrder",
-            status="MODEL_STATUS_UNSPECIFIED",
+            state="STATE_UNSPECIFIED",
         )
         assert_matches_type(SyncCursorPagination[Model], model, path=["response"])
 
@@ -131,8 +131,8 @@ class TestModels:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    def test_method_set_status(self, client: Cadenya) -> None:
-        model = client.models.set_status(
+    def test_method_disable(self, client: Cadenya) -> None:
+        model = client.models.disable(
             id="id",
             workspace_id="workspaceId",
         )
@@ -140,18 +140,8 @@ class TestModels:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    def test_method_set_status_with_all_params(self, client: Cadenya) -> None:
-        model = client.models.set_status(
-            id="id",
-            workspace_id="workspaceId",
-            status="MODEL_STATUS_UNSPECIFIED",
-        )
-        assert_matches_type(Model, model, path=["response"])
-
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    def test_raw_response_set_status(self, client: Cadenya) -> None:
-        response = client.models.with_raw_response.set_status(
+    def test_raw_response_disable(self, client: Cadenya) -> None:
+        response = client.models.with_raw_response.disable(
             id="id",
             workspace_id="workspaceId",
         )
@@ -163,8 +153,8 @@ class TestModels:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    def test_streaming_response_set_status(self, client: Cadenya) -> None:
-        with client.models.with_streaming_response.set_status(
+    def test_streaming_response_disable(self, client: Cadenya) -> None:
+        with client.models.with_streaming_response.disable(
             id="id",
             workspace_id="workspaceId",
         ) as response:
@@ -178,15 +168,67 @@ class TestModels:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    def test_path_params_set_status(self, client: Cadenya) -> None:
+    def test_path_params_disable(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
-            client.models.with_raw_response.set_status(
+            client.models.with_raw_response.disable(
                 id="id",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
-            client.models.with_raw_response.set_status(
+            client.models.with_raw_response.disable(
+                id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_enable(self, client: Cadenya) -> None:
+        model = client.models.enable(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(Model, model, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_enable(self, client: Cadenya) -> None:
+        response = client.models.with_raw_response.enable(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        model = response.parse()
+        assert_matches_type(Model, model, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_enable(self, client: Cadenya) -> None:
+        with client.models.with_streaming_response.enable(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            model = response.parse()
+            assert_matches_type(Model, model, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_enable(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.models.with_raw_response.enable(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.models.with_raw_response.enable(
                 id="",
                 workspace_id="workspaceId",
             )
@@ -326,7 +368,7 @@ class TestAsyncModels:
             prefix="prefix",
             query="query",
             sort_order="sortOrder",
-            status="MODEL_STATUS_UNSPECIFIED",
+            state="STATE_UNSPECIFIED",
         )
         assert_matches_type(AsyncCursorPagination[Model], model, path=["response"])
 
@@ -366,8 +408,8 @@ class TestAsyncModels:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    async def test_method_set_status(self, async_client: AsyncCadenya) -> None:
-        model = await async_client.models.set_status(
+    async def test_method_disable(self, async_client: AsyncCadenya) -> None:
+        model = await async_client.models.disable(
             id="id",
             workspace_id="workspaceId",
         )
@@ -375,18 +417,8 @@ class TestAsyncModels:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    async def test_method_set_status_with_all_params(self, async_client: AsyncCadenya) -> None:
-        model = await async_client.models.set_status(
-            id="id",
-            workspace_id="workspaceId",
-            status="MODEL_STATUS_UNSPECIFIED",
-        )
-        assert_matches_type(Model, model, path=["response"])
-
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    async def test_raw_response_set_status(self, async_client: AsyncCadenya) -> None:
-        response = await async_client.models.with_raw_response.set_status(
+    async def test_raw_response_disable(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.models.with_raw_response.disable(
             id="id",
             workspace_id="workspaceId",
         )
@@ -398,8 +430,8 @@ class TestAsyncModels:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    async def test_streaming_response_set_status(self, async_client: AsyncCadenya) -> None:
-        async with async_client.models.with_streaming_response.set_status(
+    async def test_streaming_response_disable(self, async_client: AsyncCadenya) -> None:
+        async with async_client.models.with_streaming_response.disable(
             id="id",
             workspace_id="workspaceId",
         ) as response:
@@ -413,15 +445,67 @@ class TestAsyncModels:
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
-    async def test_path_params_set_status(self, async_client: AsyncCadenya) -> None:
+    async def test_path_params_disable(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
-            await async_client.models.with_raw_response.set_status(
+            await async_client.models.with_raw_response.disable(
                 id="id",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
-            await async_client.models.with_raw_response.set_status(
+            await async_client.models.with_raw_response.disable(
+                id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_enable(self, async_client: AsyncCadenya) -> None:
+        model = await async_client.models.enable(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(Model, model, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_enable(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.models.with_raw_response.enable(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        model = await response.parse()
+        assert_matches_type(Model, model, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_enable(self, async_client: AsyncCadenya) -> None:
+        async with async_client.models.with_streaming_response.enable(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            model = await response.parse()
+            assert_matches_type(Model, model, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_enable(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.models.with_raw_response.enable(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.models.with_raw_response.enable(
                 id="",
                 workspace_id="workspaceId",
             )

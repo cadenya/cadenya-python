@@ -1,6 +1,7 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import Optional
+from typing_extensions import Literal
 
 from .._models import BaseModel
 from .tool_set_info import ToolSetInfo
@@ -17,6 +18,13 @@ class ToolSet(BaseModel):
     """
 
     spec: ToolSetSpec
+
+    state: Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_ARCHIVED"]
+    """The current lifecycle state of the tool set.
+
+    Output only. Tool sets are created STATE_ACTIVE; use the :archive and :unarchive
+    actions to transition between states.
+    """
 
     info: Optional[ToolSetInfo] = None
     """Tool set information"""

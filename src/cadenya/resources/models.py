@@ -7,7 +7,7 @@ from typing_extensions import Literal
 
 import httpx
 
-from ..types import model_list_params, model_swap_params, model_set_status_params
+from ..types import model_list_params, model_swap_params
 from .._types import Body, Omit, Query, Headers, NotGiven, omit, not_given
 from .._utils import path_template, maybe_transform, async_maybe_transform
 from .._compat import cached_property
@@ -100,7 +100,7 @@ class ModelsResource(SyncAPIResource):
         prefix: str | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
-        status: Literal["MODEL_STATUS_UNSPECIFIED", "MODEL_STATUS_ENABLED", "MODEL_STATUS_DISABLED"] | Omit = omit,
+        state: Literal["STATE_UNSPECIFIED", "STATE_ENABLED", "STATE_DISABLED"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -130,7 +130,7 @@ class ModelsResource(SyncAPIResource):
 
           sort_order: Sort order for results (asc or desc by creation time)
 
-          status: Filter by model status
+          state: Filter by model state
 
           extra_headers: Send extra headers
 
@@ -160,7 +160,7 @@ class ModelsResource(SyncAPIResource):
                         "prefix": prefix,
                         "query": query,
                         "sort_order": sort_order,
-                        "status": status,
+                        "state": state,
                     },
                     model_list_params.ModelListParams,
                 ),
@@ -168,12 +168,11 @@ class ModelsResource(SyncAPIResource):
             model=Model,
         )
 
-    def set_status(
+    def disable(
         self,
         id: str,
         *,
         workspace_id: str,
-        status: Literal["MODEL_STATUS_UNSPECIFIED", "MODEL_STATUS_ENABLED", "MODEL_STATUS_DISABLED"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -181,12 +180,12 @@ class ModelsResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Model:
-        """
-        Enables or disables a model in the workspace
+        """Transitions a model to STATE_DISABLED.
+
+        Fails while agent variations are still
+        provisioned on the model; use :swapModelOnVariations to move them first.
 
         Args:
-          status: The new status for the model
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -199,9 +198,45 @@ class ModelsResource(SyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
-        return self._put(
-            path_template("/v1/workspaces/{workspace_id}/models/{id}/status", workspace_id=workspace_id, id=id),
-            body=maybe_transform({"status": status}, model_set_status_params.ModelSetStatusParams),
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/models/{id}:disable", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Model,
+        )
+
+    def enable(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Model:
+        """
+        Transitions a model to STATE_ENABLED, making it available for agent variations
+        in the workspace
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/models/{id}:enable", workspace_id=workspace_id, id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -323,7 +358,7 @@ class AsyncModelsResource(AsyncAPIResource):
         prefix: str | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
-        status: Literal["MODEL_STATUS_UNSPECIFIED", "MODEL_STATUS_ENABLED", "MODEL_STATUS_DISABLED"] | Omit = omit,
+        state: Literal["STATE_UNSPECIFIED", "STATE_ENABLED", "STATE_DISABLED"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -353,7 +388,7 @@ class AsyncModelsResource(AsyncAPIResource):
 
           sort_order: Sort order for results (asc or desc by creation time)
 
-          status: Filter by model status
+          state: Filter by model state
 
           extra_headers: Send extra headers
 
@@ -383,7 +418,7 @@ class AsyncModelsResource(AsyncAPIResource):
                         "prefix": prefix,
                         "query": query,
                         "sort_order": sort_order,
-                        "status": status,
+                        "state": state,
                     },
                     model_list_params.ModelListParams,
                 ),
@@ -391,12 +426,11 @@ class AsyncModelsResource(AsyncAPIResource):
             model=Model,
         )
 
-    async def set_status(
+    async def disable(
         self,
         id: str,
         *,
         workspace_id: str,
-        status: Literal["MODEL_STATUS_UNSPECIFIED", "MODEL_STATUS_ENABLED", "MODEL_STATUS_DISABLED"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -404,12 +438,12 @@ class AsyncModelsResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> Model:
-        """
-        Enables or disables a model in the workspace
+        """Transitions a model to STATE_DISABLED.
+
+        Fails while agent variations are still
+        provisioned on the model; use :swapModelOnVariations to move them first.
 
         Args:
-          status: The new status for the model
-
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -422,9 +456,45 @@ class AsyncModelsResource(AsyncAPIResource):
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
-        return await self._put(
-            path_template("/v1/workspaces/{workspace_id}/models/{id}/status", workspace_id=workspace_id, id=id),
-            body=await async_maybe_transform({"status": status}, model_set_status_params.ModelSetStatusParams),
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/models/{id}:disable", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Model,
+        )
+
+    async def enable(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Model:
+        """
+        Transitions a model to STATE_ENABLED, making it available for agent variations
+        in the workspace
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/models/{id}:enable", workspace_id=workspace_id, id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -481,8 +551,11 @@ class ModelsResourceWithRawResponse:
         self.list = to_raw_response_wrapper(
             models.list,
         )
-        self.set_status = to_raw_response_wrapper(
-            models.set_status,
+        self.disable = to_raw_response_wrapper(
+            models.disable,
+        )
+        self.enable = to_raw_response_wrapper(
+            models.enable,
         )
         self.swap = to_raw_response_wrapper(
             models.swap,
@@ -499,8 +572,11 @@ class AsyncModelsResourceWithRawResponse:
         self.list = async_to_raw_response_wrapper(
             models.list,
         )
-        self.set_status = async_to_raw_response_wrapper(
-            models.set_status,
+        self.disable = async_to_raw_response_wrapper(
+            models.disable,
+        )
+        self.enable = async_to_raw_response_wrapper(
+            models.enable,
         )
         self.swap = async_to_raw_response_wrapper(
             models.swap,
@@ -517,8 +593,11 @@ class ModelsResourceWithStreamingResponse:
         self.list = to_streamed_response_wrapper(
             models.list,
         )
-        self.set_status = to_streamed_response_wrapper(
-            models.set_status,
+        self.disable = to_streamed_response_wrapper(
+            models.disable,
+        )
+        self.enable = to_streamed_response_wrapper(
+            models.enable,
         )
         self.swap = to_streamed_response_wrapper(
             models.swap,
@@ -535,8 +614,11 @@ class AsyncModelsResourceWithStreamingResponse:
         self.list = async_to_streamed_response_wrapper(
             models.list,
         )
-        self.set_status = async_to_streamed_response_wrapper(
-            models.set_status,
+        self.disable = async_to_streamed_response_wrapper(
+            models.disable,
+        )
+        self.enable = async_to_streamed_response_wrapper(
+            models.enable,
         )
         self.swap = async_to_streamed_response_wrapper(
             models.swap,

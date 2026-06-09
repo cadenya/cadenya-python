@@ -36,8 +36,8 @@ class AgentScheduleInfo(BaseModel):
     next_fire_at: Optional[datetime] = FieldInfo(alias="nextFireAt", default=None)
     """When the schedule will next fire.
 
-    Computed from the spec; absent when the schedule is PAUSED/ARCHIVED or has no
-    future fire times.
+    Computed from the spec; absent when the schedule is STATE_PAUSED/STATE_ARCHIVED
+    or has no future fire times.
     """
 
     total_fires: Optional[int] = FieldInfo(alias="totalFires", default=None)

@@ -330,8 +330,8 @@ class APIKeysResource(SyncAPIResource):
         """
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
-        return self._put(
-            path_template("/v1/account/api_keys/{id}/rotate", id=id),
+        return self._post(
+            path_template("/v1/account/api_keys/{id}:rotate", id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -638,8 +638,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         """
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
-        return await self._put(
-            path_template("/v1/account/api_keys/{id}/rotate", id=id),
+        return await self._post(
+            path_template("/v1/account/api_keys/{id}:rotate", id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),

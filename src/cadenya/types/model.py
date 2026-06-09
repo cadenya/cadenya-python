@@ -39,5 +39,11 @@ class Model(BaseModel):
     spec: ModelSpec
     """Model specification"""
 
+    state: Literal["STATE_UNSPECIFIED", "STATE_ENABLED", "STATE_DISABLED"]
+    """Whether the model is usable in this workspace.
+
+    Output only. Use the :enable and :disable actions to transition.
+    """
+
     info: Optional[Info] = None
     """ModelInfo carries server-derived, read-only details about a model."""

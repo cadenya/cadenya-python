@@ -13,11 +13,6 @@ __all__ = ["AgentSpecParam"]
 class AgentSpecParam(TypedDict, total=False):
     """Agent specification (user-provided configuration)"""
 
-    status: Required[
-        Literal["AGENT_STATUS_UNSPECIFIED", "AGENT_STATUS_DRAFT", "AGENT_STATUS_PUBLISHED", "AGENT_STATUS_ARCHIVED"]
-    ]
-    """Status of the agent"""
-
     variation_selection_mode: Required[
         Annotated[
             Literal[

@@ -470,6 +470,7 @@ class TestToolSets:
             prefix="prefix",
             query="query",
             sort_order="sortOrder",
+            state="STATE_UNSPECIFIED",
         )
         assert_matches_type(SyncCursorPagination[ToolSet], tool_set, path=["response"])
 
@@ -555,6 +556,58 @@ class TestToolSets:
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.with_raw_response.delete(
+                id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_archive(self, client: Cadenya) -> None:
+        tool_set = client.tool_sets.archive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(ToolSet, tool_set, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_archive(self, client: Cadenya) -> None:
+        response = client.tool_sets.with_raw_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        tool_set = response.parse()
+        assert_matches_type(ToolSet, tool_set, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_archive(self, client: Cadenya) -> None:
+        with client.tool_sets.with_streaming_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            tool_set = response.parse()
+            assert_matches_type(ToolSet, tool_set, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_archive(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.tool_sets.with_raw_response.archive(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.tool_sets.with_raw_response.archive(
                 id="",
                 workspace_id="workspaceId",
             )
@@ -673,6 +726,58 @@ class TestToolSets:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.with_raw_response.list_events(
                 tool_set_id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_unarchive(self, client: Cadenya) -> None:
+        tool_set = client.tool_sets.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(ToolSet, tool_set, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_unarchive(self, client: Cadenya) -> None:
+        response = client.tool_sets.with_raw_response.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        tool_set = response.parse()
+        assert_matches_type(ToolSet, tool_set, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_unarchive(self, client: Cadenya) -> None:
+        with client.tool_sets.with_streaming_response.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            tool_set = response.parse()
+            assert_matches_type(ToolSet, tool_set, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_unarchive(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.tool_sets.with_raw_response.unarchive(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.tool_sets.with_raw_response.unarchive(
+                id="",
                 workspace_id="workspaceId",
             )
 
@@ -1130,6 +1235,7 @@ class TestAsyncToolSets:
             prefix="prefix",
             query="query",
             sort_order="sortOrder",
+            state="STATE_UNSPECIFIED",
         )
         assert_matches_type(AsyncCursorPagination[ToolSet], tool_set, path=["response"])
 
@@ -1215,6 +1321,58 @@ class TestAsyncToolSets:
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.with_raw_response.delete(
+                id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_archive(self, async_client: AsyncCadenya) -> None:
+        tool_set = await async_client.tool_sets.archive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(ToolSet, tool_set, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_archive(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.tool_sets.with_raw_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        tool_set = await response.parse()
+        assert_matches_type(ToolSet, tool_set, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_archive(self, async_client: AsyncCadenya) -> None:
+        async with async_client.tool_sets.with_streaming_response.archive(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            tool_set = await response.parse()
+            assert_matches_type(ToolSet, tool_set, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_archive(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.tool_sets.with_raw_response.archive(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.tool_sets.with_raw_response.archive(
                 id="",
                 workspace_id="workspaceId",
             )
@@ -1333,5 +1491,57 @@ class TestAsyncToolSets:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.with_raw_response.list_events(
                 tool_set_id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_unarchive(self, async_client: AsyncCadenya) -> None:
+        tool_set = await async_client.tool_sets.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(ToolSet, tool_set, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_unarchive(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.tool_sets.with_raw_response.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        tool_set = await response.parse()
+        assert_matches_type(ToolSet, tool_set, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_unarchive(self, async_client: AsyncCadenya) -> None:
+        async with async_client.tool_sets.with_streaming_response.unarchive(
+            id="id",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            tool_set = await response.parse()
+            assert_matches_type(ToolSet, tool_set, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_unarchive(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.tool_sets.with_raw_response.unarchive(
+                id="id",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.tool_sets.with_raw_response.unarchive(
+                id="",
                 workspace_id="workspaceId",
             )

@@ -13,9 +13,6 @@ __all__ = ["AgentSpec"]
 class AgentSpec(BaseModel):
     """Agent specification (user-provided configuration)"""
 
-    status: Literal["AGENT_STATUS_UNSPECIFIED", "AGENT_STATUS_DRAFT", "AGENT_STATUS_PUBLISHED", "AGENT_STATUS_ARCHIVED"]
-    """Status of the agent"""
-
     variation_selection_mode: Literal[
         "VARIATION_SELECTION_MODE_UNSPECIFIED", "VARIATION_SELECTION_MODE_RANDOM", "VARIATION_SELECTION_MODE_WEIGHTED"
     ] = FieldInfo(alias="variationSelectionMode")

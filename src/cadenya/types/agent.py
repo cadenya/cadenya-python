@@ -1,6 +1,7 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import Optional
+from typing_extensions import Literal
 
 from .._models import BaseModel
 from .agent_info import AgentInfo
@@ -20,6 +21,13 @@ class Agent(BaseModel):
 
     spec: AgentSpec
     """Agent specification (user-provided configuration)"""
+
+    state: Literal["STATE_UNSPECIFIED", "STATE_DRAFT", "STATE_PUBLISHED", "STATE_ARCHIVED"]
+    """The current lifecycle state of the agent.
+
+    Output only. Agents are created in STATE_DRAFT; use the :publish, :unpublish,
+    :archive, and :unarchive actions to transition between states.
+    """
 
     info: Optional[AgentInfo] = None
     """

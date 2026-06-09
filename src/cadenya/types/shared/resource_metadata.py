@@ -52,3 +52,6 @@ class ResourceMetadata(BaseModel):
     Arbitrary key-value pairs for categorization and filtering Examples:
     {"environment": "production", "team": "platform", "version": "v2"}
     """
+
+    updated_at: Optional[datetime] = FieldInfo(alias="updatedAt", default=None)
+    """Timestamp when this resource was last updated"""

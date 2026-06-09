@@ -34,8 +34,8 @@ class AgentListParams(TypedDict, total=False):
     sort_order: Annotated[str, PropertyInfo(alias="sortOrder")]
     """Sort order for results (asc or desc by creation time)"""
 
-    status: Literal["AGENT_STATUS_UNSPECIFIED", "AGENT_STATUS_DRAFT", "AGENT_STATUS_PUBLISHED", "AGENT_STATUS_ARCHIVED"]
-    """Filter by agent publication status"""
+    state: Literal["STATE_UNSPECIFIED", "STATE_DRAFT", "STATE_PUBLISHED", "STATE_ARCHIVED"]
+    """Filter by agent lifecycle state"""
 
     variation_selection_mode: Annotated[
         Literal[

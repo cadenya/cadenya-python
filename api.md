@@ -46,7 +46,7 @@ from cadenya.types import (
 Methods:
 
 - <code title="get /v1/account">client.account.<a href="./src/cadenya/resources/account.py">retrieve</a>() -> <a href="./src/cadenya/types/account.py">Account</a></code>
-- <code title="post /v1/account/rotate_webhook_signing_key">client.account.<a href="./src/cadenya/resources/account.py">rotate_webhook_signing_key</a>() -> <a href="./src/cadenya/types/rotate_webhook_signing_key_response.py">RotateWebhookSigningKeyResponse</a></code>
+- <code title="post /v1/account:rotateWebhookSigningKey">client.account.<a href="./src/cadenya/resources/account.py">rotate_webhook_signing_key</a>() -> <a href="./src/cadenya/types/rotate_webhook_signing_key_response.py">RotateWebhookSigningKeyResponse</a></code>
 
 # Agents
 
@@ -63,6 +63,10 @@ Methods:
 - <code title="patch /v1/workspaces/{workspaceId}/agents/{id}">client.agents.<a href="./src/cadenya/resources/agents/agents.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/agent_update_params.py">params</a>) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/agents">client.agents.<a href="./src/cadenya/resources/agents/agents.py">list</a>(workspace_id, \*\*<a href="src/cadenya/types/agent_list_params.py">params</a>) -> <a href="./src/cadenya/types/agent.py">SyncCursorPagination[Agent]</a></code>
 - <code title="delete /v1/workspaces/{workspaceId}/agents/{id}">client.agents.<a href="./src/cadenya/resources/agents/agents.py">delete</a>(id, \*, workspace_id) -> None</code>
+- <code title="post /v1/workspaces/{workspaceId}/agents/{id}:archive">client.agents.<a href="./src/cadenya/resources/agents/agents.py">archive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/agents/{id}:publish">client.agents.<a href="./src/cadenya/resources/agents/agents.py">publish</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/agents/{id}:unarchive">client.agents.<a href="./src/cadenya/resources/agents/agents.py">unarchive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/agents/{id}:unpublish">client.agents.<a href="./src/cadenya/resources/agents/agents.py">unpublish</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
 
 ## Feedback
 
@@ -138,6 +142,9 @@ Methods:
 - <code title="patch /v1/workspaces/{workspaceId}/agents/{agentId}/schedules/{id}">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">update</a>(id, \*, workspace_id, agent_id, \*\*<a href="src/cadenya/types/agents/schedule_update_params.py">params</a>) -> <a href="./src/cadenya/types/agents/agent_schedule.py">AgentSchedule</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/agents/{agentId}/schedules">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">list</a>(agent_id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/schedule_list_params.py">params</a>) -> <a href="./src/cadenya/types/agents/agent_schedule.py">SyncCursorPagination[AgentSchedule]</a></code>
 - <code title="delete /v1/workspaces/{workspaceId}/agents/{agentId}/schedules/{id}">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">delete</a>(id, \*, workspace_id, agent_id) -> None</code>
+- <code title="post /v1/workspaces/{workspaceId}/agents/{agentId}/schedules/{id}:archive">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">archive</a>(id, \*, workspace_id, agent_id) -> <a href="./src/cadenya/types/agents/agent_schedule.py">AgentSchedule</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/agents/{agentId}/schedules/{id}:pause">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">pause</a>(id, \*, workspace_id, agent_id) -> <a href="./src/cadenya/types/agents/agent_schedule.py">AgentSchedule</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/agents/{agentId}/schedules/{id}:resume">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">resume</a>(id, \*, workspace_id, agent_id) -> <a href="./src/cadenya/types/agents/agent_schedule.py">AgentSchedule</a></code>
 
 # Objectives
 
@@ -303,7 +310,8 @@ Methods:
 
 - <code title="get /v1/workspaces/{workspaceId}/models/{id}">client.models.<a href="./src/cadenya/resources/models.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/model.py">Model</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/models">client.models.<a href="./src/cadenya/resources/models.py">list</a>(workspace_id, \*\*<a href="src/cadenya/types/model_list_params.py">params</a>) -> <a href="./src/cadenya/types/model.py">SyncCursorPagination[Model]</a></code>
-- <code title="put /v1/workspaces/{workspaceId}/models/{id}/status">client.models.<a href="./src/cadenya/resources/models.py">set_status</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/model_set_status_params.py">params</a>) -> <a href="./src/cadenya/types/model.py">Model</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/models/{id}:disable">client.models.<a href="./src/cadenya/resources/models.py">disable</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/model.py">Model</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/models/{id}:enable">client.models.<a href="./src/cadenya/resources/models.py">enable</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/model.py">Model</a></code>
 - <code title="post /v1/workspaces/{workspaceId}/models:swapModelOnVariations">client.models.<a href="./src/cadenya/resources/models.py">swap</a>(workspace_id, \*\*<a href="src/cadenya/types/model_swap_params.py">params</a>) -> object</code>
 
 # Search
@@ -348,11 +356,13 @@ Methods:
 
 - <code title="post /v1/workspaces/{workspaceId}/tool_sets">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">create</a>(workspace_id, \*\*<a href="src/cadenya/types/tool_set_create_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/tool_sets/{id}">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
-- <code title="put /v1/workspaces/{workspaceId}/tool_sets/{id}">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_set_update_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
+- <code title="patch /v1/workspaces/{workspaceId}/tool_sets/{id}">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_set_update_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/tool_sets">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">list</a>(workspace_id, \*\*<a href="src/cadenya/types/tool_set_list_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set.py">SyncCursorPagination[ToolSet]</a></code>
 - <code title="delete /v1/workspaces/{workspaceId}/tool_sets/{id}">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">delete</a>(id, \*, workspace_id) -> None</code>
+- <code title="post /v1/workspaces/{workspaceId}/tool_sets/{id}:archive">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">archive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/openapi_spec">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">get_openapi_spec</a>(tool_set_id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_set_get_openapi_spec_response.py">ToolSetGetOpenAPISpecResponse</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/events">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">list_events</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_set_list_events_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set_event.py">SyncCursorPagination[ToolSetEvent]</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/tool_sets/{id}:unarchive">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">unarchive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
 
 ## Tools
 
@@ -374,9 +384,11 @@ Methods:
 
 - <code title="post /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">create</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_sets/tool_create_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">retrieve</a>(id, \*, workspace_id, tool_set_id) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
-- <code title="put /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">update</a>(id, \*, workspace_id, tool_set_id, \*\*<a href="src/cadenya/types/tool_sets/tool_update_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
+- <code title="patch /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">update</a>(id, \*, workspace_id, tool_set_id, \*\*<a href="src/cadenya/types/tool_sets/tool_update_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">list</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_sets/tool_list_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool.py">SyncCursorPagination[Tool]</a></code>
 - <code title="delete /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">delete</a>(id, \*, workspace_id, tool_set_id) -> None</code>
+- <code title="post /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}:omit">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">omit</a>(id, \*, workspace_id, tool_set_id) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}:restore">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">restore</a>(id, \*, workspace_id, tool_set_id) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
 
 # APIKeys
 
@@ -393,7 +405,7 @@ Methods:
 - <code title="patch /v1/account/api_keys/{id}">client.api_keys.<a href="./src/cadenya/resources/api_keys/api_keys.py">update</a>(id, \*\*<a href="src/cadenya/types/api_key_update_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
 - <code title="get /v1/account/api_keys">client.api_keys.<a href="./src/cadenya/resources/api_keys/api_keys.py">list</a>(\*\*<a href="src/cadenya/types/api_key_list_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">SyncCursorPagination[APIKey]</a></code>
 - <code title="delete /v1/account/api_keys/{id}">client.api_keys.<a href="./src/cadenya/resources/api_keys/api_keys.py">delete</a>(id) -> None</code>
-- <code title="put /v1/account/api_keys/{id}/rotate">client.api_keys.<a href="./src/cadenya/resources/api_keys/api_keys.py">rotate</a>(id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
+- <code title="post /v1/account/api_keys/{id}:rotate">client.api_keys.<a href="./src/cadenya/resources/api_keys/api_keys.py">rotate</a>(id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
 
 ## Access
 
