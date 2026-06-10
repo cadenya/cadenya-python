@@ -14,12 +14,6 @@ __all__ = ["AgentScheduleSpec"]
 class AgentScheduleSpec(BaseModel):
     """AgentScheduleSpec is the user-provided configuration for a schedule."""
 
-    initial_message: str = FieldInfo(alias="initialMessage")
-    """The initial message passed to CreateObjective on each fire.
-
-    Becomes the first user message in the objective's chat history.
-    """
-
     schedule: AgentScheduleSpecSchedule
     """Schedule defines WHEN the schedule fires.
 
@@ -33,10 +27,24 @@ class AgentScheduleSpec(BaseModel):
     If the agent has an input_data_schema, this must satisfy it.
     """
 
+    initial_message: Optional[str] = FieldInfo(alias="initialMessage", default=None)
+    """Optional initial message passed to CreateObjective on each fire.
+
+    Becomes the first user message in the objective's chat history. When unset, the
+    fired objective defers to the selected variation's user_message_template.
+    """
+
     overlap_policy: Optional[Literal["OVERLAP_POLICY_UNSPECIFIED", "OVERLAP_POLICY_ALLOW", "OVERLAP_POLICY_SKIP"]] = (
         FieldInfo(alias="overlapPolicy", default=None)
     )
     """What to do when the previous run is still in flight. Defaults to SKIP."""
+
+    user_data: Optional[object] = FieldInfo(alias="userData", default=None)
+    """
+    Optional data rendered into the variation's user_message_template when each
+    fired objective is created. Separate from `data`, which renders the system
+    prompt template.
+    """
 
     variation_id: Optional[str] = FieldInfo(alias="variationId", default=None)
     """Optional explicit variation.

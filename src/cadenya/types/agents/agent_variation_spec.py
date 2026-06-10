@@ -59,8 +59,20 @@ class AgentVariationSpec(BaseModel):
     and can help select the best tools for the task.
     """
 
-    prompt: Optional[str] = None
-    """The system prompt for this variation"""
+    system_prompt_template: Optional[str] = FieldInfo(alias="systemPromptTemplate", default=None)
+    """
+    Liquid template for the system prompt of objectives using this variation.
+    Rendered with CreateObjectiveRequest.data into Objective.system_prompt.
+    """
+
+    user_message_template: Optional[str] = FieldInfo(alias="userMessageTemplate", default=None)
+    """
+    Liquid template for the initial user message of objectives using this variation.
+    Rendered with CreateObjectiveRequest.user_data and becomes the first user
+    message in the LLM chat history. CreateObjectiveRequest.initial_message, when
+    set, overrides the rendered result. If neither this template nor initial_message
+    is present, objective creation is rejected with InvalidArgument.
+    """
 
     weight: Optional[int] = None
     """Weight for weighted random selection (>= 0).

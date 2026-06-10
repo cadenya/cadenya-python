@@ -158,7 +158,6 @@ class TestBulkWorkspaceResources:
                             "foo": {
                                 "name": "name",
                                 "spec": {
-                                    "initial_message": "initialMessage",
                                     "schedule": {
                                         "calendars": [
                                             {
@@ -216,7 +215,9 @@ class TestBulkWorkspaceResources:
                                         "timezone": "timezone",
                                     },
                                     "data": {},
+                                    "initial_message": "initialMessage",
                                     "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
+                                    "user_data": {},
                                     "variation_id": "variationId",
                                 },
                                 "labels": {"foo": "string"},
@@ -249,7 +250,8 @@ class TestBulkWorkspaceResources:
                                         "max_tools": 0,
                                         "rerank_threshold": 0,
                                     },
-                                    "prompt": "prompt",
+                                    "system_prompt_template": "systemPromptTemplate",
+                                    "user_message_template": "userMessageTemplate",
                                     "weight": 0,
                                 },
                                 "assignments": [
@@ -636,7 +638,6 @@ class TestAsyncBulkWorkspaceResources:
                             "foo": {
                                 "name": "name",
                                 "spec": {
-                                    "initial_message": "initialMessage",
                                     "schedule": {
                                         "calendars": [
                                             {
@@ -694,7 +695,9 @@ class TestAsyncBulkWorkspaceResources:
                                         "timezone": "timezone",
                                     },
                                     "data": {},
+                                    "initial_message": "initialMessage",
                                     "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
+                                    "user_data": {},
                                     "variation_id": "variationId",
                                 },
                                 "labels": {"foo": "string"},
@@ -727,7 +730,8 @@ class TestAsyncBulkWorkspaceResources:
                                         "max_tools": 0,
                                         "rerank_threshold": 0,
                                     },
-                                    "prompt": "prompt",
+                                    "system_prompt_template": "systemPromptTemplate",
+                                    "user_message_template": "userMessageTemplate",
                                     "weight": 0,
                                 },
                                 "assignments": [

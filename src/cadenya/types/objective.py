@@ -103,3 +103,6 @@ class Objective(BaseModel):
 
     state_message: Optional[str] = FieldInfo(alias="stateMessage", default=None)
     """Optional human-readable detail about the current state (e.g. a failure reason)."""
+
+    user_data: Optional[Dict[str, object]] = FieldInfo(alias="userData", default=None)
+    """Arbitrary data used to render the variation's user_message_template"""

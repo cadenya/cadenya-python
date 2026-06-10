@@ -27,10 +27,7 @@ class TestSchedules:
             agent_id="agentId",
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "initial_message": "initialMessage",
-                "schedule": {},
-            },
+            spec={"schedule": {}},
         )
         assert_matches_type(AgentSchedule, schedule, path=["response"])
 
@@ -47,7 +44,6 @@ class TestSchedules:
                 "labels": {"foo": "string"},
             },
             spec={
-                "initial_message": "initialMessage",
                 "schedule": {
                     "calendars": [
                         {
@@ -105,7 +101,9 @@ class TestSchedules:
                     "timezone": "timezone",
                 },
                 "data": {},
+                "initial_message": "initialMessage",
                 "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
+                "user_data": {},
                 "variation_id": "variationId",
             },
         )
@@ -118,10 +116,7 @@ class TestSchedules:
             agent_id="agentId",
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "initial_message": "initialMessage",
-                "schedule": {},
-            },
+            spec={"schedule": {}},
         )
 
         assert response.is_closed is True
@@ -136,10 +131,7 @@ class TestSchedules:
             agent_id="agentId",
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "initial_message": "initialMessage",
-                "schedule": {},
-            },
+            spec={"schedule": {}},
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -157,10 +149,7 @@ class TestSchedules:
                 agent_id="agentId",
                 workspace_id="",
                 metadata={"name": "name"},
-                spec={
-                    "initial_message": "initialMessage",
-                    "schedule": {},
-                },
+                spec={"schedule": {}},
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `agent_id` but received ''"):
@@ -168,10 +157,7 @@ class TestSchedules:
                 agent_id="",
                 workspace_id="workspaceId",
                 metadata={"name": "name"},
-                spec={
-                    "initial_message": "initialMessage",
-                    "schedule": {},
-                },
+                spec={"schedule": {}},
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -262,7 +248,6 @@ class TestSchedules:
                 "labels": {"foo": "string"},
             },
             spec={
-                "initial_message": "initialMessage",
                 "schedule": {
                     "calendars": [
                         {
@@ -320,7 +305,9 @@ class TestSchedules:
                     "timezone": "timezone",
                 },
                 "data": {},
+                "initial_message": "initialMessage",
                 "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
+                "user_data": {},
                 "variation_id": "variationId",
             },
             update_mask="updateMask",
@@ -718,10 +705,7 @@ class TestAsyncSchedules:
             agent_id="agentId",
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "initial_message": "initialMessage",
-                "schedule": {},
-            },
+            spec={"schedule": {}},
         )
         assert_matches_type(AgentSchedule, schedule, path=["response"])
 
@@ -738,7 +722,6 @@ class TestAsyncSchedules:
                 "labels": {"foo": "string"},
             },
             spec={
-                "initial_message": "initialMessage",
                 "schedule": {
                     "calendars": [
                         {
@@ -796,7 +779,9 @@ class TestAsyncSchedules:
                     "timezone": "timezone",
                 },
                 "data": {},
+                "initial_message": "initialMessage",
                 "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
+                "user_data": {},
                 "variation_id": "variationId",
             },
         )
@@ -809,10 +794,7 @@ class TestAsyncSchedules:
             agent_id="agentId",
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "initial_message": "initialMessage",
-                "schedule": {},
-            },
+            spec={"schedule": {}},
         )
 
         assert response.is_closed is True
@@ -827,10 +809,7 @@ class TestAsyncSchedules:
             agent_id="agentId",
             workspace_id="workspaceId",
             metadata={"name": "name"},
-            spec={
-                "initial_message": "initialMessage",
-                "schedule": {},
-            },
+            spec={"schedule": {}},
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -848,10 +827,7 @@ class TestAsyncSchedules:
                 agent_id="agentId",
                 workspace_id="",
                 metadata={"name": "name"},
-                spec={
-                    "initial_message": "initialMessage",
-                    "schedule": {},
-                },
+                spec={"schedule": {}},
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `agent_id` but received ''"):
@@ -859,10 +835,7 @@ class TestAsyncSchedules:
                 agent_id="",
                 workspace_id="workspaceId",
                 metadata={"name": "name"},
-                spec={
-                    "initial_message": "initialMessage",
-                    "schedule": {},
-                },
+                spec={"schedule": {}},
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -953,7 +926,6 @@ class TestAsyncSchedules:
                 "labels": {"foo": "string"},
             },
             spec={
-                "initial_message": "initialMessage",
                 "schedule": {
                     "calendars": [
                         {
@@ -1011,7 +983,9 @@ class TestAsyncSchedules:
                     "timezone": "timezone",
                 },
                 "data": {},
+                "initial_message": "initialMessage",
                 "overlap_policy": "OVERLAP_POLICY_UNSPECIFIED",
+                "user_data": {},
                 "variation_id": "variationId",
             },
             update_mask="updateMask",

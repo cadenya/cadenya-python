@@ -118,6 +118,7 @@ class ObjectivesResource(SyncAPIResource):
         memory_stack: Iterable[MemoryReferenceParam] | Omit = omit,
         metadata: CreateOperationMetadata | Omit = omit,
         secrets: Iterable[objective_create_params.Secret] | Omit = omit,
+        user_data: Dict[str, object] | Omit = omit,
         variation_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -133,9 +134,11 @@ class ObjectivesResource(SyncAPIResource):
           data: Arbitrary data for the objective. May be used in liquid templates for prompts
               configured on the agent variation
 
-          initial_message: Optional override for initial message sent to the agent. This becomes the first
-              user message in the LLM chat history. The agent variation is used to set this if
-              not present.
+          initial_message: Optional override for the initial message sent to the agent. This becomes the
+              first user message in the LLM chat history. When not set, the selected
+              variation's user_message_template is rendered with user_data instead. If neither
+              this field nor a user_message_template is present, the request is rejected with
+              InvalidArgument.
 
           memory_stack: Memory layers/entries to push onto this objective's memory stack on top of the
               baseline stack inherited from the selected variation.
@@ -160,6 +163,10 @@ class ObjectivesResource(SyncAPIResource):
           secrets: Secrets that can be used in the headers for tool calls using the secret
               interpolation format.
 
+          user_data: Arbitrary data rendered into the selected variation's user_message_template
+              (liquid) to produce the initial user message. Separate from `data`, which
+              renders the system prompt template.
+
           variation_id: Optional explicit variation selection. Overrides the agent's
               variation_selection_mode.
 
@@ -183,6 +190,7 @@ class ObjectivesResource(SyncAPIResource):
                     "memory_stack": memory_stack,
                     "metadata": metadata,
                     "secrets": secrets,
+                    "user_data": user_data,
                     "variation_id": variation_id,
                 },
                 objective_create_params.ObjectiveCreateParams,
@@ -651,6 +659,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         memory_stack: Iterable[MemoryReferenceParam] | Omit = omit,
         metadata: CreateOperationMetadata | Omit = omit,
         secrets: Iterable[objective_create_params.Secret] | Omit = omit,
+        user_data: Dict[str, object] | Omit = omit,
         variation_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -666,9 +675,11 @@ class AsyncObjectivesResource(AsyncAPIResource):
           data: Arbitrary data for the objective. May be used in liquid templates for prompts
               configured on the agent variation
 
-          initial_message: Optional override for initial message sent to the agent. This becomes the first
-              user message in the LLM chat history. The agent variation is used to set this if
-              not present.
+          initial_message: Optional override for the initial message sent to the agent. This becomes the
+              first user message in the LLM chat history. When not set, the selected
+              variation's user_message_template is rendered with user_data instead. If neither
+              this field nor a user_message_template is present, the request is rejected with
+              InvalidArgument.
 
           memory_stack: Memory layers/entries to push onto this objective's memory stack on top of the
               baseline stack inherited from the selected variation.
@@ -693,6 +704,10 @@ class AsyncObjectivesResource(AsyncAPIResource):
           secrets: Secrets that can be used in the headers for tool calls using the secret
               interpolation format.
 
+          user_data: Arbitrary data rendered into the selected variation's user_message_template
+              (liquid) to produce the initial user message. Separate from `data`, which
+              renders the system prompt template.
+
           variation_id: Optional explicit variation selection. Overrides the agent's
               variation_selection_mode.
 
@@ -716,6 +731,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
                     "memory_stack": memory_stack,
                     "metadata": metadata,
                     "secrets": secrets,
+                    "user_data": user_data,
                     "variation_id": variation_id,
                 },
                 objective_create_params.ObjectiveCreateParams,

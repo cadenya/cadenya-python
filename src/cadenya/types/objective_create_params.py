@@ -22,10 +22,12 @@ class ObjectiveCreateParams(TypedDict, total=False):
     """
 
     initial_message: Annotated[str, PropertyInfo(alias="initialMessage")]
-    """Optional override for initial message sent to the agent.
+    """Optional override for the initial message sent to the agent.
 
-    This becomes the first user message in the LLM chat history. The agent variation
-    is used to set this if not present.
+    This becomes the first user message in the LLM chat history. When not set, the
+    selected variation's user_message_template is rendered with user_data instead.
+    If neither this field nor a user_message_template is present, the request is
+    rejected with InvalidArgument.
     """
 
     memory_stack: Annotated[Iterable[MemoryReferenceParam], PropertyInfo(alias="memoryStack")]
@@ -58,6 +60,13 @@ class ObjectiveCreateParams(TypedDict, total=False):
     """
     Secrets that can be used in the headers for tool calls using the secret
     interpolation format.
+    """
+
+    user_data: Annotated[Dict[str, object], PropertyInfo(alias="userData")]
+    """
+    Arbitrary data rendered into the selected variation's user_message_template
+    (liquid) to produce the initial user message. Separate from `data`, which
+    renders the system prompt template.
     """
 
     variation_id: Annotated[str, PropertyInfo(alias="variationId")]
