@@ -26,9 +26,6 @@ class ObjectiveToolCallData(BaseModel):
     memo: Optional[str] = None
     """A memo supplied by the reviewer when denying the tool call"""
 
-    result: Optional[str] = None
-    """The result content returned by the tool after execution"""
-
     status_changed_by: Optional[Profile] = FieldInfo(alias="statusChangedBy", default=None)
     """
     A profile identifies a user or non-human principal (such as an API key) at the

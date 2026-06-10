@@ -20,6 +20,7 @@ from ...pagination import SyncCursorPagination, AsyncCursorPagination
 from ..._base_client import AsyncPaginator, make_request_options
 from ...types.objectives import tool_call_deny_params, tool_call_list_params
 from ...types.objectives.objective_tool_call import ObjectiveToolCall
+from ...types.objectives.objective_tool_call_with_result import ObjectiveToolCallWithResult
 
 __all__ = ["ToolCallsResource", "AsyncToolCallsResource"]
 
@@ -43,6 +44,52 @@ class ToolCallsResource(SyncAPIResource):
         For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return ToolCallsResourceWithStreamingResponse(self)
+
+    def retrieve(
+        self,
+        tool_call_id: str,
+        *,
+        workspace_id: str,
+        objective_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ObjectiveToolCallWithResult:
+        """Retrieves a single tool call, including the content the tool returned.
+
+        Media
+        content (images, audio) is served as short-lived signed URLs.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        if not tool_call_id:
+            raise ValueError(f"Expected a non-empty value for `tool_call_id` but received {tool_call_id!r}")
+        return self._get(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/tool_calls/{tool_call_id}",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+                tool_call_id=tool_call_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveToolCallWithResult,
+        )
 
     def list(
         self,
@@ -233,6 +280,52 @@ class AsyncToolCallsResource(AsyncAPIResource):
         """
         return AsyncToolCallsResourceWithStreamingResponse(self)
 
+    async def retrieve(
+        self,
+        tool_call_id: str,
+        *,
+        workspace_id: str,
+        objective_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ObjectiveToolCallWithResult:
+        """Retrieves a single tool call, including the content the tool returned.
+
+        Media
+        content (images, audio) is served as short-lived signed URLs.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        if not tool_call_id:
+            raise ValueError(f"Expected a non-empty value for `tool_call_id` but received {tool_call_id!r}")
+        return await self._get(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/tool_calls/{tool_call_id}",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+                tool_call_id=tool_call_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveToolCallWithResult,
+        )
+
     def list(
         self,
         objective_id: str,
@@ -406,6 +499,9 @@ class ToolCallsResourceWithRawResponse:
     def __init__(self, tool_calls: ToolCallsResource) -> None:
         self._tool_calls = tool_calls
 
+        self.retrieve = to_raw_response_wrapper(
+            tool_calls.retrieve,
+        )
         self.list = to_raw_response_wrapper(
             tool_calls.list,
         )
@@ -421,6 +517,9 @@ class AsyncToolCallsResourceWithRawResponse:
     def __init__(self, tool_calls: AsyncToolCallsResource) -> None:
         self._tool_calls = tool_calls
 
+        self.retrieve = async_to_raw_response_wrapper(
+            tool_calls.retrieve,
+        )
         self.list = async_to_raw_response_wrapper(
             tool_calls.list,
         )
@@ -436,6 +535,9 @@ class ToolCallsResourceWithStreamingResponse:
     def __init__(self, tool_calls: ToolCallsResource) -> None:
         self._tool_calls = tool_calls
 
+        self.retrieve = to_streamed_response_wrapper(
+            tool_calls.retrieve,
+        )
         self.list = to_streamed_response_wrapper(
             tool_calls.list,
         )
@@ -451,6 +553,9 @@ class AsyncToolCallsResourceWithStreamingResponse:
     def __init__(self, tool_calls: AsyncToolCallsResource) -> None:
         self._tool_calls = tool_calls
 
+        self.retrieve = async_to_streamed_response_wrapper(
+            tool_calls.retrieve,
+        )
         self.list = async_to_streamed_response_wrapper(
             tool_calls.list,
         )
