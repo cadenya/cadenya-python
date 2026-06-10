@@ -17,4 +17,16 @@ from .objective_feedback_data import ObjectiveFeedbackData as ObjectiveFeedbackD
 from .objective_feedback_info import ObjectiveFeedbackInfo as ObjectiveFeedbackInfo
 from .objective_tool_call_data import ObjectiveToolCallData as ObjectiveToolCallData
 from .objective_tool_call_info import ObjectiveToolCallInfo as ObjectiveToolCallInfo
+from .objective_tool_call_result import ObjectiveToolCallResult as ObjectiveToolCallResult
 from .objective_feedback_data_param import ObjectiveFeedbackDataParam as ObjectiveFeedbackDataParam
+from .objective_tool_call_with_result import ObjectiveToolCallWithResult as ObjectiveToolCallWithResult
+from .objective_tool_call_result_text_block import ObjectiveToolCallResultTextBlock as ObjectiveToolCallResultTextBlock
+from .objective_tool_call_result_audio_block import (
+    ObjectiveToolCallResultAudioBlock as ObjectiveToolCallResultAudioBlock,
+)
+from .objective_tool_call_result_image_block import (
+    ObjectiveToolCallResultImageBlock as ObjectiveToolCallResultImageBlock,
+)
+from .objective_tool_call_result_content_block import (
+    ObjectiveToolCallResultContentBlock as ObjectiveToolCallResultContentBlock,
+)

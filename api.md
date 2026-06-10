@@ -211,11 +211,22 @@ Methods:
 Types:
 
 ```python
-from cadenya.types.objectives import ObjectiveToolCall, ObjectiveToolCallData, ObjectiveToolCallInfo
+from cadenya.types.objectives import (
+    ObjectiveToolCall,
+    ObjectiveToolCallData,
+    ObjectiveToolCallInfo,
+    ObjectiveToolCallResult,
+    ObjectiveToolCallResultAudioBlock,
+    ObjectiveToolCallResultContentBlock,
+    ObjectiveToolCallResultImageBlock,
+    ObjectiveToolCallResultTextBlock,
+    ObjectiveToolCallWithResult,
+)
 ```
 
 Methods:
 
+- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls/{toolCallId}">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">retrieve</a>(tool_call_id, \*, workspace_id, objective_id) -> <a href="./src/cadenya/types/objectives/objective_tool_call_with_result.py">ObjectiveToolCallWithResult</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">list</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objectives/tool_call_list_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_tool_call.py">SyncCursorPagination[ObjectiveToolCall]</a></code>
 - <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls/{toolCallId}:approve">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">approve</a>(tool_call_id, \*, workspace_id, objective_id) -> <a href="./src/cadenya/types/objectives/objective_tool_call.py">ObjectiveToolCall</a></code>
 - <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls/{toolCallId}:deny">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">deny</a>(tool_call_id, \*, workspace_id, objective_id, \*\*<a href="src/cadenya/types/objectives/tool_call_deny_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_tool_call.py">ObjectiveToolCall</a></code>
