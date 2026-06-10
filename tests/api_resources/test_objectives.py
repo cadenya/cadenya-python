@@ -58,6 +58,7 @@ class TestObjectives:
                     "value": "value",
                 }
             ],
+            user_data={"foo": "bar"},
             variation_id="variationId",
         )
         assert_matches_type(Objective, objective, path=["response"])
@@ -581,6 +582,7 @@ class TestAsyncObjectives:
                     "value": "value",
                 }
             ],
+            user_data={"foo": "bar"},
             variation_id="variationId",
         )
         assert_matches_type(Objective, objective, path=["response"])
