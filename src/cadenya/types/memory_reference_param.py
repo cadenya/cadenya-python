@@ -12,7 +12,7 @@ __all__ = ["MemoryReferenceParam"]
 class MemoryReferenceParam(TypedDict, total=False):
     """
     MemoryReference identifies a memory layer or a specific entry within
-     one, for composition into a memory stack. Used on objectives (where
+     one, for composition into a memory cascade. Used on objectives (where
      entry pinning is permitted).
 
      memory_layer_id accepts both the canonical form (memlyr_…) and the
@@ -22,9 +22,10 @@ class MemoryReferenceParam(TypedDict, total=False):
 
     memory_entry_id: Annotated[str, PropertyInfo(alias="memoryEntryId")]
     """
-    When set, pushes only this entry from memory_layer_id onto the stack — behaves
-    as a single-entry layer (only this key resolves at this position). The entry
-    must belong to memory_layer_id; mismatches are rejected with InvalidArgument.
+    When set, inserts only this entry from memory_layer_id into the cascade —
+    behaves as a single-entry layer (only this key resolves at this position). The
+    entry must belong to memory_layer_id; mismatches are rejected with
+    InvalidArgument.
     """
 
     memory_layer_id: Annotated[str, PropertyInfo(alias="memoryLayerId")]

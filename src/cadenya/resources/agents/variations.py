@@ -409,13 +409,14 @@ class VariationsResource(SyncAPIResource):
     ) -> VariationMemoryLayerAssignment:
         """
         Attaches a memory layer to a variation at a given position in the variation's
-        baseline memory stack.
+        baseline memory cascade.
 
         Args:
           memory_layer_id: Layer to attach. Accepts the canonical `memlyr_…` form or the
               `external_id:<value>` form.
 
-          position: Position in the stack. If omitted, server appends (max existing position + 1).
+          position: Position in the baseline cascade (lower = more specific). If omitted, the server
+              appends at the most general end (max existing position + 1).
 
           extra_headers: Send extra headers
 
@@ -981,13 +982,14 @@ class AsyncVariationsResource(AsyncAPIResource):
     ) -> VariationMemoryLayerAssignment:
         """
         Attaches a memory layer to a variation at a given position in the variation's
-        baseline memory stack.
+        baseline memory cascade.
 
         Args:
           memory_layer_id: Layer to attach. Accepts the canonical `memlyr_…` form or the
               `external_id:<value>` form.
 
-          position: Position in the stack. If omitted, server appends (max existing position + 1).
+          position: Position in the baseline cascade (lower = more specific). If omitted, the server
+              appends at the most general end (max existing position + 1).
 
           extra_headers: Send extra headers
 

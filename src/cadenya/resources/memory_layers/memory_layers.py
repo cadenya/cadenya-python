@@ -43,7 +43,7 @@ class MemoryLayersResource(SyncAPIResource):
     """Manage memory layers and their entries.
 
     Layers are named containers that can
-     be composed into an objective's memory stack; entries are the keyed values
+     be composed into an objective's memory cascade; entries are the keyed values
      within a layer. System-managed layers (e.g., episodic layers created by the
      runtime) cannot be mutated through this API.
     """
@@ -53,7 +53,7 @@ class MemoryLayersResource(SyncAPIResource):
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -338,7 +338,7 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
     """Manage memory layers and their entries.
 
     Layers are named containers that can
-     be composed into an objective's memory stack; entries are the keyed values
+     be composed into an objective's memory cascade; entries are the keyed values
      within a layer. System-managed layers (e.g., episodic layers created by the
      runtime) cannot be mutated through this API.
     """
@@ -348,7 +348,7 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -654,7 +654,7 @@ class MemoryLayersResourceWithRawResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -686,7 +686,7 @@ class AsyncMemoryLayersResourceWithRawResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -718,7 +718,7 @@ class MemoryLayersResourceWithStreamingResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -750,7 +750,7 @@ class AsyncMemoryLayersResourceWithStreamingResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """

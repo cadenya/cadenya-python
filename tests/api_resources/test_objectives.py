@@ -43,7 +43,7 @@ class TestObjectives:
             data={"foo": "bar"},
             episodic_memory={"key": "key"},
             initial_message="initialMessage",
-            memory_stack=[
+            memory_cascade=[
                 {
                     "memory_entry_id": "memoryEntryId",
                     "memory_layer_id": "memoryLayerId",
@@ -568,7 +568,7 @@ class TestAsyncObjectives:
             data={"foo": "bar"},
             episodic_memory={"key": "key"},
             initial_message="initialMessage",
-            memory_stack=[
+            memory_cascade=[
                 {
                     "memory_entry_id": "memoryEntryId",
                     "memory_layer_id": "memoryLayerId",

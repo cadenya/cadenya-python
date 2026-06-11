@@ -41,12 +41,14 @@ class ObjectiveInfo(BaseModel):
     window.
     """
 
-    effective_memory_stack: List[MemoryReference] = FieldInfo(alias="effectiveMemoryStack")
+    effective_memory_cascade: List[MemoryReference] = FieldInfo(alias="effectiveMemoryCascade")
     """
-    The effective memory stack at objective creation time, flattened from the
-    variation's baseline plus Objective.memory_stack. Order is push order (last =
-    top). Returned on reads so clients can see exactly what stack the objective is
-    using without having to re-join variation state.
+    The effective memory cascade at objective creation time: the episodic layer
+    (when present), then Objective.memory_cascade, then the variation's baseline
+    layers by ascending position. Order is resolution order — index 0 is the most
+    specific and is consulted first; the first layer containing a key wins. Returned
+    on reads so clients can see exactly what the objective resolves against without
+    re-joining variation state.
     """
 
     total_context_windows: int = FieldInfo(alias="totalContextWindows")

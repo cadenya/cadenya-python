@@ -14,7 +14,7 @@ class VariationMemoryLayerAssignment(BaseModel):
     """
     VariationMemoryLayerAssignment attaches a single MemoryLayer to a
      variation at a given position in the variation's baseline memory
-     stack. A variation has at most one assignment per memory_layer_id.
+     cascade. A variation has at most one assignment per memory_layer_id.
 
      Variations only support whole-layer attachments — entry pinning is an
      objective-level capability.
@@ -37,10 +37,11 @@ class VariationMemoryLayerAssignment(BaseModel):
     """
 
     position: Optional[int] = None
-    """Position in the variation's baseline stack.
+    """Position in the variation's baseline cascade.
 
-    Lower values sit lower; the highest-position assignment is on top of the
-    variation's baseline. Gaps are fine — only relative position matters. Positions
-    must be unique within a variation; a request that would collide with an existing
-    assignment's position is rejected with InvalidArgument.
+    Position is specificity, CSS-style: a LOWER position is more specific and is
+    consulted first; the highest-position assignment is the most general fallback.
+    Gaps are fine — only relative position matters. Positions must be unique within
+    a variation; a request that would collide with an existing assignment's position
+    is rejected with InvalidArgument.
     """
