@@ -215,8 +215,10 @@ class MemoryLayersResource(SyncAPIResource):
         self,
         workspace_id: str,
         *,
+        agent_id: str | Omit = omit,
         bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
+        episodic_key_prefix: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
@@ -235,9 +237,15 @@ class MemoryLayersResource(SyncAPIResource):
         Lists all memory layers in the workspace
 
         Args:
+          agent_id: Filter to episodic layers belonging to this agent.
+
           bundle_key: Filter by bundle_key — return only resources owned by this bundle.
 
           cursor: Pagination cursor from previous response
+
+          episodic_key_prefix: Filter to episodic layers whose episodic key starts with this prefix (e.g.
+              "customer/" matches "customer/42" and "customer/43"). Useful for namespaced
+              keys, similar to a redis key scan.
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
@@ -271,8 +279,10 @@ class MemoryLayersResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
+                        "agent_id": agent_id,
                         "bundle_key": bundle_key,
                         "cursor": cursor,
+                        "episodic_key_prefix": episodic_key_prefix,
                         "include_info": include_info,
                         "limit": limit,
                         "prefix": prefix,
@@ -500,8 +510,10 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
         self,
         workspace_id: str,
         *,
+        agent_id: str | Omit = omit,
         bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
+        episodic_key_prefix: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
@@ -520,9 +532,15 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
         Lists all memory layers in the workspace
 
         Args:
+          agent_id: Filter to episodic layers belonging to this agent.
+
           bundle_key: Filter by bundle_key — return only resources owned by this bundle.
 
           cursor: Pagination cursor from previous response
+
+          episodic_key_prefix: Filter to episodic layers whose episodic key starts with this prefix (e.g.
+              "customer/" matches "customer/42" and "customer/43"). Useful for namespaced
+              keys, similar to a redis key scan.
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
@@ -556,8 +574,10 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
+                        "agent_id": agent_id,
                         "bundle_key": bundle_key,
                         "cursor": cursor,
+                        "episodic_key_prefix": episodic_key_prefix,
                         "include_info": include_info,
                         "limit": limit,
                         "prefix": prefix,

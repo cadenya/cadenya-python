@@ -31,6 +31,22 @@ class AgentSpecParam(TypedDict, total=False):
     description: str
     """Description of the agent's purpose"""
 
+    enable_episodic_memory: Annotated[bool, PropertyInfo(alias="enableEpisodicMemory")]
+    """
+    Enable episodic memory for objectives created for this agent. When true,
+    objective creation requires an episodic_memory key and the system finds or
+    creates a memory layer for that (agent, key) pair, letting the agent store and
+    retrieve memories across objectives that share the key. Memory is agent-level so
+    all variations of the agent share the same layers.
+    """
+
+    episodic_memory_ttl: Annotated[int, PropertyInfo(alias="episodicMemoryTtl")]
+    """
+    How long episodic memories should be retained. Each new objective slides the
+    layer's expiry forward by this duration, and stored entries expire this long
+    after they are written. If not set, episodic memories are retained indefinitely.
+    """
+
     input_data_schema: Annotated[Dict[str, object], PropertyInfo(alias="inputDataSchema")]
     """InputDataSchema is used for enforcing a data input when objectives are created.
 

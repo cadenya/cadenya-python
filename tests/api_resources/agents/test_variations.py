@@ -56,8 +56,6 @@ class TestVariations:
                     "max_tool_calls": 0,
                 },
                 "description": "description",
-                "enable_episodic_memory": True,
-                "episodic_memory_ttl": 0,
                 "model_config": {
                     "model_id": "modelId",
                     "temperature": 0,
@@ -223,8 +221,6 @@ class TestVariations:
                     "max_tool_calls": 0,
                 },
                 "description": "description",
-                "enable_episodic_memory": True,
-                "episodic_memory_ttl": 0,
                 "model_config": {
                     "model_id": "modelId",
                     "temperature": 0,
@@ -865,8 +861,6 @@ class TestAsyncVariations:
                     "max_tool_calls": 0,
                 },
                 "description": "description",
-                "enable_episodic_memory": True,
-                "episodic_memory_ttl": 0,
                 "model_config": {
                     "model_id": "modelId",
                     "temperature": 0,
@@ -1032,8 +1026,6 @@ class TestAsyncVariations:
                     "max_tool_calls": 0,
                 },
                 "description": "description",
-                "enable_episodic_memory": True,
-                "episodic_memory_ttl": 0,
                 "model_config": {
                     "model_id": "modelId",
                     "temperature": 0,

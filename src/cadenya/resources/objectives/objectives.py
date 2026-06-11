@@ -114,6 +114,7 @@ class ObjectivesResource(SyncAPIResource):
         *,
         agent_id: str,
         data: Dict[str, object],
+        episodic_memory: objective_create_params.EpisodicMemory | Omit = omit,
         initial_message: str | Omit = omit,
         memory_stack: Iterable[MemoryReferenceParam] | Omit = omit,
         metadata: CreateOperationMetadata | Omit = omit,
@@ -133,6 +134,8 @@ class ObjectivesResource(SyncAPIResource):
         Args:
           data: Arbitrary data for the objective. May be used in liquid templates for prompts
               configured on the agent variation
+
+          episodic_memory: Episodic is used to configure the episodic memory for the objective
 
           initial_message: Optional override for the initial message sent to the agent. This becomes the
               first user message in the LLM chat history. When not set, the selected
@@ -186,6 +189,7 @@ class ObjectivesResource(SyncAPIResource):
                 {
                     "agent_id": agent_id,
                     "data": data,
+                    "episodic_memory": episodic_memory,
                     "initial_message": initial_message,
                     "memory_stack": memory_stack,
                     "metadata": metadata,
@@ -655,6 +659,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         *,
         agent_id: str,
         data: Dict[str, object],
+        episodic_memory: objective_create_params.EpisodicMemory | Omit = omit,
         initial_message: str | Omit = omit,
         memory_stack: Iterable[MemoryReferenceParam] | Omit = omit,
         metadata: CreateOperationMetadata | Omit = omit,
@@ -674,6 +679,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
         Args:
           data: Arbitrary data for the objective. May be used in liquid templates for prompts
               configured on the agent variation
+
+          episodic_memory: Episodic is used to configure the episodic memory for the objective
 
           initial_message: Optional override for the initial message sent to the agent. This becomes the
               first user message in the LLM chat history. When not set, the selected
@@ -727,6 +734,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
                 {
                     "agent_id": agent_id,
                     "data": data,
+                    "episodic_memory": episodic_memory,
                     "initial_message": initial_message,
                     "memory_stack": memory_stack,
                     "metadata": metadata,

@@ -225,8 +225,10 @@ class TestMemoryLayers:
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         memory_layer = client.memory_layers.list(
             workspace_id="workspaceId",
+            agent_id="agentId",
             bundle_key="bundleKey",
             cursor="cursor",
+            episodic_key_prefix="episodicKeyPrefix",
             include_info=True,
             limit=0,
             prefix="prefix",
@@ -533,8 +535,10 @@ class TestAsyncMemoryLayers:
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         memory_layer = await async_client.memory_layers.list(
             workspace_id="workspaceId",
+            agent_id="agentId",
             bundle_key="bundleKey",
             cursor="cursor",
+            episodic_key_prefix="episodicKeyPrefix",
             include_info=True,
             limit=0,
             prefix="prefix",
