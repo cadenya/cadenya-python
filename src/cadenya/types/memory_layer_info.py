@@ -7,11 +7,17 @@ from pydantic import Field as FieldInfo
 
 from .profile import Profile
 from .._models import BaseModel
+from .shared.resource_metadata import ResourceMetadata
 
 __all__ = ["MemoryLayerInfo"]
 
 
 class MemoryLayerInfo(BaseModel):
+    agent: Optional[ResourceMetadata] = None
+    """
+    Standard metadata for persistent, named resources (e.g., agents, tools, prompts)
+    """
+
     created_by: Optional[Profile] = FieldInfo(alias="createdBy", default=None)
     """
     A profile identifies a user or non-human principal (such as an API key) at the
