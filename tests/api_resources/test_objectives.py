@@ -41,6 +41,7 @@ class TestObjectives:
             workspace_id="workspaceId",
             agent_id="agentId",
             data={"foo": "bar"},
+            episodic_memory={"key": "key"},
             initial_message="initialMessage",
             memory_stack=[
                 {
@@ -565,6 +566,7 @@ class TestAsyncObjectives:
             workspace_id="workspaceId",
             agent_id="agentId",
             data={"foo": "bar"},
+            episodic_memory={"key": "key"},
             initial_message="initialMessage",
             memory_stack=[
                 {

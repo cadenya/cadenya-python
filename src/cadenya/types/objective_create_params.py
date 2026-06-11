@@ -9,7 +9,7 @@ from .._utils import PropertyInfo
 from .memory_reference_param import MemoryReferenceParam
 from .shared_params.create_operation_metadata import CreateOperationMetadata
 
-__all__ = ["ObjectiveCreateParams", "Secret"]
+__all__ = ["ObjectiveCreateParams", "EpisodicMemory", "Secret"]
 
 
 class ObjectiveCreateParams(TypedDict, total=False):
@@ -20,6 +20,9 @@ class ObjectiveCreateParams(TypedDict, total=False):
 
     May be used in liquid templates for prompts configured on the agent variation
     """
+
+    episodic_memory: Annotated[EpisodicMemory, PropertyInfo(alias="episodicMemory")]
+    """Episodic is used to configure the episodic memory for the objective"""
 
     initial_message: Annotated[str, PropertyInfo(alias="initialMessage")]
     """Optional override for the initial message sent to the agent.
@@ -73,6 +76,17 @@ class ObjectiveCreateParams(TypedDict, total=False):
     """Optional explicit variation selection.
 
     Overrides the agent's variation_selection_mode.
+    """
+
+
+class EpisodicMemory(TypedDict, total=False):
+    """Episodic is used to configure the episodic memory for the objective"""
+
+    key: str
+    """The caller-supplied episodic key.
+
+    Objectives created with the same key (for the same agent) share one episodic
+    memory layer.
     """
 
 

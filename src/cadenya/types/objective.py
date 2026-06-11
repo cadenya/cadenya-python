@@ -12,7 +12,24 @@ from .objective_secret import ObjectiveSecret
 from .objective_config_snapshot import ObjectiveConfigSnapshot
 from .shared.operation_metadata import OperationMetadata
 
-__all__ = ["Objective"]
+__all__ = ["Objective", "EpisodicMemory"]
+
+
+class EpisodicMemory(BaseModel):
+    """Episodic is used to configure the episodic memory for the objective"""
+
+    key: Optional[str] = None
+    """The caller-supplied episodic key.
+
+    Objectives created with the same key (for the same agent) share one episodic
+    memory layer.
+    """
+
+    memory_layer_id: Optional[str] = FieldInfo(alias="memoryLayerId", default=None)
+    """The episodic memory layer resolved (created or reused) for this objective's key.
+
+    Populated by the system at objective creation.
+    """
 
 
 class Objective(BaseModel):
@@ -56,6 +73,9 @@ class Objective(BaseModel):
 
     data: Optional[Dict[str, object]] = None
     """Arbitrary data for the objective"""
+
+    episodic_memory: Optional[EpisodicMemory] = FieldInfo(alias="episodicMemory", default=None)
+    """Episodic is used to configure the episodic memory for the objective"""
 
     info: Optional[ObjectiveInfo] = None
     """

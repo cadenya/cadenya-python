@@ -30,21 +30,6 @@ class AgentVariationSpec(BaseModel):
     Human-readable description of what this variation does or when it should be used
     """
 
-    enable_episodic_memory: Optional[bool] = FieldInfo(alias="enableEpisodicMemory", default=None)
-    """
-    Enable episodic memory for objectives using this variation. When true, the
-    system automatically creates a document namespace for each objective using the
-    objective's episodic_key as the external_id, allowing the agent to store and
-    retrieve documents specific to that episode.
-    """
-
-    episodic_memory_ttl: Optional[int] = FieldInfo(alias="episodicMemoryTtl", default=None)
-    """
-    How long episodic memories should be retained. After this duration, episodic
-    document namespaces can be automatically cleaned up. If not set, episodic
-    memories are retained indefinitely.
-    """
-
     api_model_config: Optional[AgentVariationSpecModelConfig] = FieldInfo(alias="modelConfig", default=None)
     """ModelConfig defines the model configuration for a variation"""
 

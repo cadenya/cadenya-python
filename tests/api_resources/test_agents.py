@@ -42,6 +42,8 @@ class TestAgents:
             spec={
                 "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
                 "description": "description",
+                "enable_episodic_memory": True,
+                "episodic_memory_ttl": 0,
                 "input_data_schema": {"foo": "bar"},
                 "output_definition": {"foo": "bar"},
                 "webhook_events_url": "webhookEventsUrl",
@@ -64,8 +66,6 @@ class TestAgents:
                         "max_tool_calls": 0,
                     },
                     "description": "description",
-                    "enable_episodic_memory": True,
-                    "episodic_memory_ttl": 0,
                     "model_config": {
                         "model_id": "modelId",
                         "temperature": 0,
@@ -199,6 +199,8 @@ class TestAgents:
             spec={
                 "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
                 "description": "description",
+                "enable_episodic_memory": True,
+                "episodic_memory_ttl": 0,
                 "input_data_schema": {"foo": "bar"},
                 "output_definition": {"foo": "bar"},
                 "webhook_events_url": "webhookEventsUrl",
@@ -599,6 +601,8 @@ class TestAsyncAgents:
             spec={
                 "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
                 "description": "description",
+                "enable_episodic_memory": True,
+                "episodic_memory_ttl": 0,
                 "input_data_schema": {"foo": "bar"},
                 "output_definition": {"foo": "bar"},
                 "webhook_events_url": "webhookEventsUrl",
@@ -621,8 +625,6 @@ class TestAsyncAgents:
                         "max_tool_calls": 0,
                     },
                     "description": "description",
-                    "enable_episodic_memory": True,
-                    "episodic_memory_ttl": 0,
                     "model_config": {
                         "model_id": "modelId",
                         "temperature": 0,
@@ -756,6 +758,8 @@ class TestAsyncAgents:
             spec={
                 "variation_selection_mode": "VARIATION_SELECTION_MODE_UNSPECIFIED",
                 "description": "description",
+                "enable_episodic_memory": True,
+                "episodic_memory_ttl": 0,
                 "input_data_schema": {"foo": "bar"},
                 "output_definition": {"foo": "bar"},
                 "webhook_events_url": "webhookEventsUrl",
