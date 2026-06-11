@@ -21,4 +21,8 @@ class VariationAddMemoryLayerParams(TypedDict, total=False):
     """
 
     position: int
-    """Position in the stack. If omitted, server appends (max existing position + 1)."""
+    """Position in the baseline cascade (lower = more specific).
+
+    If omitted, the server appends at the most general end (max existing position +
+    1).
+    """

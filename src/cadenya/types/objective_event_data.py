@@ -79,8 +79,8 @@ class ObjectiveEventData(BaseModel):
     memory_read: Optional[MemoryRead] = FieldInfo(alias="memoryRead", default=None)
     """
     MemoryRead is emitted each time the agent resolves a key against the memory
-    stack and loads an entry. Lookups that miss (key not found in any layer) do not
-    emit this event.
+    cascade and loads an entry. Lookups that miss (key not found in any layer) do
+    not emit this event.
     """
 
     sub_agent_spawned: Optional[SubAgentSpawned] = FieldInfo(alias="subAgentSpawned", default=None)

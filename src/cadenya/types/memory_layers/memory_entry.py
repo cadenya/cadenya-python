@@ -17,7 +17,8 @@ class MemoryEntry(BaseModel):
      addressed by their key, which follows the S3 object key safe-character
      convention (see MemoryEntrySpec.key for the full rule). Keys are unique
      within a single layer; the same key may appear in multiple layers, in which
-     case the LIFO stack-walk determines which one wins for a given objective.
+     case the cascade walk determines which one wins for a given objective (most
+     specific layer first).
 
      MemoryEntry is the summary shape, returned by ListMemoryEntries. It does
      not carry the entry body — callers that need the body must fetch the entry

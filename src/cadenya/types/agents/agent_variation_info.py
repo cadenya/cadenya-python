@@ -38,7 +38,8 @@ class AgentVariationInfo(BaseModel):
     )
     """
     Read-only list of memory layer assignments for this variation, returned in
-    ascending `position` (bottom → top). Capped at 10 entries.
+    ascending `position` (most specific first — resolution order). Capped at 10
+    entries.
     """
 
     memory_layer_count: Optional[int] = FieldInfo(alias="memoryLayerCount", default=None)
