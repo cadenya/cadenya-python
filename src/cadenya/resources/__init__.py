@@ -48,6 +48,14 @@ from .api_keys import (
     APIKeysResourceWithStreamingResponse,
     AsyncAPIKeysResourceWithStreamingResponse,
 )
+from .profiles import (
+    ProfilesResource,
+    AsyncProfilesResource,
+    ProfilesResourceWithRawResponse,
+    AsyncProfilesResourceWithRawResponse,
+    ProfilesResourceWithStreamingResponse,
+    AsyncProfilesResourceWithStreamingResponse,
+)
 from .webhooks import WebhooksResource, AsyncWebhooksResource
 from .tool_sets import (
     ToolSetsResource,
@@ -127,6 +135,12 @@ __all__ = [
     "AsyncAccountResourceWithRawResponse",
     "AccountResourceWithStreamingResponse",
     "AsyncAccountResourceWithStreamingResponse",
+    "ProfilesResource",
+    "AsyncProfilesResource",
+    "ProfilesResourceWithRawResponse",
+    "AsyncProfilesResourceWithRawResponse",
+    "ProfilesResourceWithStreamingResponse",
+    "AsyncProfilesResourceWithStreamingResponse",
     "AgentsResource",
     "AsyncAgentsResource",
     "AgentsResourceWithRawResponse",
