@@ -25,6 +25,13 @@ class AIProviderKeyListParams(TypedDict, total=False):
     prefix: str
     """Filter expression (query param: prefix)"""
 
+    promotional: bool
+    """When true, return only promotional keys (provided by Cadenya, e.g.
+
+    for onboarding). Defaults to returning all keys, customer-provided and
+    promotional alike.
+    """
+
     query: str
     """Free-form search query"""
 

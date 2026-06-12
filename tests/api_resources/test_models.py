@@ -87,6 +87,7 @@ class TestModels:
             bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
+            is_assigned=True,
             limit=0,
             prefix="prefix",
             query="query",
@@ -249,6 +250,7 @@ class TestModels:
             model_swaps=[
                 {
                     "current_model_id": "currentModelId",
+                    "disable_current_after_swap": True,
                     "next_model_id": "nextModelId",
                 }
             ],
@@ -364,6 +366,7 @@ class TestAsyncModels:
             bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
+            is_assigned=True,
             limit=0,
             prefix="prefix",
             query="query",
@@ -526,6 +529,7 @@ class TestAsyncModels:
             model_swaps=[
                 {
                     "current_model_id": "currentModelId",
+                    "disable_current_after_swap": True,
                     "next_model_id": "nextModelId",
                 }
             ],

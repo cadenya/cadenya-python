@@ -192,6 +192,7 @@ class AIProviderKeysResource(SyncAPIResource):
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
+        promotional: bool | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -213,6 +214,10 @@ class AIProviderKeysResource(SyncAPIResource):
           limit: Maximum number of results to return
 
           prefix: Filter expression (query param: prefix)
+
+          promotional: When true, return only promotional keys (provided by Cadenya, e.g. for
+              onboarding). Defaults to returning all keys, customer-provided and promotional
+              alike.
 
           query: Free-form search query
 
@@ -242,6 +247,7 @@ class AIProviderKeysResource(SyncAPIResource):
                         "include_info": include_info,
                         "limit": limit,
                         "prefix": prefix,
+                        "promotional": promotional,
                         "query": query,
                         "sort_order": sort_order,
                     },
@@ -452,6 +458,7 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
+        promotional: bool | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -473,6 +480,10 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
           limit: Maximum number of results to return
 
           prefix: Filter expression (query param: prefix)
+
+          promotional: When true, return only promotional keys (provided by Cadenya, e.g. for
+              onboarding). Defaults to returning all keys, customer-provided and promotional
+              alike.
 
           query: Free-form search query
 
@@ -502,6 +513,7 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
                         "include_info": include_info,
                         "limit": limit,
                         "prefix": prefix,
+                        "promotional": promotional,
                         "query": query,
                         "sort_order": sort_order,
                     },

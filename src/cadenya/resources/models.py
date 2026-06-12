@@ -96,6 +96,7 @@ class ModelsResource(SyncAPIResource):
         bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        is_assigned: bool | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -121,6 +122,10 @@ class ModelsResource(SyncAPIResource):
 
           include_info: When true, populate each item's info (e.g. the AI provider), at the cost of
               extra lookups.
+
+          is_assigned: Filter models to only ones assigned to an active agent variation/agent. Draft
+              agents count as assigned; archived agents do not. Assignment does not imply
+              recent traffic — see ModelInfo.last_used_at for that.
 
           limit: Maximum number of results to return
 
@@ -156,6 +161,7 @@ class ModelsResource(SyncAPIResource):
                         "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "is_assigned": is_assigned,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
@@ -354,6 +360,7 @@ class AsyncModelsResource(AsyncAPIResource):
         bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        is_assigned: bool | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -379,6 +386,10 @@ class AsyncModelsResource(AsyncAPIResource):
 
           include_info: When true, populate each item's info (e.g. the AI provider), at the cost of
               extra lookups.
+
+          is_assigned: Filter models to only ones assigned to an active agent variation/agent. Draft
+              agents count as assigned; archived agents do not. Assignment does not imply
+              recent traffic — see ModelInfo.last_used_at for that.
 
           limit: Maximum number of results to return
 
@@ -414,6 +425,7 @@ class AsyncModelsResource(AsyncAPIResource):
                         "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "is_assigned": is_assigned,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
