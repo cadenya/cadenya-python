@@ -231,6 +231,7 @@ class TestAIProviderKeys:
             include_info=True,
             limit=0,
             prefix="prefix",
+            promotional=True,
             query="query",
             sort_order="sortOrder",
         )
@@ -539,6 +540,7 @@ class TestAsyncAIProviderKeys:
             include_info=True,
             limit=0,
             prefix="prefix",
+            promotional=True,
             query="query",
             sort_order="sortOrder",
         )

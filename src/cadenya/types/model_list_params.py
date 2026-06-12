@@ -28,6 +28,13 @@ class ModelListParams(TypedDict, total=False):
     the AI provider), at the cost of extra lookups.
     """
 
+    is_assigned: Annotated[bool, PropertyInfo(alias="isAssigned")]
+    """
+    Filter models to only ones assigned to an active agent variation/agent. Draft
+    agents count as assigned; archived agents do not. Assignment does not imply
+    recent traffic — see ModelInfo.last_used_at for that.
+    """
+
     limit: int
     """Maximum number of results to return"""
 
