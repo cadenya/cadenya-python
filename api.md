@@ -48,6 +48,12 @@ Methods:
 - <code title="get /v1/account">client.account.<a href="./src/cadenya/resources/account.py">retrieve</a>() -> <a href="./src/cadenya/types/account.py">Account</a></code>
 - <code title="post /v1/account:rotateWebhookSigningKey">client.account.<a href="./src/cadenya/resources/account.py">rotate_webhook_signing_key</a>() -> <a href="./src/cadenya/types/rotate_webhook_signing_key_response.py">RotateWebhookSigningKeyResponse</a></code>
 
+# Profiles
+
+Methods:
+
+- <code title="get /v1/whoami">client.profiles.<a href="./src/cadenya/resources/profiles.py">whoami</a>() -> <a href="./src/cadenya/types/profile.py">Profile</a></code>
+
 # Agents
 
 Types:

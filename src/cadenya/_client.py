@@ -42,6 +42,7 @@ if TYPE_CHECKING:
         account,
         uploads,
         api_keys,
+        profiles,
         tool_sets,
         objectives,
         workspaces,
@@ -55,6 +56,7 @@ if TYPE_CHECKING:
     from .resources.search import SearchResource, AsyncSearchResource
     from .resources.account import AccountResource, AsyncAccountResource
     from .resources.uploads import UploadsResource, AsyncUploadsResource
+    from .resources.profiles import ProfilesResource, AsyncProfilesResource
     from .resources.webhooks import WebhooksResource, AsyncWebhooksResource
     from .resources.workspaces import WorkspacesResource, AsyncWorkspacesResource
     from .resources.agents.agents import AgentsResource, AsyncAgentsResource
@@ -161,6 +163,16 @@ class Cadenya(SyncAPIClient):
         from .resources.account import AccountResource
 
         return AccountResource(self)
+
+    @cached_property
+    def profiles(self) -> ProfilesResource:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import ProfilesResource
+
+        return ProfilesResource(self)
 
     @cached_property
     def agents(self) -> AgentsResource:
@@ -499,6 +511,16 @@ class AsyncCadenya(AsyncAPIClient):
         return AsyncAccountResource(self)
 
     @cached_property
+    def profiles(self) -> AsyncProfilesResource:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import AsyncProfilesResource
+
+        return AsyncProfilesResource(self)
+
+    @cached_property
     def agents(self) -> AsyncAgentsResource:
         """Manage AI agents within a workspace. Agents define AI behavior and tool access."""
         from .resources.agents import AsyncAgentsResource
@@ -769,6 +791,16 @@ class CadenyaWithRawResponse:
         return AccountResourceWithRawResponse(self._client.account)
 
     @cached_property
+    def profiles(self) -> profiles.ProfilesResourceWithRawResponse:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import ProfilesResourceWithRawResponse
+
+        return ProfilesResourceWithRawResponse(self._client.profiles)
+
+    @cached_property
     def agents(self) -> agents.AgentsResourceWithRawResponse:
         """Manage AI agents within a workspace. Agents define AI behavior and tool access."""
         from .resources.agents import AgentsResourceWithRawResponse
@@ -917,6 +949,16 @@ class AsyncCadenyaWithRawResponse:
         from .resources.account import AsyncAccountResourceWithRawResponse
 
         return AsyncAccountResourceWithRawResponse(self._client.account)
+
+    @cached_property
+    def profiles(self) -> profiles.AsyncProfilesResourceWithRawResponse:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import AsyncProfilesResourceWithRawResponse
+
+        return AsyncProfilesResourceWithRawResponse(self._client.profiles)
 
     @cached_property
     def agents(self) -> agents.AsyncAgentsResourceWithRawResponse:
@@ -1069,6 +1111,16 @@ class CadenyaWithStreamedResponse:
         return AccountResourceWithStreamingResponse(self._client.account)
 
     @cached_property
+    def profiles(self) -> profiles.ProfilesResourceWithStreamingResponse:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import ProfilesResourceWithStreamingResponse
+
+        return ProfilesResourceWithStreamingResponse(self._client.profiles)
+
+    @cached_property
     def agents(self) -> agents.AgentsResourceWithStreamingResponse:
         """Manage AI agents within a workspace. Agents define AI behavior and tool access."""
         from .resources.agents import AgentsResourceWithStreamingResponse
@@ -1217,6 +1269,16 @@ class AsyncCadenyaWithStreamedResponse:
         from .resources.account import AsyncAccountResourceWithStreamingResponse
 
         return AsyncAccountResourceWithStreamingResponse(self._client.account)
+
+    @cached_property
+    def profiles(self) -> profiles.AsyncProfilesResourceWithStreamingResponse:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import AsyncProfilesResourceWithStreamingResponse
+
+        return AsyncProfilesResourceWithStreamingResponse(self._client.profiles)
 
     @cached_property
     def agents(self) -> agents.AsyncAgentsResourceWithStreamingResponse:
