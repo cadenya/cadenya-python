@@ -20,6 +20,14 @@ from ...types import (
     tool_set_update_params,
     tool_set_list_events_params,
 )
+from .secrets import (
+    SecretsResource,
+    AsyncSecretsResource,
+    SecretsResourceWithRawResponse,
+    AsyncSecretsResourceWithRawResponse,
+    SecretsResourceWithStreamingResponse,
+    AsyncSecretsResourceWithStreamingResponse,
+)
 from ..._types import Body, Omit, Query, Headers, NoneType, NotGiven, omit, not_given
 from ..._utils import path_template, maybe_transform, async_maybe_transform
 from ..._compat import cached_property
@@ -63,6 +71,18 @@ class ToolSetsResource(SyncAPIResource):
          (profile) actors cannot.
         """
         return ToolsResource(self._client)
+
+    @cached_property
+    def secrets(self) -> SecretsResource:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return SecretsResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> ToolSetsResourceWithRawResponse:
@@ -536,6 +556,18 @@ class AsyncToolSetsResource(AsyncAPIResource):
          (profile) actors cannot.
         """
         return AsyncToolsResource(self._client)
+
+    @cached_property
+    def secrets(self) -> AsyncSecretsResource:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return AsyncSecretsResource(self._client)
 
     @cached_property
     def with_raw_response(self) -> AsyncToolSetsResourceWithRawResponse:
@@ -1032,6 +1064,18 @@ class ToolSetsResourceWithRawResponse:
         """
         return ToolsResourceWithRawResponse(self._tool_sets.tools)
 
+    @cached_property
+    def secrets(self) -> SecretsResourceWithRawResponse:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return SecretsResourceWithRawResponse(self._tool_sets.secrets)
+
 
 class AsyncToolSetsResourceWithRawResponse:
     def __init__(self, tool_sets: AsyncToolSetsResource) -> None:
@@ -1076,6 +1120,18 @@ class AsyncToolSetsResourceWithRawResponse:
          (profile) actors cannot.
         """
         return AsyncToolsResourceWithRawResponse(self._tool_sets.tools)
+
+    @cached_property
+    def secrets(self) -> AsyncSecretsResourceWithRawResponse:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return AsyncSecretsResourceWithRawResponse(self._tool_sets.secrets)
 
 
 class ToolSetsResourceWithStreamingResponse:
@@ -1122,6 +1178,18 @@ class ToolSetsResourceWithStreamingResponse:
         """
         return ToolsResourceWithStreamingResponse(self._tool_sets.tools)
 
+    @cached_property
+    def secrets(self) -> SecretsResourceWithStreamingResponse:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return SecretsResourceWithStreamingResponse(self._tool_sets.secrets)
+
 
 class AsyncToolSetsResourceWithStreamingResponse:
     def __init__(self, tool_sets: AsyncToolSetsResource) -> None:
@@ -1166,3 +1234,15 @@ class AsyncToolSetsResourceWithStreamingResponse:
          (profile) actors cannot.
         """
         return AsyncToolsResourceWithStreamingResponse(self._tool_sets.tools)
+
+    @cached_property
+    def secrets(self) -> AsyncSecretsResourceWithStreamingResponse:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return AsyncSecretsResourceWithStreamingResponse(self._tool_sets.secrets)

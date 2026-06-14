@@ -8,6 +8,14 @@ from .tools import (
     ToolsResourceWithStreamingResponse,
     AsyncToolsResourceWithStreamingResponse,
 )
+from .secrets import (
+    SecretsResource,
+    AsyncSecretsResource,
+    SecretsResourceWithRawResponse,
+    AsyncSecretsResourceWithRawResponse,
+    SecretsResourceWithStreamingResponse,
+    AsyncSecretsResourceWithStreamingResponse,
+)
 from .tool_sets import (
     ToolSetsResource,
     AsyncToolSetsResource,
@@ -24,6 +32,12 @@ __all__ = [
     "AsyncToolsResourceWithRawResponse",
     "ToolsResourceWithStreamingResponse",
     "AsyncToolsResourceWithStreamingResponse",
+    "SecretsResource",
+    "AsyncSecretsResource",
+    "SecretsResourceWithRawResponse",
+    "AsyncSecretsResourceWithRawResponse",
+    "SecretsResourceWithStreamingResponse",
+    "AsyncSecretsResourceWithStreamingResponse",
     "ToolSetsResource",
     "AsyncToolSetsResource",
     "ToolSetsResourceWithRawResponse",
