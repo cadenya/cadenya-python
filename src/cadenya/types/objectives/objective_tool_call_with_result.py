@@ -1,11 +1,12 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Optional
+from typing import List, Optional
 from typing_extensions import Literal
 
 from pydantic import Field as FieldInfo
 
 from ..._models import BaseModel
+from .resolved_secret import ResolvedSecret
 from .objective_tool_call_data import ObjectiveToolCallData
 from .objective_tool_call_info import ObjectiveToolCallInfo
 from ..shared.operation_metadata import OperationMetadata
@@ -46,6 +47,9 @@ class ObjectiveToolCallWithResult(BaseModel):
         "TOOL_CALL_STATUS_DENIED",
     ]
     """Current status of the tool call"""
+
+    resolved_secrets: Optional[List[ResolvedSecret]] = FieldInfo(alias="resolvedSecrets", default=None)
+    """List of resolved secrets used by the tool call"""
 
     result: Optional[ObjectiveToolCallResult] = None
     """

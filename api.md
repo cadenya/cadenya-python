@@ -227,6 +227,7 @@ from cadenya.types.objectives import (
     ObjectiveToolCallResultImageBlock,
     ObjectiveToolCallResultTextBlock,
     ObjectiveToolCallWithResult,
+    ResolvedSecret,
 )
 ```
 
@@ -406,6 +407,22 @@ Methods:
 - <code title="delete /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">delete</a>(id, \*, workspace_id, tool_set_id) -> None</code>
 - <code title="post /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}:omit">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">omit</a>(id, \*, workspace_id, tool_set_id) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
 - <code title="post /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}:restore">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">restore</a>(id, \*, workspace_id, tool_set_id) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
+
+## Secrets
+
+Types:
+
+```python
+from cadenya.types.tool_sets import ToolSetSecret, ToolSetSecretInfo, ToolSetSecretSpec
+```
+
+Methods:
+
+- <code title="post /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/secrets">client.tool_sets.secrets.<a href="./src/cadenya/resources/tool_sets/secrets.py">create</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_sets/secret_create_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool_set_secret.py">ToolSetSecret</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/secrets/{id}">client.tool_sets.secrets.<a href="./src/cadenya/resources/tool_sets/secrets.py">retrieve</a>(id, \*, workspace_id, tool_set_id) -> <a href="./src/cadenya/types/tool_sets/tool_set_secret.py">ToolSetSecret</a></code>
+- <code title="patch /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/secrets/{id}">client.tool_sets.secrets.<a href="./src/cadenya/resources/tool_sets/secrets.py">update</a>(id, \*, workspace_id, tool_set_id, \*\*<a href="src/cadenya/types/tool_sets/secret_update_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool_set_secret.py">ToolSetSecret</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/secrets">client.tool_sets.secrets.<a href="./src/cadenya/resources/tool_sets/secrets.py">list</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_sets/secret_list_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool_set_secret.py">SyncCursorPagination[ToolSetSecret]</a></code>
+- <code title="delete /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/secrets/{id}">client.tool_sets.secrets.<a href="./src/cadenya/resources/tool_sets/secrets.py">delete</a>(id, \*, workspace_id, tool_set_id) -> None</code>
 
 # APIKeys
 

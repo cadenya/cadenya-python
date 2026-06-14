@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from .objective_task import ObjectiveTask as ObjectiveTask
 from .objective_tool import ObjectiveTool as ObjectiveTool
+from .resolved_secret import ResolvedSecret as ResolvedSecret
 from .task_list_params import TaskListParams as TaskListParams
 from .tool_list_params import ToolListParams as ToolListParams
 from .objective_feedback import ObjectiveFeedback as ObjectiveFeedback
