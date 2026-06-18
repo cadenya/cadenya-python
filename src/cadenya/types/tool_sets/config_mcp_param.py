@@ -2,16 +2,8 @@
 
 from __future__ import annotations
 
-from typing_extensions import Annotated, TypedDict
-
-from ..._utils import PropertyInfo
+from typing_extensions import TypeAlias
 
 __all__ = ["ConfigMcpParam"]
 
-
-class ConfigMcpParam(TypedDict, total=False):
-    tool_description: Annotated[str, PropertyInfo(alias="toolDescription")]
-
-    tool_name: Annotated[str, PropertyInfo(alias="toolName")]
-
-    tool_title: Annotated[str, PropertyInfo(alias="toolTitle")]
+ConfigMcpParam: TypeAlias = object

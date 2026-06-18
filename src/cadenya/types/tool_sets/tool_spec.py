@@ -1,6 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Dict
+from typing import Dict, Optional
 
 from pydantic import Field as FieldInfo
 
@@ -23,3 +23,11 @@ class ToolSpec(BaseModel):
     parameters: Dict[str, object]
 
     requires_approval: bool = FieldInfo(alias="requiresApproval")
+
+    llm_tool_name: Optional[str] = FieldInfo(alias="llmToolName", default=None)
+    """
+    The name provided to the LLM, which may differ from the metadata.name on the
+    tool. LLMs have specific length and format requirements, and tool set sources
+    may not comply with them, so Cadenya does its best to format names into a usable
+    format.
+    """

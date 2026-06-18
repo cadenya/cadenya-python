@@ -2,16 +2,12 @@
 
 from __future__ import annotations
 
-from typing_extensions import Annotated, TypedDict
-
-from ..._utils import PropertyInfo
+from typing_extensions import TypedDict
 
 __all__ = ["ConfigOpenAPIParam"]
 
 
 class ConfigOpenAPIParam(TypedDict, total=False):
     method: str
-
-    operation_id: Annotated[str, PropertyInfo(alias="operationId")]
 
     path: str

@@ -5,7 +5,6 @@ from __future__ import annotations
 from .tool import Tool as Tool
 from .tool_info import ToolInfo as ToolInfo
 from .tool_spec import ToolSpec as ToolSpec
-from .config_mcp import ConfigMcp as ConfigMcp
 from .config_http import ConfigHTTP as ConfigHTTP
 from .config_openapi import ConfigOpenAPI as ConfigOpenAPI
 from .tool_set_secret import ToolSetSecret as ToolSetSecret

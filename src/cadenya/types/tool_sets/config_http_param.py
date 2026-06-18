@@ -28,10 +28,3 @@ class ConfigHTTPParam(TypedDict, total=False):
 
     request_body_template: Annotated[str, PropertyInfo(alias="requestBodyTemplate")]
     """These are only used when the request method is a POST, PUT, or PATCH"""
-
-    tool_name: Annotated[str, PropertyInfo(alias="toolName")]
-    """
-    The tool name (commonly an "operation id" in OpenAPI specs) to call on the HTTP
-    adapter. This is used to match the tool spec to the correct endpoint on the HTTP
-    adapter. it will be derived from the name of the tool if not provided.
-    """
