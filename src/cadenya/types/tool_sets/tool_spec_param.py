@@ -24,3 +24,11 @@ class ToolSpecParam(TypedDict, total=False):
     parameters: Required[Dict[str, object]]
 
     requires_approval: Required[Annotated[bool, PropertyInfo(alias="requiresApproval")]]
+
+    llm_tool_name: Annotated[str, PropertyInfo(alias="llmToolName")]
+    """
+    The name provided to the LLM, which may differ from the metadata.name on the
+    tool. LLMs have specific length and format requirements, and tool set sources
+    may not comply with them, so Cadenya does its best to format names into a usable
+    format.
+    """
