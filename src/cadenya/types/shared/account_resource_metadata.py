@@ -1,6 +1,7 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import Dict, Optional
+from datetime import datetime
 
 from pydantic import Field as FieldInfo
 
@@ -27,6 +28,8 @@ class AccountResourceMetadata(BaseModel):
     """
 
     profile_id: str = FieldInfo(alias="profileId")
+
+    created_at: Optional[datetime] = FieldInfo(alias="createdAt", default=None)
 
     external_id: Optional[str] = FieldInfo(alias="externalId", default=None)
     """External ID for the resource (e.g., a workflow ID from an external system)"""
