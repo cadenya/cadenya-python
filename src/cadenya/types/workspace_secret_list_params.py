@@ -10,9 +10,6 @@ __all__ = ["WorkspaceSecretListParams"]
 
 
 class WorkspaceSecretListParams(TypedDict, total=False):
-    bundle_key: Annotated[str, PropertyInfo(alias="bundleKey")]
-    """Filter by bundle_key — return only resources owned by this bundle."""
-
     cursor: str
     """Pagination cursor from previous response"""
 

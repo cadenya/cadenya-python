@@ -235,7 +235,6 @@ class EntriesResource(SyncAPIResource):
         memory_layer_id: str,
         *,
         workspace_id: str,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -253,8 +252,6 @@ class EntriesResource(SyncAPIResource):
         Lists all entries in a memory layer
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
@@ -294,7 +291,6 @@ class EntriesResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "limit": limit,
@@ -558,7 +554,6 @@ class AsyncEntriesResource(AsyncAPIResource):
         memory_layer_id: str,
         *,
         workspace_id: str,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -576,8 +571,6 @@ class AsyncEntriesResource(AsyncAPIResource):
         Lists all entries in a memory layer
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
@@ -617,7 +610,6 @@ class AsyncEntriesResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "limit": limit,

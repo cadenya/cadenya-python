@@ -184,7 +184,6 @@ class TestAPIKeys:
     @parametrize
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         api_key = client.api_keys.list(
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,
@@ -472,7 +471,6 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.list(
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,

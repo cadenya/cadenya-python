@@ -41,7 +41,6 @@ class TestVariations:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -206,7 +205,6 @@ class TestVariations:
             agent_id="agentId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -307,7 +305,6 @@ class TestVariations:
         variation = client.agents.variations.list(
             agent_id="agentId",
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,
@@ -846,7 +843,6 @@ class TestAsyncVariations:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -1011,7 +1007,6 @@ class TestAsyncVariations:
             agent_id="agentId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -1112,7 +1107,6 @@ class TestAsyncVariations:
         variation = await async_client.agents.variations.list(
             agent_id="agentId",
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,

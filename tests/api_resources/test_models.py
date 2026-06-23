@@ -84,7 +84,6 @@ class TestModels:
         model = client.models.list(
             workspace_id="workspaceId",
             ai_provider_key_id="aiProviderKeyId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             is_assigned=True,
@@ -363,7 +362,6 @@ class TestAsyncModels:
         model = await async_client.models.list(
             workspace_id="workspaceId",
             ai_provider_key_id="aiProviderKeyId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             is_assigned=True,

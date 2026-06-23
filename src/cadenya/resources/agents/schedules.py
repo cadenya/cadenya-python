@@ -218,7 +218,6 @@ class SchedulesResource(SyncAPIResource):
         agent_id: str,
         *,
         workspace_id: str,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -236,8 +235,6 @@ class SchedulesResource(SyncAPIResource):
         Lists all schedules for an agent
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response.
 
           include_info: When true, the `info` field on each returned schedule is populated. Requests
@@ -277,7 +274,6 @@ class SchedulesResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "limit": limit,
@@ -667,7 +663,6 @@ class AsyncSchedulesResource(AsyncAPIResource):
         agent_id: str,
         *,
         workspace_id: str,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -685,8 +680,6 @@ class AsyncSchedulesResource(AsyncAPIResource):
         Lists all schedules for an agent
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response.
 
           include_info: When true, the `info` field on each returned schedule is populated. Requests
@@ -726,7 +719,6 @@ class AsyncSchedulesResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "limit": limit,

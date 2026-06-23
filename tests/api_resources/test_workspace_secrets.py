@@ -37,7 +37,6 @@ class TestWorkspaceSecrets:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -154,7 +153,6 @@ class TestWorkspaceSecrets:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -219,7 +217,6 @@ class TestWorkspaceSecrets:
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         workspace_secret = client.workspace_secrets.list(
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,
@@ -338,7 +335,6 @@ class TestAsyncWorkspaceSecrets:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -455,7 +451,6 @@ class TestAsyncWorkspaceSecrets:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -520,7 +515,6 @@ class TestAsyncWorkspaceSecrets:
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         workspace_secret = await async_client.workspace_secrets.list(
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,

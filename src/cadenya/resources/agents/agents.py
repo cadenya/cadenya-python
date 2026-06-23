@@ -254,7 +254,6 @@ class AgentsResource(SyncAPIResource):
         self,
         workspace_id: str,
         *,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -279,8 +278,6 @@ class AgentsResource(SyncAPIResource):
         Lists all agents in the workspace
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When true, the `info` field on each returned agent is populated. Requests with
@@ -318,7 +315,6 @@ class AgentsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "limit": limit,
@@ -719,7 +715,6 @@ class AsyncAgentsResource(AsyncAPIResource):
         self,
         workspace_id: str,
         *,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -744,8 +739,6 @@ class AsyncAgentsResource(AsyncAPIResource):
         Lists all agents in the workspace
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When true, the `info` field on each returned agent is populated. Requests with
@@ -783,7 +776,6 @@ class AsyncAgentsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "limit": limit,

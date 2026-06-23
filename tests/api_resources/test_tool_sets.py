@@ -39,7 +39,6 @@ class TestToolSets:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -277,7 +276,6 @@ class TestToolSets:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -463,7 +461,6 @@ class TestToolSets:
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.list(
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,
@@ -804,7 +801,6 @@ class TestAsyncToolSets:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -1042,7 +1038,6 @@ class TestAsyncToolSets:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -1228,7 +1223,6 @@ class TestAsyncToolSets:
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.list(
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,
