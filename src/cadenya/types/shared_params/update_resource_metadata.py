@@ -23,9 +23,6 @@ class UpdateResourceMetadata(TypedDict, total=False):
     Tool")
     """
 
-    bundle_key: Annotated[str, PropertyInfo(alias="bundleKey")]
-    """Optional bundle ownership key. See ResourceMetadata.bundle_key."""
-
     external_id: Annotated[str, PropertyInfo(alias="externalId")]
     """External ID for the resource (e.g., a workflow ID from an external system)"""
 

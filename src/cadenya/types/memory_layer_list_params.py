@@ -13,9 +13,6 @@ class MemoryLayerListParams(TypedDict, total=False):
     agent_id: Annotated[str, PropertyInfo(alias="agentId")]
     """Filter to episodic layers belonging to this agent."""
 
-    bundle_key: Annotated[str, PropertyInfo(alias="bundleKey")]
-    """Filter by bundle_key — return only resources owned by this bundle."""
-
     cursor: str
     """Pagination cursor from previous response"""
 

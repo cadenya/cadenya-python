@@ -39,7 +39,6 @@ class TestSecrets:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -181,7 +180,6 @@ class TestSecrets:
             tool_set_id="toolSetId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -259,7 +257,6 @@ class TestSecrets:
         secret = client.tool_sets.secrets.list(
             tool_set_id="toolSetId",
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,
@@ -401,7 +398,6 @@ class TestAsyncSecrets:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -543,7 +539,6 @@ class TestAsyncSecrets:
             tool_set_id="toolSetId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -621,7 +616,6 @@ class TestAsyncSecrets:
         secret = await async_client.tool_sets.secrets.list(
             tool_set_id="toolSetId",
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,

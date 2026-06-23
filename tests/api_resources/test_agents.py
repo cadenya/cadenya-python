@@ -35,7 +35,6 @@ class TestAgents:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -51,7 +50,6 @@ class TestAgents:
             default_variation={
                 "metadata": {
                     "name": "name",
-                    "bundle_key": "bundleKey",
                     "external_id": "externalId",
                     "labels": {"foo": "string"},
                 },
@@ -192,7 +190,6 @@ class TestAgents:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -265,7 +262,6 @@ class TestAgents:
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         agent = client.agents.list(
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,
@@ -594,7 +590,6 @@ class TestAsyncAgents:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -610,7 +605,6 @@ class TestAsyncAgents:
             default_variation={
                 "metadata": {
                     "name": "name",
-                    "bundle_key": "bundleKey",
                     "external_id": "externalId",
                     "labels": {"foo": "string"},
                 },
@@ -751,7 +745,6 @@ class TestAsyncAgents:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -824,7 +817,6 @@ class TestAsyncAgents:
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         agent = await async_client.agents.list(
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,

@@ -42,7 +42,6 @@ class TestTools:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -224,7 +223,6 @@ class TestTools:
             tool_set_id="toolSetId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -322,7 +320,6 @@ class TestTools:
         tool = client.tool_sets.tools.list(
             tool_set_id="toolSetId",
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,
@@ -600,7 +597,6 @@ class TestAsyncTools:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -782,7 +778,6 @@ class TestAsyncTools:
             tool_set_id="toolSetId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -880,7 +875,6 @@ class TestAsyncTools:
         tool = await async_client.tool_sets.tools.list(
             tool_set_id="toolSetId",
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,

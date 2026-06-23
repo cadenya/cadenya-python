@@ -204,7 +204,6 @@ class APIKeysResource(SyncAPIResource):
     def list(
         self,
         *,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -222,8 +221,6 @@ class APIKeysResource(SyncAPIResource):
         Lists all API keys on the account.
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response.
 
           include_info: When true, included info fields are populated. Requests with this flag count
@@ -255,7 +252,6 @@ class APIKeysResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "limit": limit,
@@ -512,7 +508,6 @@ class AsyncAPIKeysResource(AsyncAPIResource):
     def list(
         self,
         *,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -530,8 +525,6 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         Lists all API keys on the account.
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response.
 
           include_info: When true, included info fields are populated. Requests with this flag count
@@ -563,7 +556,6 @@ class AsyncAPIKeysResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "limit": limit,

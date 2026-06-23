@@ -93,7 +93,6 @@ class ModelsResource(SyncAPIResource):
         workspace_id: str,
         *,
         ai_provider_key_id: str | Omit = omit,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         is_assigned: bool | Omit = omit,
@@ -115,8 +114,6 @@ class ModelsResource(SyncAPIResource):
         Args:
           ai_provider_key_id: Filter to models provisioned on a specific AI provider key. Accepts the key's id
               or an "external_id:"-prefixed slug.
-
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
 
           cursor: Pagination cursor from previous response
 
@@ -158,7 +155,6 @@ class ModelsResource(SyncAPIResource):
                 query=maybe_transform(
                     {
                         "ai_provider_key_id": ai_provider_key_id,
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "is_assigned": is_assigned,
@@ -357,7 +353,6 @@ class AsyncModelsResource(AsyncAPIResource):
         workspace_id: str,
         *,
         ai_provider_key_id: str | Omit = omit,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         is_assigned: bool | Omit = omit,
@@ -379,8 +374,6 @@ class AsyncModelsResource(AsyncAPIResource):
         Args:
           ai_provider_key_id: Filter to models provisioned on a specific AI provider key. Accepts the key's id
               or an "external_id:"-prefixed slug.
-
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
 
           cursor: Pagination cursor from previous response
 
@@ -422,7 +415,6 @@ class AsyncModelsResource(AsyncAPIResource):
                 query=maybe_transform(
                     {
                         "ai_provider_key_id": ai_provider_key_id,
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "is_assigned": is_assigned,

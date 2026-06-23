@@ -16,9 +16,6 @@ class ModelListParams(TypedDict, total=False):
     Accepts the key's id or an "external_id:"-prefixed slug.
     """
 
-    bundle_key: Annotated[str, PropertyInfo(alias="bundleKey")]
-    """Filter by bundle_key — return only resources owned by this bundle."""
-
     cursor: str
     """Pagination cursor from previous response"""
 

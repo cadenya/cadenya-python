@@ -50,7 +50,6 @@ if TYPE_CHECKING:
         workspace_admin,
         ai_provider_keys,
         workspace_secrets,
-        bulk_workspace_resources,
     )
     from .resources.models import ModelsResource, AsyncModelsResource
     from .resources.search import SearchResource, AsyncSearchResource
@@ -67,10 +66,6 @@ if TYPE_CHECKING:
     from .resources.objectives.objectives import ObjectivesResource, AsyncObjectivesResource
     from .resources.memory_layers.memory_layers import MemoryLayersResource, AsyncMemoryLayersResource
     from .resources.workspace_admin.workspace_admin import WorkspaceAdminResource, AsyncWorkspaceAdminResource
-    from .resources.bulk_workspace_resources.bulk_workspace_resources import (
-        BulkWorkspaceResourcesResource,
-        AsyncBulkWorkspaceResourcesResource,
-    )
 
 __all__ = ["Timeout", "Transport", "ProxiesTypes", "RequestOptions", "Cadenya", "AsyncCadenya", "Client", "AsyncClient"]
 
@@ -294,17 +289,6 @@ class Cadenya(SyncAPIClient):
         from .resources.webhooks import WebhooksResource
 
         return WebhooksResource(self)
-
-    @cached_property
-    def bulk_workspace_resources(self) -> BulkWorkspaceResourcesResource:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import BulkWorkspaceResourcesResource
-
-        return BulkWorkspaceResourcesResource(self)
 
     @cached_property
     def with_raw_response(self) -> CadenyaWithRawResponse:
@@ -642,17 +626,6 @@ class AsyncCadenya(AsyncAPIClient):
         return AsyncWebhooksResource(self)
 
     @cached_property
-    def bulk_workspace_resources(self) -> AsyncBulkWorkspaceResourcesResource:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import AsyncBulkWorkspaceResourcesResource
-
-        return AsyncBulkWorkspaceResourcesResource(self)
-
-    @cached_property
     def with_raw_response(self) -> AsyncCadenyaWithRawResponse:
         return AsyncCadenyaWithRawResponse(self)
 
@@ -915,17 +888,6 @@ class CadenyaWithRawResponse:
 
         return WorkspaceAdminResourceWithRawResponse(self._client.workspace_admin)
 
-    @cached_property
-    def bulk_workspace_resources(self) -> bulk_workspace_resources.BulkWorkspaceResourcesResourceWithRawResponse:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import BulkWorkspaceResourcesResourceWithRawResponse
-
-        return BulkWorkspaceResourcesResourceWithRawResponse(self._client.bulk_workspace_resources)
-
 
 class AsyncCadenyaWithRawResponse:
     _client: AsyncCadenya
@@ -1074,17 +1036,6 @@ class AsyncCadenyaWithRawResponse:
         from .resources.workspace_admin import AsyncWorkspaceAdminResourceWithRawResponse
 
         return AsyncWorkspaceAdminResourceWithRawResponse(self._client.workspace_admin)
-
-    @cached_property
-    def bulk_workspace_resources(self) -> bulk_workspace_resources.AsyncBulkWorkspaceResourcesResourceWithRawResponse:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import AsyncBulkWorkspaceResourcesResourceWithRawResponse
-
-        return AsyncBulkWorkspaceResourcesResourceWithRawResponse(self._client.bulk_workspace_resources)
 
 
 class CadenyaWithStreamedResponse:
@@ -1235,17 +1186,6 @@ class CadenyaWithStreamedResponse:
 
         return WorkspaceAdminResourceWithStreamingResponse(self._client.workspace_admin)
 
-    @cached_property
-    def bulk_workspace_resources(self) -> bulk_workspace_resources.BulkWorkspaceResourcesResourceWithStreamingResponse:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import BulkWorkspaceResourcesResourceWithStreamingResponse
-
-        return BulkWorkspaceResourcesResourceWithStreamingResponse(self._client.bulk_workspace_resources)
-
 
 class AsyncCadenyaWithStreamedResponse:
     _client: AsyncCadenya
@@ -1394,19 +1334,6 @@ class AsyncCadenyaWithStreamedResponse:
         from .resources.workspace_admin import AsyncWorkspaceAdminResourceWithStreamingResponse
 
         return AsyncWorkspaceAdminResourceWithStreamingResponse(self._client.workspace_admin)
-
-    @cached_property
-    def bulk_workspace_resources(
-        self,
-    ) -> bulk_workspace_resources.AsyncBulkWorkspaceResourcesResourceWithStreamingResponse:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import AsyncBulkWorkspaceResourcesResourceWithStreamingResponse
-
-        return AsyncBulkWorkspaceResourcesResourceWithStreamingResponse(self._client.bulk_workspace_resources)
 
 
 Client = Cadenya

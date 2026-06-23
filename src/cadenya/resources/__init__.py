@@ -113,14 +113,6 @@ from .workspace_secrets import (
     WorkspaceSecretsResourceWithStreamingResponse,
     AsyncWorkspaceSecretsResourceWithStreamingResponse,
 )
-from .bulk_workspace_resources import (
-    BulkWorkspaceResourcesResource,
-    AsyncBulkWorkspaceResourcesResource,
-    BulkWorkspaceResourcesResourceWithRawResponse,
-    AsyncBulkWorkspaceResourcesResourceWithRawResponse,
-    BulkWorkspaceResourcesResourceWithStreamingResponse,
-    AsyncBulkWorkspaceResourcesResourceWithStreamingResponse,
-)
 
 __all__ = [
     "AIProviderKeysResource",
@@ -209,10 +201,4 @@ __all__ = [
     "AsyncWorkspaceAdminResourceWithStreamingResponse",
     "WebhooksResource",
     "AsyncWebhooksResource",
-    "BulkWorkspaceResourcesResource",
-    "AsyncBulkWorkspaceResourcesResource",
-    "BulkWorkspaceResourcesResourceWithRawResponse",
-    "AsyncBulkWorkspaceResourcesResourceWithRawResponse",
-    "BulkWorkspaceResourcesResourceWithStreamingResponse",
-    "AsyncBulkWorkspaceResourcesResourceWithStreamingResponse",
 ]

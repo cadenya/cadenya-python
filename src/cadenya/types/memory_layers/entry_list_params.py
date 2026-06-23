@@ -12,9 +12,6 @@ __all__ = ["EntryListParams"]
 class EntryListParams(TypedDict, total=False):
     workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
 
-    bundle_key: Annotated[str, PropertyInfo(alias="bundleKey")]
-    """Filter by bundle_key — return only resources owned by this bundle."""
-
     cursor: str
     """Pagination cursor from previous response"""
 

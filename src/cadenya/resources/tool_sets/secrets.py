@@ -217,7 +217,6 @@ class SecretsResource(SyncAPIResource):
         tool_set_id: str,
         *,
         workspace_id: str,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -235,8 +234,6 @@ class SecretsResource(SyncAPIResource):
         Lists all secrets scoped to the tool set
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
@@ -275,7 +272,6 @@ class SecretsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "limit": limit,
@@ -527,7 +523,6 @@ class AsyncSecretsResource(AsyncAPIResource):
         tool_set_id: str,
         *,
         workspace_id: str,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -545,8 +540,6 @@ class AsyncSecretsResource(AsyncAPIResource):
         Lists all secrets scoped to the tool set
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
@@ -585,7 +578,6 @@ class AsyncSecretsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
                         "limit": limit,

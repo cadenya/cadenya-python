@@ -22,9 +22,6 @@ class CreateResourceMetadata(BaseModel):
     Tool")
     """
 
-    bundle_key: Optional[str] = FieldInfo(alias="bundleKey", default=None)
-    """Optional bundle ownership key. See ResourceMetadata.bundle_key."""
-
     external_id: Optional[str] = FieldInfo(alias="externalId", default=None)
     """External ID for the resource (e.g., a workflow ID from an external system)"""
 

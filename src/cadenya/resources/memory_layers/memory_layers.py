@@ -216,7 +216,6 @@ class MemoryLayersResource(SyncAPIResource):
         workspace_id: str,
         *,
         agent_id: str | Omit = omit,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         episodic_key_prefix: str | Omit = omit,
         include_info: bool | Omit = omit,
@@ -238,8 +237,6 @@ class MemoryLayersResource(SyncAPIResource):
 
         Args:
           agent_id: Filter to episodic layers belonging to this agent.
-
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
 
           cursor: Pagination cursor from previous response
 
@@ -280,7 +277,6 @@ class MemoryLayersResource(SyncAPIResource):
                 query=maybe_transform(
                     {
                         "agent_id": agent_id,
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "episodic_key_prefix": episodic_key_prefix,
                         "include_info": include_info,
@@ -511,7 +507,6 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
         workspace_id: str,
         *,
         agent_id: str | Omit = omit,
-        bundle_key: str | Omit = omit,
         cursor: str | Omit = omit,
         episodic_key_prefix: str | Omit = omit,
         include_info: bool | Omit = omit,
@@ -533,8 +528,6 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
 
         Args:
           agent_id: Filter to episodic layers belonging to this agent.
-
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
 
           cursor: Pagination cursor from previous response
 
@@ -575,7 +568,6 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
                 query=maybe_transform(
                     {
                         "agent_id": agent_id,
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "episodic_key_prefix": episodic_key_prefix,
                         "include_info": include_info,

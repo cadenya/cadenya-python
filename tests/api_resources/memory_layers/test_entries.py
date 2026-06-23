@@ -40,7 +40,6 @@ class TestEntries:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -187,7 +186,6 @@ class TestEntries:
             memory_layer_id="memoryLayerId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -270,7 +268,6 @@ class TestEntries:
         entry = client.memory_layers.entries.list(
             memory_layer_id="memoryLayerId",
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,
@@ -412,7 +409,6 @@ class TestAsyncEntries:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -559,7 +555,6 @@ class TestAsyncEntries:
             memory_layer_id="memoryLayerId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -642,7 +637,6 @@ class TestAsyncEntries:
         entry = await async_client.memory_layers.entries.list(
             memory_layer_id="memoryLayerId",
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,

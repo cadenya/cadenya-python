@@ -39,7 +39,6 @@ class TestSchedules:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -243,7 +242,6 @@ class TestSchedules:
             agent_id="agentId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -383,7 +381,6 @@ class TestSchedules:
         schedule = client.agents.schedules.list(
             agent_id="agentId",
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,
@@ -717,7 +714,6 @@ class TestAsyncSchedules:
             workspace_id="workspaceId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -921,7 +917,6 @@ class TestAsyncSchedules:
             agent_id="agentId",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -1061,7 +1056,6 @@ class TestAsyncSchedules:
         schedule = await async_client.agents.schedules.list(
             agent_id="agentId",
             workspace_id="workspaceId",
-            bundle_key="bundleKey",
             cursor="cursor",
             include_info=True,
             limit=0,
