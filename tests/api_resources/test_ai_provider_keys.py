@@ -41,8 +41,18 @@ class TestAIProviderKeys:
                 "labels": {"foo": "string"},
             },
             spec={
-                "api_key": "apiKey",
-                "openrouter": {},
+                "config": {
+                    "openai": {
+                        "organization_id": "organizationId",
+                        "project_id": "projectId",
+                    },
+                    "openai_compatible": {"base_url": "baseUrl"},
+                    "openrouter": {"region": "region"},
+                },
+                "credentials": {
+                    "api_key": {"api_key": "apiKey"},
+                    "headers": {"headers": {"foo": "string"}},
+                },
                 "provider": "AI_PROVIDER_UNSPECIFIED",
             },
         )
@@ -161,8 +171,18 @@ class TestAIProviderKeys:
                 "labels": {"foo": "string"},
             },
             spec={
-                "api_key": "apiKey",
-                "openrouter": {},
+                "config": {
+                    "openai": {
+                        "organization_id": "organizationId",
+                        "project_id": "projectId",
+                    },
+                    "openai_compatible": {"base_url": "baseUrl"},
+                    "openrouter": {"region": "region"},
+                },
+                "credentials": {
+                    "api_key": {"api_key": "apiKey"},
+                    "headers": {"headers": {"foo": "string"}},
+                },
                 "provider": "AI_PROVIDER_UNSPECIFIED",
             },
             update_mask="updateMask",
@@ -348,8 +368,18 @@ class TestAsyncAIProviderKeys:
                 "labels": {"foo": "string"},
             },
             spec={
-                "api_key": "apiKey",
-                "openrouter": {},
+                "config": {
+                    "openai": {
+                        "organization_id": "organizationId",
+                        "project_id": "projectId",
+                    },
+                    "openai_compatible": {"base_url": "baseUrl"},
+                    "openrouter": {"region": "region"},
+                },
+                "credentials": {
+                    "api_key": {"api_key": "apiKey"},
+                    "headers": {"headers": {"foo": "string"}},
+                },
                 "provider": "AI_PROVIDER_UNSPECIFIED",
             },
         )
@@ -468,8 +498,18 @@ class TestAsyncAIProviderKeys:
                 "labels": {"foo": "string"},
             },
             spec={
-                "api_key": "apiKey",
-                "openrouter": {},
+                "config": {
+                    "openai": {
+                        "organization_id": "organizationId",
+                        "project_id": "projectId",
+                    },
+                    "openai_compatible": {"base_url": "baseUrl"},
+                    "openrouter": {"region": "region"},
+                },
+                "credentials": {
+                    "api_key": {"api_key": "apiKey"},
+                    "headers": {"headers": {"foo": "string"}},
+                },
                 "provider": "AI_PROVIDER_UNSPECIFIED",
             },
             update_mask="updateMask",
