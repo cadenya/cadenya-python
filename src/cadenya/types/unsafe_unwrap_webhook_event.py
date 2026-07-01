@@ -1,31 +1,15 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Optional
 from datetime import datetime
 
 from pydantic import Field as FieldInfo
 
 from .._models import BaseModel
-from .objective_event_data import ObjectiveEventData
-from .objective_event_info import ObjectiveEventInfo
+from .objective_event import ObjectiveEvent
 from .shared.resource_metadata import ResourceMetadata
 from .shared.operation_metadata import OperationMetadata
 
-__all__ = ["UnsafeUnwrapWebhookEvent", "Data", "DataObjectiveEvent"]
-
-
-class DataObjectiveEvent(BaseModel):
-    data: ObjectiveEventData
-
-    metadata: OperationMetadata
-    """
-    Metadata for ephemeral operations and activities (e.g., objectives, executions,
-    runs)
-    """
-
-    context_window_id: Optional[str] = FieldInfo(alias="contextWindowId", default=None)
-
-    info: Optional[ObjectiveEventInfo] = None
+__all__ = ["UnsafeUnwrapWebhookEvent", "Data"]
 
 
 class Data(BaseModel):
@@ -49,7 +33,7 @@ class Data(BaseModel):
     runs)
     """
 
-    objective_event: DataObjectiveEvent = FieldInfo(alias="objectiveEvent")
+    objective_event: ObjectiveEvent = FieldInfo(alias="objectiveEvent")
 
 
 class UnsafeUnwrapWebhookEvent(BaseModel):

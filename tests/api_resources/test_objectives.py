@@ -11,10 +11,9 @@ from cadenya import Cadenya, AsyncCadenya
 from tests.utils import assert_matches_type
 from cadenya.types import (
     Objective,
+    ObjectiveEvent,
     ObjectiveContextWindow,
     ObjectiveCompactResponse,
-    ObjectiveContinueResponse,
-    ObjectiveListEventsResponse,
 )
 from cadenya.pagination import SyncCursorPagination, AsyncCursorPagination
 
@@ -350,7 +349,7 @@ class TestObjectives:
             objective_id="objectiveId",
             workspace_id="workspaceId",
         )
-        assert_matches_type(ObjectiveContinueResponse, objective, path=["response"])
+        assert_matches_type(ObjectiveEvent, objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -367,7 +366,7 @@ class TestObjectives:
                 }
             ],
         )
-        assert_matches_type(ObjectiveContinueResponse, objective, path=["response"])
+        assert_matches_type(ObjectiveEvent, objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -380,7 +379,7 @@ class TestObjectives:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         objective = response.parse()
-        assert_matches_type(ObjectiveContinueResponse, objective, path=["response"])
+        assert_matches_type(ObjectiveEvent, objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -393,7 +392,7 @@ class TestObjectives:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             objective = response.parse()
-            assert_matches_type(ObjectiveContinueResponse, objective, path=["response"])
+            assert_matches_type(ObjectiveEvent, objective, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -483,7 +482,7 @@ class TestObjectives:
             objective_id="objectiveId",
             workspace_id="workspaceId",
         )
-        assert_matches_type(SyncCursorPagination[ObjectiveListEventsResponse], objective, path=["response"])
+        assert_matches_type(SyncCursorPagination[ObjectiveEvent], objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -498,7 +497,7 @@ class TestObjectives:
             sort_order="sortOrder",
             window_id="windowId",
         )
-        assert_matches_type(SyncCursorPagination[ObjectiveListEventsResponse], objective, path=["response"])
+        assert_matches_type(SyncCursorPagination[ObjectiveEvent], objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -511,7 +510,7 @@ class TestObjectives:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         objective = response.parse()
-        assert_matches_type(SyncCursorPagination[ObjectiveListEventsResponse], objective, path=["response"])
+        assert_matches_type(SyncCursorPagination[ObjectiveEvent], objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -524,7 +523,7 @@ class TestObjectives:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             objective = response.parse()
-            assert_matches_type(SyncCursorPagination[ObjectiveListEventsResponse], objective, path=["response"])
+            assert_matches_type(SyncCursorPagination[ObjectiveEvent], objective, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -539,6 +538,57 @@ class TestObjectives:
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
             client.objectives.with_raw_response.list_events(
+                objective_id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_stream_events(self, client: Cadenya) -> None:
+        objective_stream = client.objectives.stream_events(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        )
+        objective_stream.response.close()
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_stream_events(self, client: Cadenya) -> None:
+        response = client.objectives.with_raw_response.stream_events(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        )
+
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        stream = response.parse()
+        stream.close()
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_stream_events(self, client: Cadenya) -> None:
+        with client.objectives.with_streaming_response.stream_events(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            stream = response.parse()
+            stream.close()
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_stream_events(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.objectives.with_raw_response.stream_events(
+                objective_id="objectiveId",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
+            client.objectives.with_raw_response.stream_events(
                 objective_id="",
                 workspace_id="workspaceId",
             )
@@ -875,7 +925,7 @@ class TestAsyncObjectives:
             objective_id="objectiveId",
             workspace_id="workspaceId",
         )
-        assert_matches_type(ObjectiveContinueResponse, objective, path=["response"])
+        assert_matches_type(ObjectiveEvent, objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -892,7 +942,7 @@ class TestAsyncObjectives:
                 }
             ],
         )
-        assert_matches_type(ObjectiveContinueResponse, objective, path=["response"])
+        assert_matches_type(ObjectiveEvent, objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -905,7 +955,7 @@ class TestAsyncObjectives:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         objective = await response.parse()
-        assert_matches_type(ObjectiveContinueResponse, objective, path=["response"])
+        assert_matches_type(ObjectiveEvent, objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -918,7 +968,7 @@ class TestAsyncObjectives:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             objective = await response.parse()
-            assert_matches_type(ObjectiveContinueResponse, objective, path=["response"])
+            assert_matches_type(ObjectiveEvent, objective, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -1008,7 +1058,7 @@ class TestAsyncObjectives:
             objective_id="objectiveId",
             workspace_id="workspaceId",
         )
-        assert_matches_type(AsyncCursorPagination[ObjectiveListEventsResponse], objective, path=["response"])
+        assert_matches_type(AsyncCursorPagination[ObjectiveEvent], objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -1023,7 +1073,7 @@ class TestAsyncObjectives:
             sort_order="sortOrder",
             window_id="windowId",
         )
-        assert_matches_type(AsyncCursorPagination[ObjectiveListEventsResponse], objective, path=["response"])
+        assert_matches_type(AsyncCursorPagination[ObjectiveEvent], objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -1036,7 +1086,7 @@ class TestAsyncObjectives:
         assert response.is_closed is True
         assert response.http_request.headers.get("X-Stainless-Lang") == "python"
         objective = await response.parse()
-        assert_matches_type(AsyncCursorPagination[ObjectiveListEventsResponse], objective, path=["response"])
+        assert_matches_type(AsyncCursorPagination[ObjectiveEvent], objective, path=["response"])
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
@@ -1049,7 +1099,7 @@ class TestAsyncObjectives:
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
 
             objective = await response.parse()
-            assert_matches_type(AsyncCursorPagination[ObjectiveListEventsResponse], objective, path=["response"])
+            assert_matches_type(AsyncCursorPagination[ObjectiveEvent], objective, path=["response"])
 
         assert cast(Any, response.is_closed) is True
 
@@ -1064,6 +1114,57 @@ class TestAsyncObjectives:
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
             await async_client.objectives.with_raw_response.list_events(
+                objective_id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_stream_events(self, async_client: AsyncCadenya) -> None:
+        objective_stream = await async_client.objectives.stream_events(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        )
+        await objective_stream.response.aclose()
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_stream_events(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.objectives.with_raw_response.stream_events(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        )
+
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        stream = await response.parse()
+        await stream.close()
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_stream_events(self, async_client: AsyncCadenya) -> None:
+        async with async_client.objectives.with_streaming_response.stream_events(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            stream = await response.parse()
+            await stream.close()
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_stream_events(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.objectives.with_raw_response.stream_events(
+                objective_id="objectiveId",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
+            await async_client.objectives.with_raw_response.stream_events(
                 objective_id="",
                 workspace_id="workspaceId",
             )

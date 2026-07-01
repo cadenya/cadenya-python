@@ -58,14 +58,14 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ..._streaming import Stream, AsyncStream
 from ...pagination import SyncCursorPagination, AsyncCursorPagination
 from ..._base_client import AsyncPaginator, make_request_options
 from ...types.objective import Objective
+from ...types.objective_event import ObjectiveEvent
 from ...types.memory_reference_param import MemoryReferenceParam
 from ...types.objective_context_window import ObjectiveContextWindow
 from ...types.objective_compact_response import ObjectiveCompactResponse
-from ...types.objective_continue_response import ObjectiveContinueResponse
-from ...types.objective_list_events_response import ObjectiveListEventsResponse
 from ...types.shared_params.create_operation_metadata import CreateOperationMetadata
 from ...types.agents.agent_variation_spec_compaction_config_param import AgentVariationSpecCompactionConfigParam
 
@@ -434,7 +434,7 @@ class ObjectivesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ObjectiveContinueResponse:
+    ) -> ObjectiveEvent:
         """
         Continues an objective that has completed
 
@@ -476,7 +476,7 @@ class ObjectivesResource(SyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ObjectiveContinueResponse,
+            cast_to=ObjectiveEvent,
         )
 
     def list_context_windows(
@@ -558,7 +558,7 @@ class ObjectivesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SyncCursorPagination[ObjectiveListEventsResponse]:
+    ) -> SyncCursorPagination[ObjectiveEvent]:
         """
         Lists all events for an objective
 
@@ -593,7 +593,7 @@ class ObjectivesResource(SyncAPIResource):
                 workspace_id=workspace_id,
                 objective_id=objective_id,
             ),
-            page=SyncCursorPagination[ObjectiveListEventsResponse],
+            page=SyncCursorPagination[ObjectiveEvent],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -611,7 +611,50 @@ class ObjectivesResource(SyncAPIResource):
                     objective_list_events_params.ObjectiveListEventsParams,
                 ),
             ),
-            model=ObjectiveListEventsResponse,
+            model=ObjectiveEvent,
+        )
+
+    def stream_events(
+        self,
+        objective_id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Stream[ObjectiveEvent]:
+        """
+        Streams events for an objective in real-time using server-sent events (SSE)
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        extra_headers = {"Accept": "text/event-stream", **(extra_headers or {})}
+        return self._get(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/events:stream",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveEvent,
+            stream=True,
+            stream_cls=Stream[ObjectiveEvent],
         )
 
 
@@ -977,7 +1020,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ObjectiveContinueResponse:
+    ) -> ObjectiveEvent:
         """
         Continues an objective that has completed
 
@@ -1019,7 +1062,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ObjectiveContinueResponse,
+            cast_to=ObjectiveEvent,
         )
 
     def list_context_windows(
@@ -1101,7 +1144,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AsyncPaginator[ObjectiveListEventsResponse, AsyncCursorPagination[ObjectiveListEventsResponse]]:
+    ) -> AsyncPaginator[ObjectiveEvent, AsyncCursorPagination[ObjectiveEvent]]:
         """
         Lists all events for an objective
 
@@ -1136,7 +1179,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
                 workspace_id=workspace_id,
                 objective_id=objective_id,
             ),
-            page=AsyncCursorPagination[ObjectiveListEventsResponse],
+            page=AsyncCursorPagination[ObjectiveEvent],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -1154,7 +1197,50 @@ class AsyncObjectivesResource(AsyncAPIResource):
                     objective_list_events_params.ObjectiveListEventsParams,
                 ),
             ),
-            model=ObjectiveListEventsResponse,
+            model=ObjectiveEvent,
+        )
+
+    async def stream_events(
+        self,
+        objective_id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AsyncStream[ObjectiveEvent]:
+        """
+        Streams events for an objective in real-time using server-sent events (SSE)
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        extra_headers = {"Accept": "text/event-stream", **(extra_headers or {})}
+        return await self._get(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/events:stream",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveEvent,
+            stream=True,
+            stream_cls=AsyncStream[ObjectiveEvent],
         )
 
 
@@ -1185,6 +1271,9 @@ class ObjectivesResourceWithRawResponse:
         )
         self.list_events = to_raw_response_wrapper(
             objectives.list_events,
+        )
+        self.stream_events = to_raw_response_wrapper(
+            objectives.stream_events,
         )
 
     @cached_property
@@ -1232,6 +1321,9 @@ class AsyncObjectivesResourceWithRawResponse:
         self.list_events = async_to_raw_response_wrapper(
             objectives.list_events,
         )
+        self.stream_events = async_to_raw_response_wrapper(
+            objectives.stream_events,
+        )
 
     @cached_property
     def tools(self) -> AsyncToolsResourceWithRawResponse:
@@ -1278,6 +1370,9 @@ class ObjectivesResourceWithStreamingResponse:
         self.list_events = to_streamed_response_wrapper(
             objectives.list_events,
         )
+        self.stream_events = to_streamed_response_wrapper(
+            objectives.stream_events,
+        )
 
     @cached_property
     def tools(self) -> ToolsResourceWithStreamingResponse:
@@ -1323,6 +1418,9 @@ class AsyncObjectivesResourceWithStreamingResponse:
         )
         self.list_events = async_to_streamed_response_wrapper(
             objectives.list_events,
+        )
+        self.stream_events = async_to_streamed_response_wrapper(
+            objectives.stream_events,
         )
 
     @cached_property
