@@ -169,6 +169,7 @@ from cadenya.types import (
     ObjectiveContextWindow,
     ObjectiveContextWindowData,
     ObjectiveError,
+    ObjectiveEvent,
     ObjectiveEventData,
     ObjectiveEventInfo,
     ObjectiveEventWebhookData,
@@ -184,8 +185,6 @@ from cadenya.types import (
     ToolResult,
     UserMessage,
     ObjectiveCompactResponse,
-    ObjectiveContinueResponse,
-    ObjectiveListEventsResponse,
 )
 ```
 
@@ -196,9 +195,10 @@ Methods:
 - <code title="get /v1/workspaces/{workspaceId}/objectives">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">list</a>(workspace_id, \*\*<a href="src/cadenya/types/objective_list_params.py">params</a>) -> <a href="./src/cadenya/types/objective.py">SyncCursorPagination[Objective]</a></code>
 - <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}:cancel">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">cancel</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_cancel_params.py">params</a>) -> <a href="./src/cadenya/types/objective.py">Objective</a></code>
 - <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}:compact">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">compact</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_compact_params.py">params</a>) -> <a href="./src/cadenya/types/objective_compact_response.py">ObjectiveCompactResponse</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}:continue">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">continue\_</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_continue_params.py">params</a>) -> <a href="./src/cadenya/types/objective_continue_response.py">ObjectiveContinueResponse</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}:continue">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">continue\_</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_continue_params.py">params</a>) -> <a href="./src/cadenya/types/objective_event.py">ObjectiveEvent</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/context_windows">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">list_context_windows</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_list_context_windows_params.py">params</a>) -> <a href="./src/cadenya/types/objective_context_window.py">SyncCursorPagination[ObjectiveContextWindow]</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/events">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">list_events</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_list_events_params.py">params</a>) -> <a href="./src/cadenya/types/objective_list_events_response.py">SyncCursorPagination[ObjectiveListEventsResponse]</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/events">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">list_events</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_list_events_params.py">params</a>) -> <a href="./src/cadenya/types/objective_event.py">SyncCursorPagination[ObjectiveEvent]</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/events:stream">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">stream_events</a>(objective_id, \*, workspace_id) -> <a href="./src/cadenya/types/objective_event.py">ObjectiveEvent</a></code>
 
 ## Tools
 

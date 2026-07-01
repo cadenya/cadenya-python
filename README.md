@@ -100,6 +100,38 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
+## Streaming responses
+
+We provide support for streaming responses using Server Side Events (SSE).
+
+```python
+from cadenya import Cadenya
+
+client = Cadenya()
+
+stream = client.objectives.stream_events(
+    objective_id="objectiveId",
+    workspace_id="workspaceId",
+)
+for objective in stream:
+    print(objective.data)
+```
+
+The async client uses the exact same interface.
+
+```python
+from cadenya import AsyncCadenya
+
+client = AsyncCadenya()
+
+stream = await client.objectives.stream_events(
+    objective_id="objectiveId",
+    workspace_id="workspaceId",
+)
+async for objective in stream:
+    print(objective.data)
+```
+
 ## Using types
 
 Nested request parameters are [TypedDicts](https://docs.python.org/3/library/typing.html#typing.TypedDict). Responses are [Pydantic models](https://docs.pydantic.dev) which also provide helper methods for things like:

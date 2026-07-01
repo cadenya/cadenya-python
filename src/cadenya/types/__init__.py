@@ -52,6 +52,7 @@ from .tool_set_event import ToolSetEvent as ToolSetEvent
 from .workspace_spec import WorkspaceSpec as WorkspaceSpec
 from .ai_provider_key import AIProviderKey as AIProviderKey
 from .objective_error import ObjectiveError as ObjectiveError
+from .objective_event import ObjectiveEvent as ObjectiveEvent
 from .agent_spec_param import AgentSpecParam as AgentSpecParam
 from .attribute_filter import AttributeFilter as AttributeFilter
 from .memory_reference import MemoryReference as MemoryReference
@@ -115,7 +116,6 @@ from .objective_compact_response import ObjectiveCompactResponse as ObjectiveCom
 from .tool_set_adapter_mcp_param import ToolSetAdapterMcpParam as ToolSetAdapterMcpParam
 from .ai_provider_key_list_params import AIProviderKeyListParams as AIProviderKeyListParams
 from .approval_requirement_filter import ApprovalRequirementFilter as ApprovalRequirementFilter
-from .objective_continue_response import ObjectiveContinueResponse as ObjectiveContinueResponse
 from .tool_set_adapter_http_param import ToolSetAdapterHTTPParam as ToolSetAdapterHTTPParam
 from .tool_set_list_events_params import ToolSetListEventsParams as ToolSetListEventsParams
 from .unsafe_unwrap_webhook_event import UnsafeUnwrapWebhookEvent as UnsafeUnwrapWebhookEvent
@@ -128,7 +128,6 @@ from .ai_provider_key_update_params import AIProviderKeyUpdateParams as AIProvid
 from .objective_context_window_data import ObjectiveContextWindowData as ObjectiveContextWindowData
 from .workspace_admin_create_params import WorkspaceAdminCreateParams as WorkspaceAdminCreateParams
 from .workspace_admin_update_params import WorkspaceAdminUpdateParams as WorkspaceAdminUpdateParams
-from .objective_list_events_response import ObjectiveListEventsResponse as ObjectiveListEventsResponse
 from .tool_set_adapter_openapi_param import ToolSetAdapterOpenAPIParam as ToolSetAdapterOpenAPIParam
 from .workspace_secret_create_params import WorkspaceSecretCreateParams as WorkspaceSecretCreateParams
 from .workspace_secret_update_params import WorkspaceSecretUpdateParams as WorkspaceSecretUpdateParams

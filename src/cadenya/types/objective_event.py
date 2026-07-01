@@ -9,10 +9,10 @@ from .objective_event_data import ObjectiveEventData
 from .objective_event_info import ObjectiveEventInfo
 from .shared.operation_metadata import OperationMetadata
 
-__all__ = ["ObjectiveContinueResponse"]
+__all__ = ["ObjectiveEvent"]
 
 
-class ObjectiveContinueResponse(BaseModel):
+class ObjectiveEvent(BaseModel):
     data: ObjectiveEventData
 
     metadata: OperationMetadata
