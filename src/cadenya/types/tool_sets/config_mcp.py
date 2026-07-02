@@ -1,16 +1,15 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from __future__ import annotations
+from typing import Optional
 
-from typing_extensions import TypedDict
+from ..._models import BaseModel
+from .mcp_annotations import McpAnnotations
 
-from .mcp_annotations_param import McpAnnotationsParam
-
-__all__ = ["ConfigMcpParam"]
+__all__ = ["ConfigMcp"]
 
 
-class ConfigMcpParam(TypedDict, total=False):
-    annotations: McpAnnotationsParam
+class ConfigMcp(BaseModel):
+    annotations: Optional[McpAnnotations] = None
     """
     Behavior hints synced from the MCP server's tool definition (ToolAnnotations in
     the MCP specification). All hints are advisory: servers are not required to send

@@ -3,6 +3,7 @@
 from typing import Optional
 
 from ..._models import BaseModel
+from .config_mcp import ConfigMcp
 from .config_http import ConfigHTTP
 from .config_openapi import ConfigOpenAPI
 
@@ -19,6 +20,6 @@ class ToolSpecConfig(BaseModel):
 
     http: Optional[ConfigHTTP] = None
 
-    mcp: Optional[object] = None
+    mcp: Optional[ConfigMcp] = None
 
     openapi: Optional[ConfigOpenAPI] = None

@@ -5,8 +5,10 @@ from __future__ import annotations
 from .tool import Tool as Tool
 from .tool_info import ToolInfo as ToolInfo
 from .tool_spec import ToolSpec as ToolSpec
+from .config_mcp import ConfigMcp as ConfigMcp
 from .config_http import ConfigHTTP as ConfigHTTP
 from .config_openapi import ConfigOpenAPI as ConfigOpenAPI
+from .mcp_annotations import McpAnnotations as McpAnnotations
 from .tool_set_secret import ToolSetSecret as ToolSetSecret
 from .tool_spec_param import ToolSpecParam as ToolSpecParam
 from .config_mcp_param import ConfigMcpParam as ConfigMcpParam
@@ -21,5 +23,6 @@ from .secret_create_params import SecretCreateParams as SecretCreateParams
 from .secret_update_params import SecretUpdateParams as SecretUpdateParams
 from .tool_set_secret_info import ToolSetSecretInfo as ToolSetSecretInfo
 from .tool_set_secret_spec import ToolSetSecretSpec as ToolSetSecretSpec
+from .mcp_annotations_param import McpAnnotationsParam as McpAnnotationsParam
 from .tool_spec_config_param import ToolSpecConfigParam as ToolSpecConfigParam
 from .tool_set_secret_spec_param import ToolSetSecretSpecParam as ToolSetSecretSpecParam
