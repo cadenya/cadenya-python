@@ -391,6 +391,7 @@ from cadenya.types.tool_sets import (
     ConfigHTTP,
     ConfigMcp,
     ConfigOpenAPI,
+    McpAnnotations,
     Tool,
     ToolInfo,
     ToolSpec,

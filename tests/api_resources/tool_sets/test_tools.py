@@ -55,7 +55,15 @@ class TestTools:
                         "request_body_content_type": "requestBodyContentType",
                         "request_body_template": "requestBodyTemplate",
                     },
-                    "mcp": {},
+                    "mcp": {
+                        "annotations": {
+                            "destructive_hint": True,
+                            "idempotent_hint": True,
+                            "open_world_hint": True,
+                            "read_only_hint": True,
+                            "title": "title",
+                        }
+                    },
                     "openapi": {
                         "method": "method",
                         "path": "path",
@@ -236,7 +244,15 @@ class TestTools:
                         "request_body_content_type": "requestBodyContentType",
                         "request_body_template": "requestBodyTemplate",
                     },
-                    "mcp": {},
+                    "mcp": {
+                        "annotations": {
+                            "destructive_hint": True,
+                            "idempotent_hint": True,
+                            "open_world_hint": True,
+                            "read_only_hint": True,
+                            "title": "title",
+                        }
+                    },
                     "openapi": {
                         "method": "method",
                         "path": "path",
@@ -610,7 +626,15 @@ class TestAsyncTools:
                         "request_body_content_type": "requestBodyContentType",
                         "request_body_template": "requestBodyTemplate",
                     },
-                    "mcp": {},
+                    "mcp": {
+                        "annotations": {
+                            "destructive_hint": True,
+                            "idempotent_hint": True,
+                            "open_world_hint": True,
+                            "read_only_hint": True,
+                            "title": "title",
+                        }
+                    },
                     "openapi": {
                         "method": "method",
                         "path": "path",
@@ -791,7 +815,15 @@ class TestAsyncTools:
                         "request_body_content_type": "requestBodyContentType",
                         "request_body_template": "requestBodyTemplate",
                     },
-                    "mcp": {},
+                    "mcp": {
+                        "annotations": {
+                            "destructive_hint": True,
+                            "idempotent_hint": True,
+                            "open_world_hint": True,
+                            "read_only_hint": True,
+                            "title": "title",
+                        }
+                    },
                     "openapi": {
                         "method": "method",
                         "path": "path",
