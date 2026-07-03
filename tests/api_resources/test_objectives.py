@@ -359,12 +359,6 @@ class TestObjectives:
             workspace_id="workspaceId",
             enqueue=True,
             message="message",
-            secrets=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
         )
         assert_matches_type(ObjectiveEvent, objective, path=["response"])
 
@@ -935,12 +929,6 @@ class TestAsyncObjectives:
             workspace_id="workspaceId",
             enqueue=True,
             message="message",
-            secrets=[
-                {
-                    "name": "name",
-                    "value": "value",
-                }
-            ],
         )
         assert_matches_type(ObjectiveEvent, objective, path=["response"])
 

@@ -13,6 +13,15 @@ __all__ = ["AccountInfo"]
 class AccountInfo(BaseModel):
     """Server-populated information about the account."""
 
+    challenge_token: Optional[str] = FieldInfo(alias="challengeToken", default=None)
+    """
+    The challenge token Cadenya sends in the X-Cadenya-Challenge-Token header on
+    every MCP tools/list request. Server implementations can accept a valid
+    challenge token in place of per-user auth when listing tools, while still
+    requiring real auth on tools/call. Rotate with RotateChallengeToken; update any
+    servers validating the token before rotating.
+    """
+
     global_api_key: Optional[APIKey] = FieldInfo(alias="globalApiKey", default=None)
     """An API key for the account.
 

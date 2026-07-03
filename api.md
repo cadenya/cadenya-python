@@ -39,6 +39,7 @@ from cadenya.types import (
     AccountSpec,
     Profile,
     ProfileSpec,
+    RotateChallengeTokenResponse,
     RotateWebhookSigningKeyResponse,
 )
 ```
@@ -46,6 +47,7 @@ from cadenya.types import (
 Methods:
 
 - <code title="get /v1/account">client.account.<a href="./src/cadenya/resources/account.py">retrieve</a>() -> <a href="./src/cadenya/types/account.py">Account</a></code>
+- <code title="post /v1/account:rotateChallengeToken">client.account.<a href="./src/cadenya/resources/account.py">rotate_challenge_token</a>() -> <a href="./src/cadenya/types/rotate_challenge_token_response.py">RotateChallengeTokenResponse</a></code>
 - <code title="post /v1/account:rotateWebhookSigningKey">client.account.<a href="./src/cadenya/resources/account.py">rotate_webhook_signing_key</a>() -> <a href="./src/cadenya/types/rotate_webhook_signing_key_response.py">RotateWebhookSigningKeyResponse</a></code>
 
 # Profiles

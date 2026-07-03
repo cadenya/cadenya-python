@@ -15,6 +15,7 @@ from .._response import (
 )
 from .._base_client import make_request_options
 from ..types.account import Account
+from ..types.rotate_challenge_token_response import RotateChallengeTokenResponse
 from ..types.rotate_webhook_signing_key_response import RotateWebhookSigningKeyResponse
 
 __all__ = ["AccountResource", "AsyncAccountResource"]
@@ -67,6 +68,28 @@ class AccountResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=Account,
+        )
+
+    def rotate_challenge_token(
+        self,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> RotateChallengeTokenResponse:
+        """
+        Rotates the challenge token sent in the X-Cadenya-Challenge-Token header on MCP
+        tools/list requests. Returns only the new token.
+        """
+        return self._post(
+            "/v1/account:rotateChallengeToken",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=RotateChallengeTokenResponse,
         )
 
     def rotate_webhook_signing_key(
@@ -138,6 +161,28 @@ class AsyncAccountResource(AsyncAPIResource):
             cast_to=Account,
         )
 
+    async def rotate_challenge_token(
+        self,
+        *,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> RotateChallengeTokenResponse:
+        """
+        Rotates the challenge token sent in the X-Cadenya-Challenge-Token header on MCP
+        tools/list requests. Returns only the new token.
+        """
+        return await self._post(
+            "/v1/account:rotateChallengeToken",
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=RotateChallengeTokenResponse,
+        )
+
     async def rotate_webhook_signing_key(
         self,
         *,
@@ -165,6 +210,9 @@ class AccountResourceWithRawResponse:
         self.retrieve = to_raw_response_wrapper(
             account.retrieve,
         )
+        self.rotate_challenge_token = to_raw_response_wrapper(
+            account.rotate_challenge_token,
+        )
         self.rotate_webhook_signing_key = to_raw_response_wrapper(
             account.rotate_webhook_signing_key,
         )
@@ -176,6 +224,9 @@ class AsyncAccountResourceWithRawResponse:
 
         self.retrieve = async_to_raw_response_wrapper(
             account.retrieve,
+        )
+        self.rotate_challenge_token = async_to_raw_response_wrapper(
+            account.rotate_challenge_token,
         )
         self.rotate_webhook_signing_key = async_to_raw_response_wrapper(
             account.rotate_webhook_signing_key,
@@ -189,6 +240,9 @@ class AccountResourceWithStreamingResponse:
         self.retrieve = to_streamed_response_wrapper(
             account.retrieve,
         )
+        self.rotate_challenge_token = to_streamed_response_wrapper(
+            account.rotate_challenge_token,
+        )
         self.rotate_webhook_signing_key = to_streamed_response_wrapper(
             account.rotate_webhook_signing_key,
         )
@@ -200,6 +254,9 @@ class AsyncAccountResourceWithStreamingResponse:
 
         self.retrieve = async_to_streamed_response_wrapper(
             account.retrieve,
+        )
+        self.rotate_challenge_token = async_to_streamed_response_wrapper(
+            account.rotate_challenge_token,
         )
         self.rotate_webhook_signing_key = async_to_streamed_response_wrapper(
             account.rotate_webhook_signing_key,
