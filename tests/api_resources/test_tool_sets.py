@@ -82,6 +82,10 @@ class TestToolSets:
                                 }
                             ],
                         },
+                        "just_in_time": {
+                            "enabled": True,
+                            "fail_objective_on_tool_list_error": True,
+                        },
                         "tool_approvals": {
                             "always": True,
                             "only": {
@@ -318,6 +322,10 @@ class TestToolSets:
                                     },
                                 }
                             ],
+                        },
+                        "just_in_time": {
+                            "enabled": True,
+                            "fail_objective_on_tool_list_error": True,
                         },
                         "tool_approvals": {
                             "always": True,
@@ -844,6 +852,10 @@ class TestAsyncToolSets:
                                 }
                             ],
                         },
+                        "just_in_time": {
+                            "enabled": True,
+                            "fail_objective_on_tool_list_error": True,
+                        },
                         "tool_approvals": {
                             "always": True,
                             "only": {
@@ -1080,6 +1092,10 @@ class TestAsyncToolSets:
                                     },
                                 }
                             ],
+                        },
+                        "just_in_time": {
+                            "enabled": True,
+                            "fail_objective_on_tool_list_error": True,
                         },
                         "tool_approvals": {
                             "always": True,

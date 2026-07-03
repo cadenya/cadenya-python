@@ -427,7 +427,6 @@ class ObjectivesResource(SyncAPIResource):
         workspace_id: str,
         enqueue: bool | Omit = omit,
         message: str | Omit = omit,
-        secrets: Iterable[objective_continue_params.Secret] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -443,9 +442,6 @@ class ObjectivesResource(SyncAPIResource):
               available to process it.
 
           message: The message to continue an objective that has completed (or you are enqueing)
-
-          secrets: Secrets that should be included with the message. Helpful for when you need to
-              update secrets on the objective (IE: A secret expires and needs to be refreshed)
 
           extra_headers: Send extra headers
 
@@ -469,7 +465,6 @@ class ObjectivesResource(SyncAPIResource):
                 {
                     "enqueue": enqueue,
                     "message": message,
-                    "secrets": secrets,
                 },
                 objective_continue_params.ObjectiveContinueParams,
             ),
@@ -1013,7 +1008,6 @@ class AsyncObjectivesResource(AsyncAPIResource):
         workspace_id: str,
         enqueue: bool | Omit = omit,
         message: str | Omit = omit,
-        secrets: Iterable[objective_continue_params.Secret] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1029,9 +1023,6 @@ class AsyncObjectivesResource(AsyncAPIResource):
               available to process it.
 
           message: The message to continue an objective that has completed (or you are enqueing)
-
-          secrets: Secrets that should be included with the message. Helpful for when you need to
-              update secrets on the objective (IE: A secret expires and needs to be refreshed)
 
           extra_headers: Send extra headers
 
@@ -1055,7 +1046,6 @@ class AsyncObjectivesResource(AsyncAPIResource):
                 {
                     "enqueue": enqueue,
                     "message": message,
-                    "secrets": secrets,
                 },
                 objective_continue_params.ObjectiveContinueParams,
             ),

@@ -69,6 +69,7 @@ class WebhookDeliveriesResource(SyncAPIResource):
             "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED",
             "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED",
             "OBJECTIVE_EVENT_TYPE_FINALIZED",
+            "OBJECTIVE_EVENT_TYPE_NOTICE",
         ]
         | Omit = omit,
         limit: int | Omit = omit,
@@ -175,6 +176,7 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
             "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED",
             "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED",
             "OBJECTIVE_EVENT_TYPE_FINALIZED",
+            "OBJECTIVE_EVENT_TYPE_NOTICE",
         ]
         | Omit = omit,
         limit: int | Omit = omit,
