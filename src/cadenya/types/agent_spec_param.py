@@ -47,21 +47,22 @@ class AgentSpecParam(TypedDict, total=False):
     after they are written. If not set, episodic memories are retained indefinitely.
     """
 
-    input_data_schema: Annotated[Dict[str, object], PropertyInfo(alias="inputDataSchema")]
-    """InputDataSchema is used for enforcing a data input when objectives are created.
-
-    This is valuable when using liquid formatting in agent variation prompts. Input
-    data schema is also valuable when using an agent as a sub-agent, as the schema
-    is used as the tool's input parameter schema. If omitted, the sub-agent schema
-    will be loaded with a simple "prompt" free text string as its schema.
-    """
-
     output_definition: Annotated[Dict[str, object], PropertyInfo(alias="outputDefinition")]
     """
     Optional output definition for objectives created for this agent. When provided,
     Cadenya will append a tool to that will be called by the LLM in use by the
     variant to extract information in the format provided here. Use this option when
     you want structured data to be created by your objectives.
+    """
+
+    system_prompt_data_schema: Annotated[Dict[str, object], PropertyInfo(alias="systemPromptDataSchema")]
+    """
+    SystemPromptDataSchema enforces the shape of system_prompt_data when objectives
+    are created. This is valuable when using liquid formatting in agent variation
+    system prompt templates. The schema is also used when the agent is attached as a
+    sub-agent, as it becomes the tool's input parameter schema. If omitted, the
+    sub-agent schema will be loaded with a simple "prompt" free text string as its
+    schema.
     """
 
     webhook_events_url: Annotated[str, PropertyInfo(alias="webhookEventsUrl")]

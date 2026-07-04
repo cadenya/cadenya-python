@@ -29,7 +29,7 @@ class TestObjectives:
         objective = client.objectives.create(
             workspace_id="workspaceId",
             agent_id="agentId",
-            data={"foo": "bar"},
+            system_prompt_data={"foo": "bar"},
         )
         assert_matches_type(Objective, objective, path=["response"])
 
@@ -39,9 +39,10 @@ class TestObjectives:
         objective = client.objectives.create(
             workspace_id="workspaceId",
             agent_id="agentId",
-            data={"foo": "bar"},
+            system_prompt_data={"foo": "bar"},
             episodic_memory={"key": "key"},
-            initial_message="initialMessage",
+            first_user_message="firstUserMessage",
+            first_user_message_data={"foo": "bar"},
             memory_cascade=[
                 {
                     "memory_entry_id": "memoryEntryId",
@@ -58,7 +59,6 @@ class TestObjectives:
                     "value": "value",
                 }
             ],
-            user_data={"foo": "bar"},
             variation_id="variationId",
         )
         assert_matches_type(Objective, objective, path=["response"])
@@ -69,7 +69,7 @@ class TestObjectives:
         response = client.objectives.with_raw_response.create(
             workspace_id="workspaceId",
             agent_id="agentId",
-            data={"foo": "bar"},
+            system_prompt_data={"foo": "bar"},
         )
 
         assert response.is_closed is True
@@ -83,7 +83,7 @@ class TestObjectives:
         with client.objectives.with_streaming_response.create(
             workspace_id="workspaceId",
             agent_id="agentId",
-            data={"foo": "bar"},
+            system_prompt_data={"foo": "bar"},
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -100,7 +100,7 @@ class TestObjectives:
             client.objectives.with_raw_response.create(
                 workspace_id="",
                 agent_id="agentId",
-                data={"foo": "bar"},
+                system_prompt_data={"foo": "bar"},
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
@@ -599,7 +599,7 @@ class TestAsyncObjectives:
         objective = await async_client.objectives.create(
             workspace_id="workspaceId",
             agent_id="agentId",
-            data={"foo": "bar"},
+            system_prompt_data={"foo": "bar"},
         )
         assert_matches_type(Objective, objective, path=["response"])
 
@@ -609,9 +609,10 @@ class TestAsyncObjectives:
         objective = await async_client.objectives.create(
             workspace_id="workspaceId",
             agent_id="agentId",
-            data={"foo": "bar"},
+            system_prompt_data={"foo": "bar"},
             episodic_memory={"key": "key"},
-            initial_message="initialMessage",
+            first_user_message="firstUserMessage",
+            first_user_message_data={"foo": "bar"},
             memory_cascade=[
                 {
                     "memory_entry_id": "memoryEntryId",
@@ -628,7 +629,6 @@ class TestAsyncObjectives:
                     "value": "value",
                 }
             ],
-            user_data={"foo": "bar"},
             variation_id="variationId",
         )
         assert_matches_type(Objective, objective, path=["response"])
@@ -639,7 +639,7 @@ class TestAsyncObjectives:
         response = await async_client.objectives.with_raw_response.create(
             workspace_id="workspaceId",
             agent_id="agentId",
-            data={"foo": "bar"},
+            system_prompt_data={"foo": "bar"},
         )
 
         assert response.is_closed is True
@@ -653,7 +653,7 @@ class TestAsyncObjectives:
         async with async_client.objectives.with_streaming_response.create(
             workspace_id="workspaceId",
             agent_id="agentId",
-            data={"foo": "bar"},
+            system_prompt_data={"foo": "bar"},
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -670,7 +670,7 @@ class TestAsyncObjectives:
             await async_client.objectives.with_raw_response.create(
                 workspace_id="",
                 agent_id="agentId",
-                data={"foo": "bar"},
+                system_prompt_data={"foo": "bar"},
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")

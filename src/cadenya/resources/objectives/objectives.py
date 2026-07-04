@@ -113,13 +113,13 @@ class ObjectivesResource(SyncAPIResource):
         workspace_id: str,
         *,
         agent_id: str,
-        data: Dict[str, object],
+        system_prompt_data: Dict[str, object],
         episodic_memory: objective_create_params.EpisodicMemory | Omit = omit,
-        initial_message: str | Omit = omit,
+        first_user_message: str | Omit = omit,
+        first_user_message_data: Dict[str, object] | Omit = omit,
         memory_cascade: Iterable[MemoryReferenceParam] | Omit = omit,
         metadata: CreateOperationMetadata | Omit = omit,
         secrets: Iterable[objective_create_params.Secret] | Omit = omit,
-        user_data: Dict[str, object] | Omit = omit,
         variation_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -132,16 +132,21 @@ class ObjectivesResource(SyncAPIResource):
         Creates a new objective in the workspace
 
         Args:
-          data: Arbitrary data for the objective. May be used in liquid templates for prompts
-              configured on the agent variation
+          system_prompt_data: Arbitrary data rendered into the selected variation's system_prompt_template
+              (liquid) to produce the objective's system prompt. If the agent has a
+              system_prompt_data_schema, this must satisfy it.
 
           episodic_memory: Episodic is used to configure the episodic memory for the objective
 
-          initial_message: Optional override for the initial message sent to the agent. This becomes the
-              first user message in the LLM chat history. When not set, the selected
-              variation's user_message_template is rendered with user_data instead. If neither
-              this field nor a user_message_template is present, the request is rejected with
+          first_user_message: Optional explicit first user message for the LLM chat history. When not set, the
+              selected variation's first_user_message_template is rendered with
+              first_user_message_data instead. If neither this field nor a
+              first_user_message_template is present, the request is rejected with
               InvalidArgument.
+
+          first_user_message_data: Arbitrary data rendered into the selected variation's
+              first_user_message_template (liquid) to produce the first user message. Separate
+              from `system_prompt_data`, which renders the system prompt template.
 
           memory_cascade: Memory layers/entries layered over the baseline cascade inherited from the
               selected variation — element-level rules over inherited styles, in CSS terms.
@@ -164,10 +169,6 @@ class ObjectivesResource(SyncAPIResource):
           secrets: Secrets that can be used in the headers for tool calls using the secret
               interpolation format.
 
-          user_data: Arbitrary data rendered into the selected variation's user_message_template
-              (liquid) to produce the initial user message. Separate from `data`, which
-              renders the system prompt template.
-
           variation_id: Optional explicit variation selection. Overrides the agent's
               variation_selection_mode.
 
@@ -186,13 +187,13 @@ class ObjectivesResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "agent_id": agent_id,
-                    "data": data,
+                    "system_prompt_data": system_prompt_data,
                     "episodic_memory": episodic_memory,
-                    "initial_message": initial_message,
+                    "first_user_message": first_user_message,
+                    "first_user_message_data": first_user_message_data,
                     "memory_cascade": memory_cascade,
                     "metadata": metadata,
                     "secrets": secrets,
-                    "user_data": user_data,
                     "variation_id": variation_id,
                 },
                 objective_create_params.ObjectiveCreateParams,
@@ -694,13 +695,13 @@ class AsyncObjectivesResource(AsyncAPIResource):
         workspace_id: str,
         *,
         agent_id: str,
-        data: Dict[str, object],
+        system_prompt_data: Dict[str, object],
         episodic_memory: objective_create_params.EpisodicMemory | Omit = omit,
-        initial_message: str | Omit = omit,
+        first_user_message: str | Omit = omit,
+        first_user_message_data: Dict[str, object] | Omit = omit,
         memory_cascade: Iterable[MemoryReferenceParam] | Omit = omit,
         metadata: CreateOperationMetadata | Omit = omit,
         secrets: Iterable[objective_create_params.Secret] | Omit = omit,
-        user_data: Dict[str, object] | Omit = omit,
         variation_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -713,16 +714,21 @@ class AsyncObjectivesResource(AsyncAPIResource):
         Creates a new objective in the workspace
 
         Args:
-          data: Arbitrary data for the objective. May be used in liquid templates for prompts
-              configured on the agent variation
+          system_prompt_data: Arbitrary data rendered into the selected variation's system_prompt_template
+              (liquid) to produce the objective's system prompt. If the agent has a
+              system_prompt_data_schema, this must satisfy it.
 
           episodic_memory: Episodic is used to configure the episodic memory for the objective
 
-          initial_message: Optional override for the initial message sent to the agent. This becomes the
-              first user message in the LLM chat history. When not set, the selected
-              variation's user_message_template is rendered with user_data instead. If neither
-              this field nor a user_message_template is present, the request is rejected with
+          first_user_message: Optional explicit first user message for the LLM chat history. When not set, the
+              selected variation's first_user_message_template is rendered with
+              first_user_message_data instead. If neither this field nor a
+              first_user_message_template is present, the request is rejected with
               InvalidArgument.
+
+          first_user_message_data: Arbitrary data rendered into the selected variation's
+              first_user_message_template (liquid) to produce the first user message. Separate
+              from `system_prompt_data`, which renders the system prompt template.
 
           memory_cascade: Memory layers/entries layered over the baseline cascade inherited from the
               selected variation — element-level rules over inherited styles, in CSS terms.
@@ -745,10 +751,6 @@ class AsyncObjectivesResource(AsyncAPIResource):
           secrets: Secrets that can be used in the headers for tool calls using the secret
               interpolation format.
 
-          user_data: Arbitrary data rendered into the selected variation's user_message_template
-              (liquid) to produce the initial user message. Separate from `data`, which
-              renders the system prompt template.
-
           variation_id: Optional explicit variation selection. Overrides the agent's
               variation_selection_mode.
 
@@ -767,13 +769,13 @@ class AsyncObjectivesResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "agent_id": agent_id,
-                    "data": data,
+                    "system_prompt_data": system_prompt_data,
                     "episodic_memory": episodic_memory,
-                    "initial_message": initial_message,
+                    "first_user_message": first_user_message,
+                    "first_user_message_data": first_user_message_data,
                     "memory_cascade": memory_cascade,
                     "metadata": metadata,
                     "secrets": secrets,
-                    "user_data": user_data,
                     "variation_id": variation_id,
                 },
                 objective_create_params.ObjectiveCreateParams,

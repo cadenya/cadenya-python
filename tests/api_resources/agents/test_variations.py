@@ -55,6 +55,7 @@ class TestVariations:
                     "max_tool_calls": 0,
                 },
                 "description": "description",
+                "first_user_message_template": "firstUserMessageTemplate",
                 "model_config": {
                     "model_id": "modelId",
                     "temperature": 0,
@@ -65,7 +66,6 @@ class TestVariations:
                     "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
-                "user_message_template": "userMessageTemplate",
                 "weight": 0,
             },
         )
@@ -219,6 +219,7 @@ class TestVariations:
                     "max_tool_calls": 0,
                 },
                 "description": "description",
+                "first_user_message_template": "firstUserMessageTemplate",
                 "model_config": {
                     "model_id": "modelId",
                     "temperature": 0,
@@ -229,7 +230,6 @@ class TestVariations:
                     "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
-                "user_message_template": "userMessageTemplate",
                 "weight": 0,
             },
             update_mask="updateMask",
@@ -857,6 +857,7 @@ class TestAsyncVariations:
                     "max_tool_calls": 0,
                 },
                 "description": "description",
+                "first_user_message_template": "firstUserMessageTemplate",
                 "model_config": {
                     "model_id": "modelId",
                     "temperature": 0,
@@ -867,7 +868,6 @@ class TestAsyncVariations:
                     "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
-                "user_message_template": "userMessageTemplate",
                 "weight": 0,
             },
         )
@@ -1021,6 +1021,7 @@ class TestAsyncVariations:
                     "max_tool_calls": 0,
                 },
                 "description": "description",
+                "first_user_message_template": "firstUserMessageTemplate",
                 "model_config": {
                     "model_id": "modelId",
                     "temperature": 0,
@@ -1031,7 +1032,6 @@ class TestAsyncVariations:
                     "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
-                "user_message_template": "userMessageTemplate",
                 "weight": 0,
             },
             update_mask="updateMask",

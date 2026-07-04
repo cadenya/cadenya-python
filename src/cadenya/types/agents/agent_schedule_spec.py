@@ -21,17 +21,18 @@ class AgentScheduleSpec(BaseModel):
     interval rules (duration), OR'd together. At least one rule is required.
     """
 
-    data: Optional[object] = None
-    """Optional input data passed to the objective.
-
-    If the agent has an input_data_schema, this must satisfy it.
+    first_user_message: Optional[str] = FieldInfo(alias="firstUserMessage", default=None)
+    """
+    Optional explicit first user message passed to CreateObjective on each fire.
+    Becomes the first user message in the objective's chat history. When unset, the
+    fired objective defers to the selected variation's first_user_message_template.
     """
 
-    initial_message: Optional[str] = FieldInfo(alias="initialMessage", default=None)
-    """Optional initial message passed to CreateObjective on each fire.
-
-    Becomes the first user message in the objective's chat history. When unset, the
-    fired objective defers to the selected variation's user_message_template.
+    first_user_message_data: Optional[object] = FieldInfo(alias="firstUserMessageData", default=None)
+    """
+    Optional data rendered into the variation's first_user_message_template when
+    each fired objective is created. Separate from `system_prompt_data`, which
+    renders the system prompt template.
     """
 
     overlap_policy: Optional[Literal["OVERLAP_POLICY_UNSPECIFIED", "OVERLAP_POLICY_ALLOW", "OVERLAP_POLICY_SKIP"]] = (
@@ -39,11 +40,11 @@ class AgentScheduleSpec(BaseModel):
     )
     """What to do when the previous run is still in flight. Defaults to SKIP."""
 
-    user_data: Optional[object] = FieldInfo(alias="userData", default=None)
+    system_prompt_data: Optional[object] = FieldInfo(alias="systemPromptData", default=None)
     """
-    Optional data rendered into the variation's user_message_template when each
-    fired objective is created. Separate from `data`, which renders the system
-    prompt template.
+    Optional data rendered into the variation's system_prompt_template when each
+    fired objective is created. If the agent has a system_prompt_data_schema, this
+    must satisfy it.
     """
 
     variation_id: Optional[str] = FieldInfo(alias="variationId", default=None)
