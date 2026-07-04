@@ -30,6 +30,16 @@ class AgentVariationSpecParam(TypedDict, total=False):
     Human-readable description of what this variation does or when it should be used
     """
 
+    first_user_message_template: Annotated[str, PropertyInfo(alias="firstUserMessageTemplate")]
+    """
+    Liquid template for the first user message of objectives using this variation.
+    Rendered with CreateObjectiveRequest.first_user_message_data into
+    Objective.first_user_message, the first user message in the LLM chat history.
+    CreateObjectiveRequest.first_user_message, when set, overrides the rendered
+    result. If neither this template nor first_user_message is present, objective
+    creation is rejected with InvalidArgument.
+    """
+
     model_config: Annotated[AgentVariationSpecModelConfigParam, PropertyInfo(alias="modelConfig")]
     """ModelConfig defines the model configuration for a variation"""
 
@@ -47,16 +57,8 @@ class AgentVariationSpecParam(TypedDict, total=False):
     system_prompt_template: Annotated[str, PropertyInfo(alias="systemPromptTemplate")]
     """
     Liquid template for the system prompt of objectives using this variation.
-    Rendered with CreateObjectiveRequest.data into Objective.system_prompt.
-    """
-
-    user_message_template: Annotated[str, PropertyInfo(alias="userMessageTemplate")]
-    """
-    Liquid template for the initial user message of objectives using this variation.
-    Rendered with CreateObjectiveRequest.user_data and becomes the first user
-    message in the LLM chat history. CreateObjectiveRequest.initial_message, when
-    set, overrides the rendered result. If neither this template nor initial_message
-    is present, objective creation is rejected with InvalidArgument.
+    Rendered with CreateObjectiveRequest.system_prompt_data into
+    Objective.system_prompt.
     """
 
     weight: int

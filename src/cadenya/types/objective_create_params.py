@@ -15,22 +15,30 @@ __all__ = ["ObjectiveCreateParams", "EpisodicMemory", "Secret"]
 class ObjectiveCreateParams(TypedDict, total=False):
     agent_id: Required[Annotated[str, PropertyInfo(alias="agentId")]]
 
-    data: Required[Dict[str, object]]
-    """Arbitrary data for the objective.
-
-    May be used in liquid templates for prompts configured on the agent variation
+    system_prompt_data: Required[Annotated[Dict[str, object], PropertyInfo(alias="systemPromptData")]]
+    """
+    Arbitrary data rendered into the selected variation's system_prompt_template
+    (liquid) to produce the objective's system prompt. If the agent has a
+    system_prompt_data_schema, this must satisfy it.
     """
 
     episodic_memory: Annotated[EpisodicMemory, PropertyInfo(alias="episodicMemory")]
     """Episodic is used to configure the episodic memory for the objective"""
 
-    initial_message: Annotated[str, PropertyInfo(alias="initialMessage")]
-    """Optional override for the initial message sent to the agent.
+    first_user_message: Annotated[str, PropertyInfo(alias="firstUserMessage")]
+    """Optional explicit first user message for the LLM chat history.
 
-    This becomes the first user message in the LLM chat history. When not set, the
-    selected variation's user_message_template is rendered with user_data instead.
-    If neither this field nor a user_message_template is present, the request is
-    rejected with InvalidArgument.
+    When not set, the selected variation's first_user_message_template is rendered
+    with first_user_message_data instead. If neither this field nor a
+    first_user_message_template is present, the request is rejected with
+    InvalidArgument.
+    """
+
+    first_user_message_data: Annotated[Dict[str, object], PropertyInfo(alias="firstUserMessageData")]
+    """
+    Arbitrary data rendered into the selected variation's
+    first_user_message_template (liquid) to produce the first user message. Separate
+    from `system_prompt_data`, which renders the system prompt template.
     """
 
     memory_cascade: Annotated[Iterable[MemoryReferenceParam], PropertyInfo(alias="memoryCascade")]
@@ -61,13 +69,6 @@ class ObjectiveCreateParams(TypedDict, total=False):
     """
     Secrets that can be used in the headers for tool calls using the secret
     interpolation format.
-    """
-
-    user_data: Annotated[Dict[str, object], PropertyInfo(alias="userData")]
-    """
-    Arbitrary data rendered into the selected variation's user_message_template
-    (liquid) to produce the initial user message. Separate from `data`, which
-    renders the system prompt template.
     """
 
     variation_id: Annotated[str, PropertyInfo(alias="variationId")]

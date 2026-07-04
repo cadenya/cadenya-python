@@ -45,10 +45,10 @@ class Objective(BaseModel):
     and (when applicable) schedule that an objective was started with.
     """
 
-    initial_message: str = FieldInfo(alias="initialMessage")
-    """The initial message sent to the agent.
-
-    This becomes the first user message in the LLM chat history.
+    first_user_message: str = FieldInfo(alias="firstUserMessage")
+    """
+    The first user message in the LLM chat history, either provided explicitly at
+    creation or rendered from the variation's first_user_message_template.
     """
 
     metadata: OperationMetadata
@@ -71,11 +71,11 @@ class Objective(BaseModel):
     system_prompt: str = FieldInfo(alias="systemPrompt")
     """system_prompt is read-only, derived from the selected variation's prompt"""
 
-    data: Optional[Dict[str, object]] = None
-    """Arbitrary data for the objective"""
-
     episodic_memory: Optional[EpisodicMemory] = FieldInfo(alias="episodicMemory", default=None)
     """Episodic is used to configure the episodic memory for the objective"""
+
+    first_user_message_data: Optional[Dict[str, object]] = FieldInfo(alias="firstUserMessageData", default=None)
+    """Arbitrary data rendered into the variation's first_user_message_template"""
 
     info: Optional[ObjectiveInfo] = None
     """
@@ -122,5 +122,5 @@ class Objective(BaseModel):
     state_message: Optional[str] = FieldInfo(alias="stateMessage", default=None)
     """Optional human-readable detail about the current state (e.g. a failure reason)."""
 
-    user_data: Optional[Dict[str, object]] = FieldInfo(alias="userData", default=None)
-    """Arbitrary data used to render the variation's user_message_template"""
+    system_prompt_data: Optional[Dict[str, object]] = FieldInfo(alias="systemPromptData", default=None)
+    """Arbitrary data rendered into the variation's system_prompt_template"""
