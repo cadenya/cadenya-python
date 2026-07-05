@@ -14,6 +14,7 @@ from cadenya.types import (
     ObjectiveEvent,
     ObjectiveContextWindow,
     ObjectiveCompactResponse,
+    ObjectiveRetrieveDiagnosticsResponse,
 )
 from cadenya.pagination import SyncCursorPagination, AsyncCursorPagination
 
@@ -532,6 +533,58 @@ class TestObjectives:
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
             client.objectives.with_raw_response.list_events(
+                objective_id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_retrieve_diagnostics(self, client: Cadenya) -> None:
+        objective = client.objectives.retrieve_diagnostics(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(ObjectiveRetrieveDiagnosticsResponse, objective, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_retrieve_diagnostics(self, client: Cadenya) -> None:
+        response = client.objectives.with_raw_response.retrieve_diagnostics(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        objective = response.parse()
+        assert_matches_type(ObjectiveRetrieveDiagnosticsResponse, objective, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_retrieve_diagnostics(self, client: Cadenya) -> None:
+        with client.objectives.with_streaming_response.retrieve_diagnostics(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            objective = response.parse()
+            assert_matches_type(ObjectiveRetrieveDiagnosticsResponse, objective, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_retrieve_diagnostics(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.objectives.with_raw_response.retrieve_diagnostics(
+                objective_id="objectiveId",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
+            client.objectives.with_raw_response.retrieve_diagnostics(
                 objective_id="",
                 workspace_id="workspaceId",
             )
@@ -1102,6 +1155,58 @@ class TestAsyncObjectives:
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
             await async_client.objectives.with_raw_response.list_events(
+                objective_id="",
+                workspace_id="workspaceId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_retrieve_diagnostics(self, async_client: AsyncCadenya) -> None:
+        objective = await async_client.objectives.retrieve_diagnostics(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        )
+        assert_matches_type(ObjectiveRetrieveDiagnosticsResponse, objective, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_retrieve_diagnostics(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.objectives.with_raw_response.retrieve_diagnostics(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        objective = await response.parse()
+        assert_matches_type(ObjectiveRetrieveDiagnosticsResponse, objective, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_retrieve_diagnostics(self, async_client: AsyncCadenya) -> None:
+        async with async_client.objectives.with_streaming_response.retrieve_diagnostics(
+            objective_id="objectiveId",
+            workspace_id="workspaceId",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            objective = await response.parse()
+            assert_matches_type(ObjectiveRetrieveDiagnosticsResponse, objective, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_retrieve_diagnostics(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.objectives.with_raw_response.retrieve_diagnostics(
+                objective_id="objectiveId",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
+            await async_client.objectives.with_raw_response.retrieve_diagnostics(
                 objective_id="",
                 workspace_id="workspaceId",
             )

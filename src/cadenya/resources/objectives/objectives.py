@@ -66,6 +66,7 @@ from ...types.objective_event import ObjectiveEvent
 from ...types.memory_reference_param import MemoryReferenceParam
 from ...types.objective_context_window import ObjectiveContextWindow
 from ...types.objective_compact_response import ObjectiveCompactResponse
+from ...types.objective_retrieve_diagnostics_response import ObjectiveRetrieveDiagnosticsResponse
 from ...types.shared_params.create_operation_metadata import CreateOperationMetadata
 from ...types.agents.agent_variation_spec_compaction_config_param import AgentVariationSpecCompactionConfigParam
 
@@ -608,6 +609,49 @@ class ObjectivesResource(SyncAPIResource):
                 ),
             ),
             model=ObjectiveEvent,
+        )
+
+    def retrieve_diagnostics(
+        self,
+        objective_id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ObjectiveRetrieveDiagnosticsResponse:
+        """
+        Returns the context-usage breakdown measured for the objective's most recent
+        iteration: character lengths per context component (system prompt, memory
+        appendices, tool definitions, messages by role) alongside the iteration's input
+        token counts.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        return self._get(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/diagnostics",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveRetrieveDiagnosticsResponse,
         )
 
     def stream_events(
@@ -1192,6 +1236,49 @@ class AsyncObjectivesResource(AsyncAPIResource):
             model=ObjectiveEvent,
         )
 
+    async def retrieve_diagnostics(
+        self,
+        objective_id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ObjectiveRetrieveDiagnosticsResponse:
+        """
+        Returns the context-usage breakdown measured for the objective's most recent
+        iteration: character lengths per context component (system prompt, memory
+        appendices, tool definitions, messages by role) alongside the iteration's input
+        token counts.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        return await self._get(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/diagnostics",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveRetrieveDiagnosticsResponse,
+        )
+
     async def stream_events(
         self,
         objective_id: str,
@@ -1264,6 +1351,9 @@ class ObjectivesResourceWithRawResponse:
         self.list_events = to_raw_response_wrapper(
             objectives.list_events,
         )
+        self.retrieve_diagnostics = to_raw_response_wrapper(
+            objectives.retrieve_diagnostics,
+        )
         self.stream_events = to_raw_response_wrapper(
             objectives.stream_events,
         )
@@ -1312,6 +1402,9 @@ class AsyncObjectivesResourceWithRawResponse:
         )
         self.list_events = async_to_raw_response_wrapper(
             objectives.list_events,
+        )
+        self.retrieve_diagnostics = async_to_raw_response_wrapper(
+            objectives.retrieve_diagnostics,
         )
         self.stream_events = async_to_raw_response_wrapper(
             objectives.stream_events,
@@ -1362,6 +1455,9 @@ class ObjectivesResourceWithStreamingResponse:
         self.list_events = to_streamed_response_wrapper(
             objectives.list_events,
         )
+        self.retrieve_diagnostics = to_streamed_response_wrapper(
+            objectives.retrieve_diagnostics,
+        )
         self.stream_events = to_streamed_response_wrapper(
             objectives.stream_events,
         )
@@ -1410,6 +1506,9 @@ class AsyncObjectivesResourceWithStreamingResponse:
         )
         self.list_events = async_to_streamed_response_wrapper(
             objectives.list_events,
+        )
+        self.retrieve_diagnostics = async_to_streamed_response_wrapper(
+            objectives.retrieve_diagnostics,
         )
         self.stream_events = async_to_streamed_response_wrapper(
             objectives.stream_events,

@@ -163,6 +163,7 @@ from cadenya.types import (
     AssistantMessage,
     AssistantToolCall,
     CallableTool,
+    ContextLengths,
     ContextWindowCompacted,
     MemoryRead,
     MemoryReference,
@@ -170,6 +171,7 @@ from cadenya.types import (
     ObjectiveConfigSnapshot,
     ObjectiveContextWindow,
     ObjectiveContextWindowData,
+    ObjectiveDiagnostics,
     ObjectiveError,
     ObjectiveEvent,
     ObjectiveEventData,
@@ -187,6 +189,7 @@ from cadenya.types import (
     ToolResult,
     UserMessage,
     ObjectiveCompactResponse,
+    ObjectiveRetrieveDiagnosticsResponse,
 )
 ```
 
@@ -200,6 +203,7 @@ Methods:
 - <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}:continue">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">continue\_</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_continue_params.py">params</a>) -> <a href="./src/cadenya/types/objective_event.py">ObjectiveEvent</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/context_windows">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">list_context_windows</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_list_context_windows_params.py">params</a>) -> <a href="./src/cadenya/types/objective_context_window.py">SyncCursorPagination[ObjectiveContextWindow]</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/events">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">list_events</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_list_events_params.py">params</a>) -> <a href="./src/cadenya/types/objective_event.py">SyncCursorPagination[ObjectiveEvent]</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/diagnostics">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">retrieve_diagnostics</a>(objective_id, \*, workspace_id) -> <a href="./src/cadenya/types/objective_retrieve_diagnostics_response.py">ObjectiveRetrieveDiagnosticsResponse</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/events:stream">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">stream_events</a>(objective_id, \*, workspace_id) -> <a href="./src/cadenya/types/objective_event.py">ObjectiveEvent</a></code>
 
 ## Tools

@@ -51,6 +51,7 @@ from .sync_completed import SyncCompleted as SyncCompleted
 from .tool_set_event import ToolSetEvent as ToolSetEvent
 from .workspace_spec import WorkspaceSpec as WorkspaceSpec
 from .ai_provider_key import AIProviderKey as AIProviderKey
+from .context_lengths import ContextLengths as ContextLengths
 from .objective_error import ObjectiveError as ObjectiveError
 from .objective_event import ObjectiveEvent as ObjectiveEvent
 from .agent_spec_param import AgentSpecParam as AgentSpecParam
@@ -88,6 +89,7 @@ from .upload_create_params import UploadCreateParams as UploadCreateParams
 from .workspace_spec_param import WorkspaceSpecParam as WorkspaceSpecParam
 from .api_key_create_params import APIKeyCreateParams as APIKeyCreateParams
 from .api_key_update_params import APIKeyUpdateParams as APIKeyUpdateParams
+from .objective_diagnostics import ObjectiveDiagnostics as ObjectiveDiagnostics
 from .objective_list_params import ObjectiveListParams as ObjectiveListParams
 from .tool_set_adapter_http import ToolSetAdapterHTTP as ToolSetAdapterHTTP
 from .workspace_list_params import WorkspaceListParams as WorkspaceListParams
@@ -137,6 +139,9 @@ from .tool_set_get_openapi_spec_response import ToolSetGetOpenAPISpecResponse as
 from .rotate_webhook_signing_key_response import RotateWebhookSigningKeyResponse as RotateWebhookSigningKeyResponse
 from .objective_list_context_windows_params import (
     ObjectiveListContextWindowsParams as ObjectiveListContextWindowsParams,
+)
+from .objective_retrieve_diagnostics_response import (
+    ObjectiveRetrieveDiagnosticsResponse as ObjectiveRetrieveDiagnosticsResponse,
 )
 from .search_search_tools_or_tool_sets_params import (
     SearchSearchToolsOrToolSetsParams as SearchSearchToolsOrToolSetsParams,
