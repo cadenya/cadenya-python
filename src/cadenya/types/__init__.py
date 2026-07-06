@@ -91,6 +91,7 @@ from .api_key_create_params import APIKeyCreateParams as APIKeyCreateParams
 from .api_key_update_params import APIKeyUpdateParams as APIKeyUpdateParams
 from .objective_diagnostics import ObjectiveDiagnostics as ObjectiveDiagnostics
 from .objective_list_params import ObjectiveListParams as ObjectiveListParams
+from .tool_set_adapter_bare import ToolSetAdapterBare as ToolSetAdapterBare
 from .tool_set_adapter_http import ToolSetAdapterHTTP as ToolSetAdapterHTTP
 from .workspace_list_params import WorkspaceListParams as WorkspaceListParams
 from .workspace_secret_info import WorkspaceSecretInfo as WorkspaceSecretInfo
@@ -118,6 +119,7 @@ from .objective_compact_response import ObjectiveCompactResponse as ObjectiveCom
 from .tool_set_adapter_mcp_param import ToolSetAdapterMcpParam as ToolSetAdapterMcpParam
 from .ai_provider_key_list_params import AIProviderKeyListParams as AIProviderKeyListParams
 from .approval_requirement_filter import ApprovalRequirementFilter as ApprovalRequirementFilter
+from .tool_set_adapter_bare_param import ToolSetAdapterBareParam as ToolSetAdapterBareParam
 from .tool_set_adapter_http_param import ToolSetAdapterHTTPParam as ToolSetAdapterHTTPParam
 from .tool_set_list_events_params import ToolSetListEventsParams as ToolSetListEventsParams
 from .unsafe_unwrap_webhook_event import UnsafeUnwrapWebhookEvent as UnsafeUnwrapWebhookEvent

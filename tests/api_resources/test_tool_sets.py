@@ -44,6 +44,7 @@ class TestToolSets:
             },
             spec={
                 "adapter": {
+                    "bare": {"content_timeout": 0},
                     "http": {
                         "base_url": "baseUrl",
                         "headers": {"foo": "string"},
@@ -285,6 +286,7 @@ class TestToolSets:
             },
             spec={
                 "adapter": {
+                    "bare": {"content_timeout": 0},
                     "http": {
                         "base_url": "baseUrl",
                         "headers": {"foo": "string"},
@@ -814,6 +816,7 @@ class TestAsyncToolSets:
             },
             spec={
                 "adapter": {
+                    "bare": {"content_timeout": 0},
                     "http": {
                         "base_url": "baseUrl",
                         "headers": {"foo": "string"},
@@ -1055,6 +1058,7 @@ class TestAsyncToolSets:
             },
             spec={
                 "adapter": {
+                    "bare": {"content_timeout": 0},
                     "http": {
                         "base_url": "baseUrl",
                         "headers": {"foo": "string"},

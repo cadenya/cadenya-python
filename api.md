@@ -234,6 +234,10 @@ from cadenya.types.objectives import (
     ObjectiveToolCallResultTextBlock,
     ObjectiveToolCallWithResult,
     ResolvedSecret,
+    SetToolCallContentRequestAudioBlock,
+    SetToolCallContentRequestContentBlock,
+    SetToolCallContentRequestImageBlock,
+    SetToolCallContentRequestTextBlock,
 )
 ```
 
@@ -243,6 +247,7 @@ Methods:
 - <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">list</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objectives/tool_call_list_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_tool_call.py">SyncCursorPagination[ObjectiveToolCall]</a></code>
 - <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls/{toolCallId}:approve">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">approve</a>(tool_call_id, \*, workspace_id, objective_id) -> <a href="./src/cadenya/types/objectives/objective_tool_call.py">ObjectiveToolCall</a></code>
 - <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls/{toolCallId}:deny">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">deny</a>(tool_call_id, \*, workspace_id, objective_id, \*\*<a href="src/cadenya/types/objectives/tool_call_deny_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_tool_call.py">ObjectiveToolCall</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls/{toolCallId}:setContent">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">set_content</a>(tool_call_id, \*, workspace_id, objective_id, \*\*<a href="src/cadenya/types/objectives/tool_call_set_content_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_tool_call.py">ObjectiveToolCall</a></code>
 
 ## Tasks
 
@@ -365,6 +370,7 @@ from cadenya.types import (
     ToolFilter,
     ToolSet,
     ToolSetAdapter,
+    ToolSetAdapterBare,
     ToolSetAdapterHTTP,
     ToolSetAdapterMcp,
     ToolSetAdapterOpenAPI,
@@ -394,6 +400,7 @@ Types:
 
 ```python
 from cadenya.types.tool_sets import (
+    ConfigBare,
     ConfigHTTP,
     ConfigMcp,
     ConfigOpenAPI,

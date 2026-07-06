@@ -15,6 +15,23 @@ class ToolCallListParams(TypedDict, total=False):
     cursor: str
     """Pagination cursor from previous response"""
 
+    execution_status: Annotated[
+        Literal[
+            "TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED",
+            "TOOL_CALL_EXECUTION_STATUS_PENDING",
+            "TOOL_CALL_EXECUTION_STATUS_RUNNING",
+            "TOOL_CALL_EXECUTION_STATUS_COMPLETED",
+            "TOOL_CALL_EXECUTION_STATUS_ERRORED",
+            "TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT",
+        ],
+        PropertyInfo(alias="executionStatus"),
+    ]
+    """Filter by tool call execution status.
+
+    Useful for reverse-harness polling of bare tool calls waiting for externally
+    supplied content (TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT).
+    """
+
     include_info: Annotated[bool, PropertyInfo(alias="includeInfo")]
     """When set to true you may use more of your alloted API rate-limit"""
 

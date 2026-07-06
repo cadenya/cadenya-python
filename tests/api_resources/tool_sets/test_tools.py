@@ -47,6 +47,7 @@ class TestTools:
             },
             spec={
                 "config": {
+                    "bare": {},
                     "http": {
                         "request_method": "HTTP_METHOD_UNSPECIFIED",
                         "headers": {"foo": "string"},
@@ -236,6 +237,7 @@ class TestTools:
             },
             spec={
                 "config": {
+                    "bare": {},
                     "http": {
                         "request_method": "HTTP_METHOD_UNSPECIFIED",
                         "headers": {"foo": "string"},
@@ -618,6 +620,7 @@ class TestAsyncTools:
             },
             spec={
                 "config": {
+                    "bare": {},
                     "http": {
                         "request_method": "HTTP_METHOD_UNSPECIFIED",
                         "headers": {"foo": "string"},
@@ -807,6 +810,7 @@ class TestAsyncTools:
             },
             spec={
                 "config": {
+                    "bare": {},
                     "http": {
                         "request_method": "HTTP_METHOD_UNSPECIFIED",
                         "headers": {"foo": "string"},
