@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from typing import Iterable
 from typing_extensions import Literal
 
 import httpx
@@ -18,9 +19,12 @@ from ..._response import (
 )
 from ...pagination import SyncCursorPagination, AsyncCursorPagination
 from ..._base_client import AsyncPaginator, make_request_options
-from ...types.objectives import tool_call_deny_params, tool_call_list_params
+from ...types.objectives import tool_call_deny_params, tool_call_list_params, tool_call_set_content_params
 from ...types.objectives.objective_tool_call import ObjectiveToolCall
 from ...types.objectives.objective_tool_call_with_result import ObjectiveToolCallWithResult
+from ...types.objectives.set_tool_call_content_request_content_block_param import (
+    SetToolCallContentRequestContentBlockParam,
+)
 
 __all__ = ["ToolCallsResource", "AsyncToolCallsResource"]
 
@@ -97,6 +101,15 @@ class ToolCallsResource(SyncAPIResource):
         *,
         workspace_id: str,
         cursor: str | Omit = omit,
+        execution_status: Literal[
+            "TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED",
+            "TOOL_CALL_EXECUTION_STATUS_PENDING",
+            "TOOL_CALL_EXECUTION_STATUS_RUNNING",
+            "TOOL_CALL_EXECUTION_STATUS_COMPLETED",
+            "TOOL_CALL_EXECUTION_STATUS_ERRORED",
+            "TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT",
+        ]
+        | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
         status: Literal[
@@ -119,6 +132,10 @@ class ToolCallsResource(SyncAPIResource):
 
         Args:
           cursor: Pagination cursor from previous response
+
+          execution_status: Filter by tool call execution status. Useful for reverse-harness polling of bare
+              tool calls waiting for externally supplied content
+              (TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT).
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
@@ -153,6 +170,7 @@ class ToolCallsResource(SyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "execution_status": execution_status,
                         "include_info": include_info,
                         "limit": limit,
                         "status": status,
@@ -259,6 +277,58 @@ class ToolCallsResource(SyncAPIResource):
             cast_to=ObjectiveToolCall,
         )
 
+    def set_content(
+        self,
+        tool_call_id: str,
+        *,
+        workspace_id: str,
+        objective_id: str,
+        content: Iterable[SetToolCallContentRequestContentBlockParam],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ObjectiveToolCall:
+        """
+        For bare tool calls (tool sets with no execution adapter), sets the content an
+        external API consumer supplies for the call — used for human-in-the-loop tools
+        and reverse harnesses that execute tools locally and report results back.
+
+        Args:
+          content: The content to set on the tool call. Mirrors
+              ObjectiveToolCallResult.ContentBlock but writable: media blocks carry raw data
+              on input where the result-side carries a signed url on output.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        if not tool_call_id:
+            raise ValueError(f"Expected a non-empty value for `tool_call_id` but received {tool_call_id!r}")
+        return self._post(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/tool_calls/{tool_call_id}:setContent",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+                tool_call_id=tool_call_id,
+            ),
+            body=maybe_transform({"content": content}, tool_call_set_content_params.ToolCallSetContentParams),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveToolCall,
+        )
+
 
 class AsyncToolCallsResource(AsyncAPIResource):
     @cached_property
@@ -332,6 +402,15 @@ class AsyncToolCallsResource(AsyncAPIResource):
         *,
         workspace_id: str,
         cursor: str | Omit = omit,
+        execution_status: Literal[
+            "TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED",
+            "TOOL_CALL_EXECUTION_STATUS_PENDING",
+            "TOOL_CALL_EXECUTION_STATUS_RUNNING",
+            "TOOL_CALL_EXECUTION_STATUS_COMPLETED",
+            "TOOL_CALL_EXECUTION_STATUS_ERRORED",
+            "TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT",
+        ]
+        | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
         status: Literal[
@@ -354,6 +433,10 @@ class AsyncToolCallsResource(AsyncAPIResource):
 
         Args:
           cursor: Pagination cursor from previous response
+
+          execution_status: Filter by tool call execution status. Useful for reverse-harness polling of bare
+              tool calls waiting for externally supplied content
+              (TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT).
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
@@ -388,6 +471,7 @@ class AsyncToolCallsResource(AsyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "execution_status": execution_status,
                         "include_info": include_info,
                         "limit": limit,
                         "status": status,
@@ -494,6 +578,60 @@ class AsyncToolCallsResource(AsyncAPIResource):
             cast_to=ObjectiveToolCall,
         )
 
+    async def set_content(
+        self,
+        tool_call_id: str,
+        *,
+        workspace_id: str,
+        objective_id: str,
+        content: Iterable[SetToolCallContentRequestContentBlockParam],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ObjectiveToolCall:
+        """
+        For bare tool calls (tool sets with no execution adapter), sets the content an
+        external API consumer supplies for the call — used for human-in-the-loop tools
+        and reverse harnesses that execute tools locally and report results back.
+
+        Args:
+          content: The content to set on the tool call. Mirrors
+              ObjectiveToolCallResult.ContentBlock but writable: media blocks carry raw data
+              on input where the result-side carries a signed url on output.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        if not tool_call_id:
+            raise ValueError(f"Expected a non-empty value for `tool_call_id` but received {tool_call_id!r}")
+        return await self._post(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/tool_calls/{tool_call_id}:setContent",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+                tool_call_id=tool_call_id,
+            ),
+            body=await async_maybe_transform(
+                {"content": content}, tool_call_set_content_params.ToolCallSetContentParams
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveToolCall,
+        )
+
 
 class ToolCallsResourceWithRawResponse:
     def __init__(self, tool_calls: ToolCallsResource) -> None:
@@ -510,6 +648,9 @@ class ToolCallsResourceWithRawResponse:
         )
         self.deny = to_raw_response_wrapper(
             tool_calls.deny,
+        )
+        self.set_content = to_raw_response_wrapper(
+            tool_calls.set_content,
         )
 
 
@@ -529,6 +670,9 @@ class AsyncToolCallsResourceWithRawResponse:
         self.deny = async_to_raw_response_wrapper(
             tool_calls.deny,
         )
+        self.set_content = async_to_raw_response_wrapper(
+            tool_calls.set_content,
+        )
 
 
 class ToolCallsResourceWithStreamingResponse:
@@ -547,6 +691,9 @@ class ToolCallsResourceWithStreamingResponse:
         self.deny = to_streamed_response_wrapper(
             tool_calls.deny,
         )
+        self.set_content = to_streamed_response_wrapper(
+            tool_calls.set_content,
+        )
 
 
 class AsyncToolCallsResourceWithStreamingResponse:
@@ -564,4 +711,7 @@ class AsyncToolCallsResourceWithStreamingResponse:
         )
         self.deny = async_to_streamed_response_wrapper(
             tool_calls.deny,
+        )
+        self.set_content = async_to_streamed_response_wrapper(
+            tool_calls.set_content,
         )

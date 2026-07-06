@@ -27,6 +27,7 @@ class ObjectiveToolCall(BaseModel):
         "TOOL_CALL_EXECUTION_STATUS_RUNNING",
         "TOOL_CALL_EXECUTION_STATUS_COMPLETED",
         "TOOL_CALL_EXECUTION_STATUS_ERRORED",
+        "TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT",
     ] = FieldInfo(alias="executionStatus")
 
     metadata: OperationMetadata

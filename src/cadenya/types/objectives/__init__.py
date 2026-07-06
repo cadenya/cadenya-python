@@ -19,6 +19,7 @@ from .objective_feedback_info import ObjectiveFeedbackInfo as ObjectiveFeedbackI
 from .objective_tool_call_data import ObjectiveToolCallData as ObjectiveToolCallData
 from .objective_tool_call_info import ObjectiveToolCallInfo as ObjectiveToolCallInfo
 from .objective_tool_call_result import ObjectiveToolCallResult as ObjectiveToolCallResult
+from .tool_call_set_content_params import ToolCallSetContentParams as ToolCallSetContentParams
 from .objective_feedback_data_param import ObjectiveFeedbackDataParam as ObjectiveFeedbackDataParam
 from .objective_tool_call_with_result import ObjectiveToolCallWithResult as ObjectiveToolCallWithResult
 from .objective_tool_call_result_text_block import ObjectiveToolCallResultTextBlock as ObjectiveToolCallResultTextBlock
@@ -30,4 +31,16 @@ from .objective_tool_call_result_image_block import (
 )
 from .objective_tool_call_result_content_block import (
     ObjectiveToolCallResultContentBlock as ObjectiveToolCallResultContentBlock,
+)
+from .set_tool_call_content_request_text_block_param import (
+    SetToolCallContentRequestTextBlockParam as SetToolCallContentRequestTextBlockParam,
+)
+from .set_tool_call_content_request_audio_block_param import (
+    SetToolCallContentRequestAudioBlockParam as SetToolCallContentRequestAudioBlockParam,
+)
+from .set_tool_call_content_request_image_block_param import (
+    SetToolCallContentRequestImageBlockParam as SetToolCallContentRequestImageBlockParam,
+)
+from .set_tool_call_content_request_content_block_param import (
+    SetToolCallContentRequestContentBlockParam as SetToolCallContentRequestContentBlockParam,
 )

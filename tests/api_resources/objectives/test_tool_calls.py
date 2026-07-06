@@ -101,6 +101,7 @@ class TestToolCalls:
             objective_id="objectiveId",
             workspace_id="workspaceId",
             cursor="cursor",
+            execution_status="TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED",
             include_info=True,
             limit=0,
             status="TOOL_CALL_STATUS_UNSPECIFIED",
@@ -289,6 +290,76 @@ class TestToolCalls:
                 objective_id="objectiveId",
             )
 
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_set_content(self, client: Cadenya) -> None:
+        tool_call = client.objectives.tool_calls.set_content(
+            tool_call_id="toolCallId",
+            workspace_id="workspaceId",
+            objective_id="objectiveId",
+            content=[{}],
+        )
+        assert_matches_type(ObjectiveToolCall, tool_call, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_set_content(self, client: Cadenya) -> None:
+        response = client.objectives.tool_calls.with_raw_response.set_content(
+            tool_call_id="toolCallId",
+            workspace_id="workspaceId",
+            objective_id="objectiveId",
+            content=[{}],
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        tool_call = response.parse()
+        assert_matches_type(ObjectiveToolCall, tool_call, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_set_content(self, client: Cadenya) -> None:
+        with client.objectives.tool_calls.with_streaming_response.set_content(
+            tool_call_id="toolCallId",
+            workspace_id="workspaceId",
+            objective_id="objectiveId",
+            content=[{}],
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            tool_call = response.parse()
+            assert_matches_type(ObjectiveToolCall, tool_call, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_set_content(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.objectives.tool_calls.with_raw_response.set_content(
+                tool_call_id="toolCallId",
+                workspace_id="",
+                objective_id="objectiveId",
+                content=[{}],
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
+            client.objectives.tool_calls.with_raw_response.set_content(
+                tool_call_id="toolCallId",
+                workspace_id="workspaceId",
+                objective_id="",
+                content=[{}],
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_call_id` but received ''"):
+            client.objectives.tool_calls.with_raw_response.set_content(
+                tool_call_id="",
+                workspace_id="workspaceId",
+                objective_id="objectiveId",
+                content=[{}],
+            )
+
 
 class TestAsyncToolCalls:
     parametrize = pytest.mark.parametrize(
@@ -375,6 +446,7 @@ class TestAsyncToolCalls:
             objective_id="objectiveId",
             workspace_id="workspaceId",
             cursor="cursor",
+            execution_status="TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED",
             include_info=True,
             limit=0,
             status="TOOL_CALL_STATUS_UNSPECIFIED",
@@ -561,4 +633,74 @@ class TestAsyncToolCalls:
                 tool_call_id="",
                 workspace_id="workspaceId",
                 objective_id="objectiveId",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_set_content(self, async_client: AsyncCadenya) -> None:
+        tool_call = await async_client.objectives.tool_calls.set_content(
+            tool_call_id="toolCallId",
+            workspace_id="workspaceId",
+            objective_id="objectiveId",
+            content=[{}],
+        )
+        assert_matches_type(ObjectiveToolCall, tool_call, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_set_content(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.objectives.tool_calls.with_raw_response.set_content(
+            tool_call_id="toolCallId",
+            workspace_id="workspaceId",
+            objective_id="objectiveId",
+            content=[{}],
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        tool_call = await response.parse()
+        assert_matches_type(ObjectiveToolCall, tool_call, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_set_content(self, async_client: AsyncCadenya) -> None:
+        async with async_client.objectives.tool_calls.with_streaming_response.set_content(
+            tool_call_id="toolCallId",
+            workspace_id="workspaceId",
+            objective_id="objectiveId",
+            content=[{}],
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            tool_call = await response.parse()
+            assert_matches_type(ObjectiveToolCall, tool_call, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_set_content(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.objectives.tool_calls.with_raw_response.set_content(
+                tool_call_id="toolCallId",
+                workspace_id="",
+                objective_id="objectiveId",
+                content=[{}],
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
+            await async_client.objectives.tool_calls.with_raw_response.set_content(
+                tool_call_id="toolCallId",
+                workspace_id="workspaceId",
+                objective_id="",
+                content=[{}],
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_call_id` but received ''"):
+            await async_client.objectives.tool_calls.with_raw_response.set_content(
+                tool_call_id="",
+                workspace_id="workspaceId",
+                objective_id="objectiveId",
+                content=[{}],
             )
