@@ -261,6 +261,7 @@ class ObjectivesResource(SyncAPIResource):
             "STATE_FAILED",
             "STATE_CANCELLED",
             "STATE_FINALIZED",
+            "STATE_TIMED_OUT",
         ]
         | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -886,6 +887,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
             "STATE_FAILED",
             "STATE_CANCELLED",
             "STATE_FINALIZED",
+            "STATE_TIMED_OUT",
         ]
         | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.

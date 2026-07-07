@@ -34,6 +34,7 @@ class WebhookDeliveryListParams(TypedDict, total=False):
             "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED",
             "OBJECTIVE_EVENT_TYPE_FINALIZED",
             "OBJECTIVE_EVENT_TYPE_NOTICE",
+            "OBJECTIVE_EVENT_TYPE_TIMED_OUT",
         ],
         PropertyInfo(alias="eventType"),
     ]

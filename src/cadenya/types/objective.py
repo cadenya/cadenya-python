@@ -65,6 +65,7 @@ class Objective(BaseModel):
         "STATE_FAILED",
         "STATE_CANCELLED",
         "STATE_FINALIZED",
+        "STATE_TIMED_OUT",
     ]
     """The current lifecycle state of the objective."""
 

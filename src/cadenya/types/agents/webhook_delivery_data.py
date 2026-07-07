@@ -35,6 +35,7 @@ class WebhookDeliveryData(BaseModel):
         "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED",
         "OBJECTIVE_EVENT_TYPE_FINALIZED",
         "OBJECTIVE_EVENT_TYPE_NOTICE",
+        "OBJECTIVE_EVENT_TYPE_TIMED_OUT",
     ] = FieldInfo(alias="eventType")
     """The type of objective event that triggered this webhook delivery"""
 

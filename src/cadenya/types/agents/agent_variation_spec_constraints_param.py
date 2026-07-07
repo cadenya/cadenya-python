@@ -10,6 +10,14 @@ __all__ = ["AgentVariationSpecConstraintsParam"]
 
 
 class AgentVariationSpecConstraintsParam(TypedDict, total=False):
+    inactivity_timeout: Annotated[int, PropertyInfo(alias="inactivityTimeout")]
+    """
+    How long an objective may sit with no activity (no user messages, no LLM calls)
+    before it is finalized as timed out. Between 1 minute and 24 hours. When not
+    set, objectives are still swept at the system-wide 24 hour maximum — every
+    objective eventually reaches a terminal state.
+    """
+
     max_sub_objectives: Annotated[int, PropertyInfo(alias="maxSubObjectives")]
     """The maximum number of sub-objectives that can be created. 0 means no limit."""
 

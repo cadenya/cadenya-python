@@ -20,7 +20,7 @@ from .sub_agent_updated import SubAgentUpdated
 from .tool_approval_requested import ToolApprovalRequested
 from .context_window_compacted import ContextWindowCompacted
 
-__all__ = ["ObjectiveEventData", "Cancelled", "Finalized", "Notice"]
+__all__ = ["ObjectiveEventData", "Cancelled", "Finalized", "Notice", "TimedOut"]
 
 
 class Cancelled(BaseModel):
@@ -78,6 +78,23 @@ class Notice(BaseModel):
     """Human-readable description of what happened."""
 
 
+class TimedOut(BaseModel):
+    """
+    ObjectiveTimedOut is the terminal event written when an objective is
+     finalized by the inactivity sweep because it saw no activity (no user
+     messages, no LLM calls) within its variation's inactivity timeout — or the
+     system-wide 24 hour maximum when no timeout is configured. The objective
+     produces no output. After this event, the objective is super-terminal: no
+     further iterations, compaction, or continuation are permitted.
+    """
+
+    message: Optional[str] = None
+    """Human-readable note recorded at timeout time (e.g.
+
+    "Timed out after 2h of inactivity").
+    """
+
+
 class ObjectiveEventData(BaseModel):
     assistant_message: Optional[AssistantMessage] = FieldInfo(alias="assistantMessage", default=None)
 
@@ -118,6 +135,16 @@ class ObjectiveEventData(BaseModel):
     sub_agent_spawned: Optional[SubAgentSpawned] = FieldInfo(alias="subAgentSpawned", default=None)
 
     sub_agent_updated: Optional[SubAgentUpdated] = FieldInfo(alias="subAgentUpdated", default=None)
+
+    timed_out: Optional[TimedOut] = FieldInfo(alias="timedOut", default=None)
+    """
+    ObjectiveTimedOut is the terminal event written when an objective is finalized
+    by the inactivity sweep because it saw no activity (no user messages, no LLM
+    calls) within its variation's inactivity timeout — or the system-wide 24 hour
+    maximum when no timeout is configured. The objective produces no output. After
+    this event, the objective is super-terminal: no further iterations, compaction,
+    or continuation are permitted.
+    """
 
     tool_approval_requested: Optional[ToolApprovalRequested] = FieldInfo(alias="toolApprovalRequested", default=None)
 
