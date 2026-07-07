@@ -60,6 +60,7 @@ class TestAgents:
                         "trigger_threshold": 0,
                     },
                     "constraints": {
+                        "inactivity_timeout": 0,
                         "max_sub_objectives": 0,
                         "max_tool_calls": 0,
                     },
@@ -615,6 +616,7 @@ class TestAsyncAgents:
                         "trigger_threshold": 0,
                     },
                     "constraints": {
+                        "inactivity_timeout": 0,
                         "max_sub_objectives": 0,
                         "max_tool_calls": 0,
                     },

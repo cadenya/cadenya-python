@@ -44,5 +44,6 @@ class ObjectiveListParams(TypedDict, total=False):
         "STATE_FAILED",
         "STATE_CANCELLED",
         "STATE_FINALIZED",
+        "STATE_TIMED_OUT",
     ]
     """Filter by state"""
