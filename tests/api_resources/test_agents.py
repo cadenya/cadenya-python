@@ -73,7 +73,6 @@ class TestAgents:
                     "progressive_discovery": {
                         "hints": ["string"],
                         "max_tools": 0,
-                        "rerank_threshold": 0,
                     },
                     "system_prompt_template": "systemPromptTemplate",
                 },
@@ -629,7 +628,6 @@ class TestAsyncAgents:
                     "progressive_discovery": {
                         "hints": ["string"],
                         "max_tools": 0,
-                        "rerank_threshold": 0,
                     },
                     "system_prompt_template": "systemPromptTemplate",
                 },

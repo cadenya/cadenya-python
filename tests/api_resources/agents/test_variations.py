@@ -64,7 +64,6 @@ class TestVariations:
                 "progressive_discovery": {
                     "hints": ["string"],
                     "max_tools": 0,
-                    "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
             },
@@ -228,7 +227,6 @@ class TestVariations:
                 "progressive_discovery": {
                     "hints": ["string"],
                     "max_tools": 0,
-                    "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
             },
@@ -867,7 +865,6 @@ class TestAsyncVariations:
                 "progressive_discovery": {
                     "hints": ["string"],
                     "max_tools": 0,
-                    "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
             },
@@ -1031,7 +1028,6 @@ class TestAsyncVariations:
                 "progressive_discovery": {
                     "hints": ["string"],
                     "max_tools": 0,
-                    "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
             },
