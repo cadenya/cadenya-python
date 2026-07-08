@@ -20,28 +20,34 @@ class ContextLengths(BaseModel):
     """
 
     assistant_messages: int = FieldInfo(alias="assistantMessages")
-    """Chat history messages with the assistant role."""
+    """Character length of the chat history messages with the assistant role."""
 
     available_tools: int = FieldInfo(alias="availableTools")
-    """The discoverable/available-tools appendix attached to the system prompt."""
+    """
+    Character length of the discoverable/available-tools appendix attached to the
+    system prompt.
+    """
 
     episodic_memory: int = FieldInfo(alias="episodicMemory")
-    """The episodic memory appendix attached to the system prompt."""
+    """Character length of the episodic memory appendix attached to the system prompt."""
 
     skills_memory: int = FieldInfo(alias="skillsMemory")
-    """The skills memory appendix attached to the system prompt."""
+    """Character length of the skills memory appendix attached to the system prompt."""
 
     system_prompt: int = FieldInfo(alias="systemPrompt")
-    """The objective's base system prompt (rendered variation template)."""
+    """
+    Character length of the objective's base system prompt (rendered variation
+    template). Not tokens -- see the message comment.
+    """
 
     tool_definitions: int = FieldInfo(alias="toolDefinitions")
     """
-    Serialized tool definitions sent with the completion request (names,
-    descriptions, and JSON-schema parameters).
+    Character length of the serialized tool definitions sent with the completion
+    request (names, descriptions, and JSON-schema parameters).
     """
 
     tool_results: int = FieldInfo(alias="toolResults")
-    """Tool results present in the chat history."""
+    """Character length of the tool results present in the chat history."""
 
     user_messages: int = FieldInfo(alias="userMessages")
-    """Chat history messages with the user role."""
+    """Character length of the chat history messages with the user role."""
