@@ -10,6 +10,11 @@ __all__ = ["Page"]
 
 
 class Page(BaseModel):
-    next_cursor: Optional[str] = FieldInfo(alias="nextCursor", default=None)
+    """Page carries cursor-based pagination state.
 
-    total: Optional[int] = None
+    There is no total: the cursor
+     walks the result set without ever counting it, and a count would cost a second
+     query on every list.
+    """
+
+    next_cursor: Optional[str] = FieldInfo(alias="nextCursor", default=None)
