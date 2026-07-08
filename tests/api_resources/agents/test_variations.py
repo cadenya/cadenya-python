@@ -67,7 +67,6 @@ class TestVariations:
                     "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
-                "weight": 0,
             },
         )
         assert_matches_type(AgentVariation, variation, path=["response"])
@@ -232,7 +231,6 @@ class TestVariations:
                     "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
-                "weight": 0,
             },
             update_mask="updateMask",
         )
@@ -872,7 +870,6 @@ class TestAsyncVariations:
                     "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
-                "weight": 0,
             },
         )
         assert_matches_type(AgentVariation, variation, path=["response"])
@@ -1037,7 +1034,6 @@ class TestAsyncVariations:
                     "rerank_threshold": 0,
                 },
                 "system_prompt_template": "systemPromptTemplate",
-                "weight": 0,
             },
             update_mask="updateMask",
         )

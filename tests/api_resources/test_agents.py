@@ -76,7 +76,6 @@ class TestAgents:
                         "rerank_threshold": 0,
                     },
                     "system_prompt_template": "systemPromptTemplate",
-                    "weight": 0,
                 },
             },
         )
@@ -633,7 +632,6 @@ class TestAsyncAgents:
                         "rerank_threshold": 0,
                     },
                     "system_prompt_template": "systemPromptTemplate",
-                    "weight": 0,
                 },
             },
         )

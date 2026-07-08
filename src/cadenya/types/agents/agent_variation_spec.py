@@ -60,11 +60,3 @@ class AgentVariationSpec(BaseModel):
     Rendered with CreateObjectiveRequest.system_prompt_data into
     Objective.system_prompt.
     """
-
-    weight: Optional[int] = None
-    """Weight for weighted random selection (>= 0).
-
-    P(v) = v.weight / sum(all_weights). Only used when the agent's
-    variation_selection_mode is WEIGHTED. A weight of 0 means never auto-selected,
-    but can still be chosen explicitly via variation_id on CreateObjectiveRequest.
-    """
