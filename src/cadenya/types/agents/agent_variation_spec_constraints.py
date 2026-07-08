@@ -10,12 +10,18 @@ __all__ = ["AgentVariationSpecConstraints"]
 
 
 class AgentVariationSpecConstraints(BaseModel):
-    inactivity_timeout: Optional[int] = FieldInfo(alias="inactivityTimeout", default=None)
+    inactivity_timeout: Optional[str] = FieldInfo(alias="inactivityTimeout", default=None)
     """
     How long an objective may sit with no activity (no user messages, no LLM calls)
-    before it is finalized as timed out. Between 1 minute and 24 hours. When not
-    set, objectives are still swept at the system-wide 24 hour maximum — every
-    objective eventually reaches a terminal state.
+    before it is finalized as timed out. Between 1 minute and 24 hours, expressed as
+    a duration string in seconds (e.g. "7200s"). When not set, objectives are still
+    swept at the system-wide 24 hour maximum — every objective eventually reaches a
+    terminal state.
+
+    Note: no gnostic integer hint here on purpose. The Envoy gRPC-JSON transcoder
+    only accepts the canonical protobuf JSON form for Durations — a "<seconds>s"
+    string — so the SDKs must type this as a string (like AgentScheduleSpec.every),
+    not an integer.
     """
 
     max_sub_objectives: Optional[int] = FieldInfo(alias="maxSubObjectives", default=None)

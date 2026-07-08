@@ -51,7 +51,7 @@ class TestVariations:
                     "trigger_threshold": 0,
                 },
                 "constraints": {
-                    "inactivity_timeout": 0,
+                    "inactivity_timeout": "-160513s",
                     "max_sub_objectives": 0,
                     "max_tool_calls": 0,
                 },
@@ -216,7 +216,7 @@ class TestVariations:
                     "trigger_threshold": 0,
                 },
                 "constraints": {
-                    "inactivity_timeout": 0,
+                    "inactivity_timeout": "-160513s",
                     "max_sub_objectives": 0,
                     "max_tool_calls": 0,
                 },
@@ -855,7 +855,7 @@ class TestAsyncVariations:
                     "trigger_threshold": 0,
                 },
                 "constraints": {
-                    "inactivity_timeout": 0,
+                    "inactivity_timeout": "-160513s",
                     "max_sub_objectives": 0,
                     "max_tool_calls": 0,
                 },
@@ -1020,7 +1020,7 @@ class TestAsyncVariations:
                     "trigger_threshold": 0,
                 },
                 "constraints": {
-                    "inactivity_timeout": 0,
+                    "inactivity_timeout": "-160513s",
                     "max_sub_objectives": 0,
                     "max_tool_calls": 0,
                 },
