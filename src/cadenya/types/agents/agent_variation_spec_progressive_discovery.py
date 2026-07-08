@@ -17,14 +17,16 @@ class AgentVariationSpecProgressiveDiscovery(BaseModel):
     """
 
     hints: Optional[List[str]] = None
+    """
+    Free-text guidance appended to the discoverable-tools appendix in the system
+    prompt. Hints steer the model's choice of tool names; they do not filter or rank
+    anything, because tool_search matches names exactly rather than searching.
+    """
 
     max_tools: Optional[int] = FieldInfo(alias="maxTools", default=None)
+    """The most tool names tool_search will load in a single call.
 
-    rerank_threshold: Optional[float] = FieldInfo(alias="rerankThreshold", default=None)
-    """
-    Rerank Threshold is an optional value that instructs whether or not to run a
-    search result through a embedding/reranker process which can improve performance
-    and reduce context bloat when tools reach the configured threshold. If a tool
-    match must exceed 0.8, for example, the tool very closely match the query the
-    tool search performed.
+    Requesting more than this returns an error telling the model to retry in smaller
+    batches -- it is a per-call batch limit, not a ceiling on how many tools an
+    objective may end up with.
     """
