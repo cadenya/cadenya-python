@@ -21,7 +21,10 @@ class CreateOperationMetadata(TypedDict, total=False):
     """External ID for the operation (e.g., a workflow ID from an external system)"""
 
     labels: Dict[str, str]
-    """
-    Arbitrary key-value pairs for categorization and filtering Examples:
-    {"priority": "high", "source": "api", "workflow": "onboarding"}
+    """Key-value pairs for categorization and filtering.
+
+    Values are 0-63 alphanumeric characters with "-", "\\__", or "." allowed between;
+    keys follow the same shape and additionally accept an optional DNS-subdomain
+    prefix (e.g. "cadenya.com/") of at most 253 characters. Examples: {"priority":
+    "high", "source": "api", "workflow": "onboarding"}
     """
