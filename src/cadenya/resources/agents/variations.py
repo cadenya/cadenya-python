@@ -227,6 +227,7 @@ class VariationsResource(SyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -244,6 +245,10 @@ class VariationsResource(SyncAPIResource):
 
           include_info: When true, the `info` field on each returned variation is populated. Requests
               with this flag count more against your rate limit.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -277,6 +282,7 @@ class VariationsResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "sort_order": sort_order,
                     },
@@ -796,6 +802,7 @@ class AsyncVariationsResource(AsyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -813,6 +820,10 @@ class AsyncVariationsResource(AsyncAPIResource):
 
           include_info: When true, the `info` field on each returned variation is populated. Requests
               with this flag count more against your rate limit.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -846,6 +857,7 @@ class AsyncVariationsResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "sort_order": sort_order,
                     },

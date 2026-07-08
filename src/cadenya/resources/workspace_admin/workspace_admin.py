@@ -230,6 +230,7 @@ class WorkspaceAdminResource(SyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_archived: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -248,6 +249,10 @@ class WorkspaceAdminResource(SyncAPIResource):
 
           include_archived: When true, archived workspaces are included in the results. Defaults to false
               (active workspaces only).
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -271,6 +276,7 @@ class WorkspaceAdminResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_archived": include_archived,
+                        "labels": labels,
                         "limit": limit,
                     },
                     workspace_admin_list_params.WorkspaceAdminListParams,
@@ -505,6 +511,7 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_archived: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -523,6 +530,10 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
 
           include_archived: When true, archived workspaces are included in the results. Defaults to false
               (active workspaces only).
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -546,6 +557,7 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_archived": include_archived,
+                        "labels": labels,
                         "limit": limit,
                     },
                     workspace_admin_list_params.WorkspaceAdminListParams,

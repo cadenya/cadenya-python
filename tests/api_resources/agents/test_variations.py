@@ -309,6 +309,7 @@ class TestVariations:
             workspace_id="workspaceId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             sort_order="sortOrder",
         )
@@ -1113,6 +1114,7 @@ class TestAsyncVariations:
             workspace_id="workspaceId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             sort_order="sortOrder",
         )

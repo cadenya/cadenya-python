@@ -35,6 +35,7 @@ class TestWebhookDeliveries:
             workspace_id="workspaceId",
             cursor="cursor",
             event_type="OBJECTIVE_EVENT_TYPE_UNSPECIFIED",
+            labels="labels",
             limit=0,
             objective_id="objectiveId",
         )
@@ -106,6 +107,7 @@ class TestAsyncWebhookDeliveries:
             workspace_id="workspaceId",
             cursor="cursor",
             event_type="OBJECTIVE_EVENT_TYPE_UNSPECIFIED",
+            labels="labels",
             limit=0,
             objective_id="objectiveId",
         )

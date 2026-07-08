@@ -29,6 +29,7 @@ class TestProfiles:
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         profile = client.workspace_admin.profiles.list(
             cursor="cursor",
+            labels="labels",
             limit=0,
             query="query",
         )
@@ -73,6 +74,7 @@ class TestAsyncProfiles:
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         profile = await async_client.workspace_admin.profiles.list(
             cursor="cursor",
+            labels="labels",
             limit=0,
             query="query",
         )

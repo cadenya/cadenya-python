@@ -181,6 +181,7 @@ class TestWorkspaceAdmin:
         workspace_admin = client.workspace_admin.list(
             cursor="cursor",
             include_archived=True,
+            labels="labels",
             limit=0,
         )
         assert_matches_type(SyncCursorPagination[Workspace], workspace_admin, path=["response"])
@@ -416,6 +417,7 @@ class TestAsyncWorkspaceAdmin:
         workspace_admin = await async_client.workspace_admin.list(
             cursor="cursor",
             include_archived=True,
+            labels="labels",
             limit=0,
         )
         assert_matches_type(AsyncCursorPagination[Workspace], workspace_admin, path=["response"])

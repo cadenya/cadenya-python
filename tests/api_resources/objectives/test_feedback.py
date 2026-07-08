@@ -115,6 +115,7 @@ class TestFeedback:
             objective_id="objectiveId",
             workspace_id="workspaceId",
             cursor="cursor",
+            labels="labels",
             limit=0,
         )
         assert_matches_type(SyncCursorPagination[ObjectiveFeedback], feedback, path=["response"])
@@ -263,6 +264,7 @@ class TestAsyncFeedback:
             objective_id="objectiveId",
             workspace_id="workspaceId",
             cursor="cursor",
+            labels="labels",
             limit=0,
         )
         assert_matches_type(AsyncCursorPagination[ObjectiveFeedback], feedback, path=["response"])

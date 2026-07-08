@@ -220,6 +220,7 @@ class ToolsResource(SyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         names: SequenceNotStr[str] | Omit = omit,
         prefix: str | Omit = omit,
@@ -241,6 +242,10 @@ class ToolsResource(SyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -285,6 +290,7 @@ class ToolsResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "names": names,
                         "prefix": prefix,
@@ -629,6 +635,7 @@ class AsyncToolsResource(AsyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         names: SequenceNotStr[str] | Omit = omit,
         prefix: str | Omit = omit,
@@ -650,6 +657,10 @@ class AsyncToolsResource(AsyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -694,6 +705,7 @@ class AsyncToolsResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "names": names,
                         "prefix": prefix,

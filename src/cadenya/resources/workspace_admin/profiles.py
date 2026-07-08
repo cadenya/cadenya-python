@@ -55,6 +55,7 @@ class ProfilesResource(SyncAPIResource):
         self,
         *,
         cursor: str | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         query: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -70,6 +71,10 @@ class ProfilesResource(SyncAPIResource):
 
         Args:
           cursor: Pagination cursor from previous response
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -95,6 +100,7 @@ class ProfilesResource(SyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "labels": labels,
                         "limit": limit,
                         "query": query,
                     },
@@ -138,6 +144,7 @@ class AsyncProfilesResource(AsyncAPIResource):
         self,
         *,
         cursor: str | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         query: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -153,6 +160,10 @@ class AsyncProfilesResource(AsyncAPIResource):
 
         Args:
           cursor: Pagination cursor from previous response
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -178,6 +189,7 @@ class AsyncProfilesResource(AsyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "labels": labels,
                         "limit": limit,
                         "query": query,
                     },

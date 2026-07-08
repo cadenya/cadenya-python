@@ -96,6 +96,7 @@ class ModelsResource(SyncAPIResource):
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         is_assigned: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -123,6 +124,10 @@ class ModelsResource(SyncAPIResource):
           is_assigned: Filter models to only ones assigned to an active agent variation/agent. Draft
               agents count as assigned; archived agents do not. Assignment does not imply
               recent traffic — see ModelInfo.last_used_at for that.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -158,6 +163,7 @@ class ModelsResource(SyncAPIResource):
                         "cursor": cursor,
                         "include_info": include_info,
                         "is_assigned": is_assigned,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
@@ -356,6 +362,7 @@ class AsyncModelsResource(AsyncAPIResource):
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         is_assigned: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -383,6 +390,10 @@ class AsyncModelsResource(AsyncAPIResource):
           is_assigned: Filter models to only ones assigned to an active agent variation/agent. Draft
               agents count as assigned; archived agents do not. Assignment does not imply
               recent traffic — see ModelInfo.last_used_at for that.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -418,6 +429,7 @@ class AsyncModelsResource(AsyncAPIResource):
                         "cursor": cursor,
                         "include_info": include_info,
                         "is_assigned": is_assigned,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,

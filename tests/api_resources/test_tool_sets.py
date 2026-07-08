@@ -473,6 +473,7 @@ class TestToolSets:
             workspace_id="workspaceId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             prefix="prefix",
             query="query",
@@ -688,6 +689,7 @@ class TestToolSets:
             workspace_id="workspaceId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             sort_order="sortOrder",
         )
@@ -1245,6 +1247,7 @@ class TestAsyncToolSets:
             workspace_id="workspaceId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             prefix="prefix",
             query="query",
@@ -1460,6 +1463,7 @@ class TestAsyncToolSets:
             workspace_id="workspaceId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             sort_order="sortOrder",
         )

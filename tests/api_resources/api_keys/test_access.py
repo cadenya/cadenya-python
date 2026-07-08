@@ -32,6 +32,7 @@ class TestAccess:
         access = client.api_keys.access.list(
             id="id",
             cursor="cursor",
+            labels="labels",
             limit=0,
         )
         assert_matches_type(SyncCursorPagination[Workspace], access, path=["response"])
@@ -193,6 +194,7 @@ class TestAsyncAccess:
         access = await async_client.api_keys.access.list(
             id="id",
             cursor="cursor",
+            labels="labels",
             limit=0,
         )
         assert_matches_type(AsyncCursorPagination[Workspace], access, path=["response"])

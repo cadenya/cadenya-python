@@ -105,6 +105,7 @@ class FeedbackResource(SyncAPIResource):
         *,
         workspace_id: str,
         cursor: str | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -118,6 +119,10 @@ class FeedbackResource(SyncAPIResource):
 
         Args:
           cursor: Pagination cursor from previous response
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -148,6 +153,7 @@ class FeedbackResource(SyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "labels": labels,
                         "limit": limit,
                     },
                     feedback_list_params.FeedbackListParams,
@@ -238,6 +244,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
         *,
         workspace_id: str,
         cursor: str | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -251,6 +258,10 @@ class AsyncFeedbackResource(AsyncAPIResource):
 
         Args:
           cursor: Pagination cursor from previous response
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -281,6 +292,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "labels": labels,
                         "limit": limit,
                     },
                     feedback_list_params.FeedbackListParams,

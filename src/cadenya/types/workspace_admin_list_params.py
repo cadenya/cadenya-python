@@ -19,5 +19,12 @@ class WorkspaceAdminListParams(TypedDict, total=False):
     Defaults to false (active workspaces only).
     """
 
+    labels: str
+    """Filters by metadata labels.
+
+    Comma-separated key=value pairs, e.g. "env=prod,team=ai". A resource matches
+    only if every pair matches exactly (AND semantics).
+    """
+
     limit: int
     """Maximum number of results to return"""

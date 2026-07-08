@@ -249,6 +249,7 @@ class ObjectivesResource(SyncAPIResource):
         agent_schedule_id: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         parent_objective_id: str | Omit = omit,
         profile_id: str | Omit = omit,
@@ -284,6 +285,10 @@ class ObjectivesResource(SyncAPIResource):
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           parent_objective_id: Optional filters
@@ -316,6 +321,7 @@ class ObjectivesResource(SyncAPIResource):
                         "agent_schedule_id": agent_schedule_id,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "parent_objective_id": parent_objective_id,
                         "profile_id": profile_id,
@@ -484,6 +490,7 @@ class ObjectivesResource(SyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -500,6 +507,10 @@ class ObjectivesResource(SyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -531,6 +542,7 @@ class ObjectivesResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                     },
                     objective_list_context_windows_params.ObjectiveListContextWindowsParams,
@@ -546,6 +558,7 @@ class ObjectivesResource(SyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         since_event_id: str | Omit = omit,
         sort_order: str | Omit = omit,
@@ -564,6 +577,10 @@ class ObjectivesResource(SyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -601,6 +618,7 @@ class ObjectivesResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "since_event_id": since_event_id,
                         "sort_order": sort_order,
@@ -875,6 +893,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         agent_schedule_id: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         parent_objective_id: str | Omit = omit,
         profile_id: str | Omit = omit,
@@ -910,6 +929,10 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           parent_objective_id: Optional filters
@@ -942,6 +965,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
                         "agent_schedule_id": agent_schedule_id,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "parent_objective_id": parent_objective_id,
                         "profile_id": profile_id,
@@ -1110,6 +1134,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1126,6 +1151,10 @@ class AsyncObjectivesResource(AsyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -1157,6 +1186,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                     },
                     objective_list_context_windows_params.ObjectiveListContextWindowsParams,
@@ -1172,6 +1202,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         since_event_id: str | Omit = omit,
         sort_order: str | Omit = omit,
@@ -1190,6 +1221,10 @@ class AsyncObjectivesResource(AsyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -1227,6 +1262,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "since_event_id": since_event_id,
                         "sort_order": sort_order,

@@ -26,6 +26,13 @@ class MemoryLayerListParams(TypedDict, total=False):
     include_info: Annotated[bool, PropertyInfo(alias="includeInfo")]
     """When set to true you may use more of your alloted API rate-limit"""
 
+    labels: str
+    """Filters by metadata labels.
+
+    Comma-separated key=value pairs, e.g. "env=prod,team=ai". A resource matches
+    only if every pair matches exactly (AND semantics).
+    """
+
     limit: int
     """Maximum number of results to return"""
 

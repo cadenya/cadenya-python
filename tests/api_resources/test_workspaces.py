@@ -30,6 +30,7 @@ class TestWorkspaces:
         workspace = client.workspaces.list(
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             sort_order="sortOrder",
         )
@@ -103,6 +104,7 @@ class TestAsyncWorkspaces:
         workspace = await async_client.workspaces.list(
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             sort_order="sortOrder",
         )
