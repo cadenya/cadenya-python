@@ -490,7 +490,6 @@ from cadenya.types import Workspace, WorkspaceSpec
 Methods:
 
 - <code title="get /v1/workspaces">client.workspaces.<a href="./src/cadenya/resources/workspaces.py">list</a>(\*\*<a href="src/cadenya/types/workspace_list_params.py">params</a>) -> <a href="./src/cadenya/types/workspace.py">SyncCursorPagination[Workspace]</a></code>
-- <code title="get /v1/workspaces/current">client.workspaces.<a href="./src/cadenya/resources/workspaces.py">get</a>() -> <a href="./src/cadenya/types/workspace.py">Workspace</a></code>
 
 # WorkspaceAdmin
 
