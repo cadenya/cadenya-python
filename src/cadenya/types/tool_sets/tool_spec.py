@@ -21,6 +21,12 @@ class ToolSpec(BaseModel):
     description: str
 
     parameters: Dict[str, object]
+    """The tool's JSON Schema, as handed to the LLM.
+
+    Required, but may be the empty object `{}` for a tool that takes no arguments.
+    Requiring it rather than defaulting it means a misspelled field name
+    (`inputSchema`, say) is a 400 instead of a silently parameterless tool.
+    """
 
     requires_approval: bool = FieldInfo(alias="requiresApproval")
 
