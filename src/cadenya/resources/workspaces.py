@@ -113,29 +113,6 @@ class WorkspacesResource(SyncAPIResource):
             model=Workspace,
         )
 
-    def get(
-        self,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> Workspace:
-        """Retrieves the workspace associated with the current API token.
-
-        Useful for
-        workspace-scoped tokens to identify which workspace they belong to.
-        """
-        return self._get(
-            "/v1/workspaces/current",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=Workspace,
-        )
-
 
 class AsyncWorkspacesResource(AsyncAPIResource):
     """Manage workspaces within an account.
@@ -228,29 +205,6 @@ class AsyncWorkspacesResource(AsyncAPIResource):
             model=Workspace,
         )
 
-    async def get(
-        self,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> Workspace:
-        """Retrieves the workspace associated with the current API token.
-
-        Useful for
-        workspace-scoped tokens to identify which workspace they belong to.
-        """
-        return await self._get(
-            "/v1/workspaces/current",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=Workspace,
-        )
-
 
 class WorkspacesResourceWithRawResponse:
     def __init__(self, workspaces: WorkspacesResource) -> None:
@@ -258,9 +212,6 @@ class WorkspacesResourceWithRawResponse:
 
         self.list = to_raw_response_wrapper(
             workspaces.list,
-        )
-        self.get = to_raw_response_wrapper(
-            workspaces.get,
         )
 
 
@@ -271,9 +222,6 @@ class AsyncWorkspacesResourceWithRawResponse:
         self.list = async_to_raw_response_wrapper(
             workspaces.list,
         )
-        self.get = async_to_raw_response_wrapper(
-            workspaces.get,
-        )
 
 
 class WorkspacesResourceWithStreamingResponse:
@@ -283,9 +231,6 @@ class WorkspacesResourceWithStreamingResponse:
         self.list = to_streamed_response_wrapper(
             workspaces.list,
         )
-        self.get = to_streamed_response_wrapper(
-            workspaces.get,
-        )
 
 
 class AsyncWorkspacesResourceWithStreamingResponse:
@@ -294,7 +239,4 @@ class AsyncWorkspacesResourceWithStreamingResponse:
 
         self.list = async_to_streamed_response_wrapper(
             workspaces.list,
-        )
-        self.get = async_to_streamed_response_wrapper(
-            workspaces.get,
         )
