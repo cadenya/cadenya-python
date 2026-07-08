@@ -186,6 +186,7 @@ class TestAPIKeys:
         api_key = client.api_keys.list(
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             prefix="prefix",
             query="query",
@@ -473,6 +474,7 @@ class TestAsyncAPIKeys:
         api_key = await async_client.api_keys.list(
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             prefix="prefix",
             query="query",

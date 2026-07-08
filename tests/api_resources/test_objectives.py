@@ -173,6 +173,7 @@ class TestObjectives:
             agent_schedule_id="agentScheduleId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             parent_objective_id="parentObjectiveId",
             profile_id="profileId",
@@ -423,6 +424,7 @@ class TestObjectives:
             workspace_id="workspaceId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
         )
         assert_matches_type(SyncCursorPagination[ObjectiveContextWindow], objective, path=["response"])
@@ -487,6 +489,7 @@ class TestObjectives:
             workspace_id="workspaceId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             since_event_id="sinceEventId",
             sort_order="sortOrder",
@@ -795,6 +798,7 @@ class TestAsyncObjectives:
             agent_schedule_id="agentScheduleId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             parent_objective_id="parentObjectiveId",
             profile_id="profileId",
@@ -1045,6 +1049,7 @@ class TestAsyncObjectives:
             workspace_id="workspaceId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
         )
         assert_matches_type(AsyncCursorPagination[ObjectiveContextWindow], objective, path=["response"])
@@ -1109,6 +1114,7 @@ class TestAsyncObjectives:
             workspace_id="workspaceId",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             since_event_id="sinceEventId",
             sort_order="sortOrder",

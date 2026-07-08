@@ -242,6 +242,7 @@ class ToolSetsResource(SyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -261,6 +262,10 @@ class ToolSetsResource(SyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -295,6 +300,7 @@ class ToolSetsResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
@@ -433,6 +439,7 @@ class ToolSetsResource(SyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -449,6 +456,10 @@ class ToolSetsResource(SyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -482,6 +493,7 @@ class ToolSetsResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "sort_order": sort_order,
                     },
@@ -723,6 +735,7 @@ class AsyncToolSetsResource(AsyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -742,6 +755,10 @@ class AsyncToolSetsResource(AsyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -776,6 +793,7 @@ class AsyncToolSetsResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
@@ -914,6 +932,7 @@ class AsyncToolSetsResource(AsyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -930,6 +949,10 @@ class AsyncToolSetsResource(AsyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -963,6 +986,7 @@ class AsyncToolSetsResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "sort_order": sort_order,
                     },

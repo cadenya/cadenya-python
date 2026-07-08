@@ -58,6 +58,7 @@ class FeedbackResource(SyncAPIResource):
         created_before: Union[str, datetime] | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         query: str | Omit = omit,
         sentiment: Literal[
@@ -88,6 +89,10 @@ class FeedbackResource(SyncAPIResource):
           cursor: Pagination cursor from previous response.
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return.
 
@@ -125,6 +130,7 @@ class FeedbackResource(SyncAPIResource):
                         "created_before": created_before,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "query": query,
                         "sentiment": sentiment,
@@ -168,6 +174,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
         created_before: Union[str, datetime] | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         query: str | Omit = omit,
         sentiment: Literal[
@@ -198,6 +205,10 @@ class AsyncFeedbackResource(AsyncAPIResource):
           cursor: Pagination cursor from previous response.
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return.
 
@@ -235,6 +246,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
                         "created_before": created_before,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "query": query,
                         "sentiment": sentiment,

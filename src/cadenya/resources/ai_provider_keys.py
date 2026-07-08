@@ -190,6 +190,7 @@ class AIProviderKeysResource(SyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         promotional: bool | Omit = omit,
@@ -210,6 +211,10 @@ class AIProviderKeysResource(SyncAPIResource):
 
           include_info: When true, populate each item's info (model counts), at the cost of extra
               lookups.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -245,6 +250,7 @@ class AIProviderKeysResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "promotional": promotional,
@@ -456,6 +462,7 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         promotional: bool | Omit = omit,
@@ -476,6 +483,10 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
 
           include_info: When true, populate each item's info (model counts), at the cost of extra
               lookups.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -511,6 +522,7 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "promotional": promotional,

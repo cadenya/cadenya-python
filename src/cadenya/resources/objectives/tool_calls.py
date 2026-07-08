@@ -111,6 +111,7 @@ class ToolCallsResource(SyncAPIResource):
         ]
         | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         status: Literal[
             "TOOL_CALL_STATUS_UNSPECIFIED",
@@ -138,6 +139,10 @@ class ToolCallsResource(SyncAPIResource):
               (TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT).
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -172,6 +177,7 @@ class ToolCallsResource(SyncAPIResource):
                         "cursor": cursor,
                         "execution_status": execution_status,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "status": status,
                     },
@@ -412,6 +418,7 @@ class AsyncToolCallsResource(AsyncAPIResource):
         ]
         | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         status: Literal[
             "TOOL_CALL_STATUS_UNSPECIFIED",
@@ -439,6 +446,10 @@ class AsyncToolCallsResource(AsyncAPIResource):
               (TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT).
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -473,6 +484,7 @@ class AsyncToolCallsResource(AsyncAPIResource):
                         "cursor": cursor,
                         "execution_status": execution_status,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "status": status,
                     },

@@ -57,6 +57,7 @@ class WorkspacesResource(SyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -73,6 +74,10 @@ class WorkspacesResource(SyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -98,6 +103,7 @@ class WorkspacesResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "sort_order": sort_order,
                     },
@@ -166,6 +172,7 @@ class AsyncWorkspacesResource(AsyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -182,6 +189,10 @@ class AsyncWorkspacesResource(AsyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -207,6 +218,7 @@ class AsyncWorkspacesResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "sort_order": sort_order,
                     },

@@ -220,6 +220,7 @@ class SchedulesResource(SyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -239,6 +240,10 @@ class SchedulesResource(SyncAPIResource):
 
           include_info: When true, the `info` field on each returned schedule is populated. Requests
               with this flag count more against your rate limit.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return.
 
@@ -276,6 +281,7 @@ class SchedulesResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
@@ -665,6 +671,7 @@ class AsyncSchedulesResource(AsyncAPIResource):
         workspace_id: str,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -684,6 +691,10 @@ class AsyncSchedulesResource(AsyncAPIResource):
 
           include_info: When true, the `info` field on each returned schedule is populated. Requests
               with this flag count more against your rate limit.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return.
 
@@ -721,6 +732,7 @@ class AsyncSchedulesResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,

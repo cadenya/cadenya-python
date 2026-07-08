@@ -73,6 +73,7 @@ class WebhookDeliveriesResource(SyncAPIResource):
             "OBJECTIVE_EVENT_TYPE_TIMED_OUT",
         ]
         | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         objective_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -89,6 +90,10 @@ class WebhookDeliveriesResource(SyncAPIResource):
           cursor: Pagination cursor from previous response
 
           event_type: Optional filter by event type
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -122,6 +127,7 @@ class WebhookDeliveriesResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "event_type": event_type,
+                        "labels": labels,
                         "limit": limit,
                         "objective_id": objective_id,
                     },
@@ -181,6 +187,7 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
             "OBJECTIVE_EVENT_TYPE_TIMED_OUT",
         ]
         | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         objective_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -197,6 +204,10 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
           cursor: Pagination cursor from previous response
 
           event_type: Optional filter by event type
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -230,6 +241,7 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "event_type": event_type,
+                        "labels": labels,
                         "limit": limit,
                         "objective_id": objective_id,
                     },

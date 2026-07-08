@@ -103,6 +103,7 @@ class TestToolCalls:
             cursor="cursor",
             execution_status="TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED",
             include_info=True,
+            labels="labels",
             limit=0,
             status="TOOL_CALL_STATUS_UNSPECIFIED",
         )
@@ -448,6 +449,7 @@ class TestAsyncToolCalls:
             cursor="cursor",
             execution_status="TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED",
             include_info=True,
+            labels="labels",
             limit=0,
             status="TOOL_CALL_STATUS_UNSPECIFIED",
         )
