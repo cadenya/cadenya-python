@@ -43,7 +43,11 @@ class ModelListParams(TypedDict, total=False):
     """Maximum number of results to return"""
 
     prefix: str
-    """Filter by name prefix"""
+    """
+    Filter by a prefix of the model's display name, external id, or id
+    (case-insensitive). A model's external id is the form used in
+    modelConfig.modelId, so a caller holding that can narrow the list by it.
+    """
 
     query: str
     """Free-form search query"""
