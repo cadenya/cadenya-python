@@ -131,7 +131,9 @@ class ModelsResource(SyncAPIResource):
 
           limit: Maximum number of results to return
 
-          prefix: Filter by name prefix
+          prefix: Filter by a prefix of the model's display name, external id, or id
+              (case-insensitive). A model's external id is the form used in
+              modelConfig.modelId, so a caller holding that can narrow the list by it.
 
           query: Free-form search query
 
@@ -397,7 +399,9 @@ class AsyncModelsResource(AsyncAPIResource):
 
           limit: Maximum number of results to return
 
-          prefix: Filter by name prefix
+          prefix: Filter by a prefix of the model's display name, external id, or id
+              (case-insensitive). A model's external id is the form used in
+              modelConfig.modelId, so a caller holding that can narrow the list by it.
 
           query: Free-form search query
 
