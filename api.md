@@ -448,20 +448,23 @@ from cadenya.types import APIKey, APIKeyInfo, APIKeySpec
 
 Methods:
 
-- <code title="post /v1/account/api_keys">client.api_keys.<a href="./src/cadenya/resources/api_keys/api_keys.py">create</a>(\*\*<a href="src/cadenya/types/api_key_create_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="get /v1/account/api_keys/{id}">client.api_keys.<a href="./src/cadenya/resources/api_keys/api_keys.py">retrieve</a>(id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="patch /v1/account/api_keys/{id}">client.api_keys.<a href="./src/cadenya/resources/api_keys/api_keys.py">update</a>(id, \*\*<a href="src/cadenya/types/api_key_update_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="get /v1/account/api_keys">client.api_keys.<a href="./src/cadenya/resources/api_keys/api_keys.py">list</a>(\*\*<a href="src/cadenya/types/api_key_list_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">SyncCursorPagination[APIKey]</a></code>
-- <code title="delete /v1/account/api_keys/{id}">client.api_keys.<a href="./src/cadenya/resources/api_keys/api_keys.py">delete</a>(id) -> None</code>
-- <code title="post /v1/account/api_keys/{id}:rotate">client.api_keys.<a href="./src/cadenya/resources/api_keys/api_keys.py">rotate</a>(id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/api_keys">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">create</a>(workspace_id, \*\*<a href="src/cadenya/types/api_key_create_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/api_keys/{id}">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
+- <code title="patch /v1/workspaces/{workspaceId}/api_keys/{id}">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/api_key_update_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/api_keys">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">list</a>(workspace_id, \*\*<a href="src/cadenya/types/api_key_list_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">SyncCursorPagination[APIKey]</a></code>
+- <code title="delete /v1/workspaces/{workspaceId}/api_keys/{id}">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">delete</a>(id, \*, workspace_id) -> None</code>
+- <code title="post /v1/workspaces/{workspaceId}/api_keys/{id}:disable">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">disable</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/api_keys/{id}:enable">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">enable</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/api_keys/{id}:rotate">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">rotate</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
 
-## Access
+# GlobalAPIKey
 
 Methods:
 
-- <code title="get /v1/account/api_keys/{id}/workspaces">client.api_keys.access.<a href="./src/cadenya/resources/api_keys/access.py">list</a>(id, \*\*<a href="src/cadenya/types/api_keys/access_list_params.py">params</a>) -> <a href="./src/cadenya/types/workspace.py">SyncCursorPagination[Workspace]</a></code>
-- <code title="post /v1/account/api_keys/{id}/workspaces">client.api_keys.access.<a href="./src/cadenya/resources/api_keys/access.py">add</a>(id, \*\*<a href="src/cadenya/types/api_keys/access_add_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="delete /v1/account/api_keys/{id}/workspaces/{workspaceId}">client.api_keys.access.<a href="./src/cadenya/resources/api_keys/access.py">remove</a>(workspace_id, \*, id) -> None</code>
+- <code title="get /v1/account/global_api_key">client.global_api_key.<a href="./src/cadenya/resources/global_api_key.py">retrieve</a>() -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
+- <code title="post /v1/account/global_api_key:disable">client.global_api_key.<a href="./src/cadenya/resources/global_api_key.py">disable</a>() -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
+- <code title="post /v1/account/global_api_key:enable">client.global_api_key.<a href="./src/cadenya/resources/global_api_key.py">enable</a>() -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
+- <code title="post /v1/account/global_api_key:rotate">client.global_api_key.<a href="./src/cadenya/resources/global_api_key.py">rotate</a>() -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
 
 # WorkspaceSecrets
 

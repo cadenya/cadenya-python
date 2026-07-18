@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Dict
 from typing_extensions import Required, Annotated, TypedDict
 
-from .._types import SequenceNotStr
 from .._utils import PropertyInfo
 from .api_key_spec_param import APIKeySpecParam
 
@@ -22,13 +21,6 @@ class APIKeyCreateParams(TypedDict, total=False):
 
     spec: Required[APIKeySpecParam]
     """Configuration for an API key."""
-
-    initial_workspace_ids: Annotated[SequenceNotStr[str], PropertyInfo(alias="initialWorkspaceIds")]
-    """Workspaces this API key will have access to on creation.
-
-    Optional — a key can be created with no workspace access and granted later via
-    AddAPIKeyWorkspace.
-    """
 
 
 class Metadata(TypedDict, total=False):

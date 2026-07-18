@@ -12,6 +12,8 @@ __all__ = ["APIKeyUpdateParams", "Metadata"]
 
 
 class APIKeyUpdateParams(TypedDict, total=False):
+    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
+
     metadata: Metadata
     """
     UpdateAccountResourceMetadata contains the user-provided fields for updating an

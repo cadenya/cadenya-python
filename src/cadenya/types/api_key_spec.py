@@ -34,7 +34,7 @@ class APIKeySpec(BaseModel):
     """
 
     system: Optional[bool] = None
-    """True when this key is managed by the system (e.g.
+    """True when this key is managed by the system (i.e.
 
     the auto-provisioned global account key). System keys cannot be deleted but can
     be rotated.

@@ -23,10 +23,12 @@ class AccountInfo(BaseModel):
     """
 
     global_api_key: Optional[APIKey] = FieldInfo(alias="globalApiKey", default=None)
-    """An API key for the account.
+    """An API key.
 
-    Use workspace-association RPCs to grant the key access to specific workspaces; a
-    key with zero workspaces is valid but cannot access workspace-scoped resources.
+    Every key belongs to exactly one workspace and is managed via the
+    workspace-scoped API key routes. The only exception is the system-managed global
+    account key, which spans all workspaces and is managed via the account
+    global_api_key routes.
     """
 
     webhook_events_hmac_secret: Optional[str] = FieldInfo(alias="webhookEventsHmacSecret", default=None)
