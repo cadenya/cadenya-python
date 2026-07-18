@@ -4,46 +4,32 @@ from __future__ import annotations
 
 import httpx
 
-from .access import (
-    AccessResource,
-    AsyncAccessResource,
-    AccessResourceWithRawResponse,
-    AsyncAccessResourceWithRawResponse,
-    AccessResourceWithStreamingResponse,
-    AsyncAccessResourceWithStreamingResponse,
-)
-from ...types import api_key_list_params, api_key_create_params, api_key_update_params
-from ..._types import Body, Omit, Query, Headers, NoneType, NotGiven, SequenceNotStr, omit, not_given
-from ..._utils import path_template, maybe_transform, async_maybe_transform
-from ..._compat import cached_property
-from ..._resource import SyncAPIResource, AsyncAPIResource
-from ..._response import (
+from ..types import api_key_list_params, api_key_create_params, api_key_update_params
+from .._types import Body, Omit, Query, Headers, NoneType, NotGiven, omit, not_given
+from .._utils import path_template, maybe_transform, async_maybe_transform
+from .._compat import cached_property
+from .._resource import SyncAPIResource, AsyncAPIResource
+from .._response import (
     to_raw_response_wrapper,
     to_streamed_response_wrapper,
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
-from ...pagination import SyncCursorPagination, AsyncCursorPagination
-from ..._base_client import AsyncPaginator, make_request_options
-from ...types.api_key import APIKey
-from ...types.api_key_spec_param import APIKeySpecParam
+from ..pagination import SyncCursorPagination, AsyncCursorPagination
+from .._base_client import AsyncPaginator, make_request_options
+from ..types.api_key import APIKey
+from ..types.api_key_spec_param import APIKeySpecParam
 
 __all__ = ["APIKeysResource", "AsyncAPIKeysResource"]
 
 
 class APIKeysResource(SyncAPIResource):
-    """
-    Issue, rotate, and revoke API keys for the account, and grant or revoke
-     each key's access to individual workspaces.
-    """
+    """Issue, rotate, disable, and revoke a workspace's API keys.
 
-    @cached_property
-    def access(self) -> AccessResource:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
-        """
-        return AccessResource(self._client)
+    Every key
+     belongs to exactly one workspace; the system-managed global account key is
+     managed via GlobalAPIKeyService instead.
+    """
 
     @cached_property
     def with_raw_response(self) -> APIKeysResourceWithRawResponse:
@@ -66,10 +52,10 @@ class APIKeysResource(SyncAPIResource):
 
     def create(
         self,
+        workspace_id: str,
         *,
         metadata: api_key_create_params.Metadata,
         spec: APIKeySpecParam,
-        initial_workspace_ids: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -77,10 +63,8 @@ class APIKeysResource(SyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIKey:
-        """Creates a new API key on the account.
-
-        Optionally grants the key access to one or
-        more workspaces via initial_workspace_ids.
+        """
+        Creates a new API key in the workspace.
 
         Args:
           metadata: CreateAccountResourceMetadata contains the user-provided fields for creating an
@@ -88,9 +72,6 @@ class APIKeysResource(SyncAPIResource):
               excluded since they are set by the server.
 
           spec: Configuration for an API key.
-
-          initial_workspace_ids: Workspaces this API key will have access to on creation. Optional — a key can be
-              created with no workspace access and granted later via AddAPIKeyWorkspace.
 
           extra_headers: Send extra headers
 
@@ -100,13 +81,14 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._post(
-            "/v1/account/api_keys",
+            path_template("/v1/workspaces/{workspace_id}/api_keys", workspace_id=workspace_id),
             body=maybe_transform(
                 {
                     "metadata": metadata,
                     "spec": spec,
-                    "initial_workspace_ids": initial_workspace_ids,
                 },
                 api_key_create_params.APIKeyCreateParams,
             ),
@@ -120,6 +102,7 @@ class APIKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
+        workspace_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -139,10 +122,12 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return self._get(
-            path_template("/v1/account/api_keys/{id}", id=id),
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}", workspace_id=workspace_id, id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -153,6 +138,7 @@ class APIKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
+        workspace_id: str,
         metadata: api_key_update_params.Metadata | Omit = omit,
         spec: APIKeySpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -183,10 +169,12 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return self._patch(
-            path_template("/v1/account/api_keys/{id}", id=id),
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}", workspace_id=workspace_id, id=id),
             body=maybe_transform(
                 {
                     "metadata": metadata,
@@ -203,6 +191,7 @@ class APIKeysResource(SyncAPIResource):
 
     def list(
         self,
+        workspace_id: str,
         *,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
@@ -219,7 +208,7 @@ class APIKeysResource(SyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> SyncCursorPagination[APIKey]:
         """
-        Lists all API keys on the account.
+        Lists the workspace's API keys.
 
         Args:
           cursor: Pagination cursor from previous response.
@@ -247,8 +236,10 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
-            "/v1/account/api_keys",
+            path_template("/v1/workspaces/{workspace_id}/api_keys", workspace_id=workspace_id),
             page=SyncCursorPagination[APIKey],
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -275,6 +266,7 @@ class APIKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
+        workspace_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -294,21 +286,99 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         extra_headers = {"Accept": "*/*", **(extra_headers or {})}
         return self._delete(
-            path_template("/v1/account/api_keys/{id}", id=id),
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}", workspace_id=workspace_id, id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=NoneType,
         )
 
+    def disable(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIKey:
+        """Disables an API key.
+
+        While disabled, presenting the key's token fails
+        authentication on every endpoint; the key is retained. Idempotent.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}:disable", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIKey,
+        )
+
+    def enable(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIKey:
+        """Re-enables a disabled API key so its token authenticates again.
+
+        Idempotent.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}:enable", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIKey,
+        )
+
     def rotate(
         self,
         id: str,
         *,
+        workspace_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -330,10 +400,12 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return self._post(
-            path_template("/v1/account/api_keys/{id}:rotate", id=id),
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}:rotate", workspace_id=workspace_id, id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -342,18 +414,12 @@ class APIKeysResource(SyncAPIResource):
 
 
 class AsyncAPIKeysResource(AsyncAPIResource):
-    """
-    Issue, rotate, and revoke API keys for the account, and grant or revoke
-     each key's access to individual workspaces.
-    """
+    """Issue, rotate, disable, and revoke a workspace's API keys.
 
-    @cached_property
-    def access(self) -> AsyncAccessResource:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
-        """
-        return AsyncAccessResource(self._client)
+    Every key
+     belongs to exactly one workspace; the system-managed global account key is
+     managed via GlobalAPIKeyService instead.
+    """
 
     @cached_property
     def with_raw_response(self) -> AsyncAPIKeysResourceWithRawResponse:
@@ -376,10 +442,10 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
     async def create(
         self,
+        workspace_id: str,
         *,
         metadata: api_key_create_params.Metadata,
         spec: APIKeySpecParam,
-        initial_workspace_ids: SequenceNotStr[str] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -387,10 +453,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> APIKey:
-        """Creates a new API key on the account.
-
-        Optionally grants the key access to one or
-        more workspaces via initial_workspace_ids.
+        """
+        Creates a new API key in the workspace.
 
         Args:
           metadata: CreateAccountResourceMetadata contains the user-provided fields for creating an
@@ -398,9 +462,6 @@ class AsyncAPIKeysResource(AsyncAPIResource):
               excluded since they are set by the server.
 
           spec: Configuration for an API key.
-
-          initial_workspace_ids: Workspaces this API key will have access to on creation. Optional — a key can be
-              created with no workspace access and granted later via AddAPIKeyWorkspace.
 
           extra_headers: Send extra headers
 
@@ -410,13 +471,14 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return await self._post(
-            "/v1/account/api_keys",
+            path_template("/v1/workspaces/{workspace_id}/api_keys", workspace_id=workspace_id),
             body=await async_maybe_transform(
                 {
                     "metadata": metadata,
                     "spec": spec,
-                    "initial_workspace_ids": initial_workspace_ids,
                 },
                 api_key_create_params.APIKeyCreateParams,
             ),
@@ -430,6 +492,7 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
+        workspace_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -449,10 +512,12 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return await self._get(
-            path_template("/v1/account/api_keys/{id}", id=id),
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}", workspace_id=workspace_id, id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -463,6 +528,7 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
+        workspace_id: str,
         metadata: api_key_update_params.Metadata | Omit = omit,
         spec: APIKeySpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -493,10 +559,12 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return await self._patch(
-            path_template("/v1/account/api_keys/{id}", id=id),
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}", workspace_id=workspace_id, id=id),
             body=await async_maybe_transform(
                 {
                     "metadata": metadata,
@@ -513,6 +581,7 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
     def list(
         self,
+        workspace_id: str,
         *,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
@@ -529,7 +598,7 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
     ) -> AsyncPaginator[APIKey, AsyncCursorPagination[APIKey]]:
         """
-        Lists all API keys on the account.
+        Lists the workspace's API keys.
 
         Args:
           cursor: Pagination cursor from previous response.
@@ -557,8 +626,10 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
-            "/v1/account/api_keys",
+            path_template("/v1/workspaces/{workspace_id}/api_keys", workspace_id=workspace_id),
             page=AsyncCursorPagination[APIKey],
             options=make_request_options(
                 extra_headers=extra_headers,
@@ -585,6 +656,7 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
+        workspace_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -604,21 +676,99 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         extra_headers = {"Accept": "*/*", **(extra_headers or {})}
         return await self._delete(
-            path_template("/v1/account/api_keys/{id}", id=id),
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}", workspace_id=workspace_id, id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=NoneType,
         )
 
+    async def disable(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIKey:
+        """Disables an API key.
+
+        While disabled, presenting the key's token fails
+        authentication on every endpoint; the key is retained. Idempotent.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}:disable", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIKey,
+        )
+
+    async def enable(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> APIKey:
+        """Re-enables a disabled API key so its token authenticates again.
+
+        Idempotent.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}:enable", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=APIKey,
+        )
+
     async def rotate(
         self,
         id: str,
         *,
+        workspace_id: str,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -640,10 +790,12 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
         return await self._post(
-            path_template("/v1/account/api_keys/{id}:rotate", id=id),
+            path_template("/v1/workspaces/{workspace_id}/api_keys/{id}:rotate", workspace_id=workspace_id, id=id),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
@@ -670,17 +822,15 @@ class APIKeysResourceWithRawResponse:
         self.delete = to_raw_response_wrapper(
             api_keys.delete,
         )
+        self.disable = to_raw_response_wrapper(
+            api_keys.disable,
+        )
+        self.enable = to_raw_response_wrapper(
+            api_keys.enable,
+        )
         self.rotate = to_raw_response_wrapper(
             api_keys.rotate,
         )
-
-    @cached_property
-    def access(self) -> AccessResourceWithRawResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
-        """
-        return AccessResourceWithRawResponse(self._api_keys.access)
 
 
 class AsyncAPIKeysResourceWithRawResponse:
@@ -702,17 +852,15 @@ class AsyncAPIKeysResourceWithRawResponse:
         self.delete = async_to_raw_response_wrapper(
             api_keys.delete,
         )
+        self.disable = async_to_raw_response_wrapper(
+            api_keys.disable,
+        )
+        self.enable = async_to_raw_response_wrapper(
+            api_keys.enable,
+        )
         self.rotate = async_to_raw_response_wrapper(
             api_keys.rotate,
         )
-
-    @cached_property
-    def access(self) -> AsyncAccessResourceWithRawResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
-        """
-        return AsyncAccessResourceWithRawResponse(self._api_keys.access)
 
 
 class APIKeysResourceWithStreamingResponse:
@@ -734,17 +882,15 @@ class APIKeysResourceWithStreamingResponse:
         self.delete = to_streamed_response_wrapper(
             api_keys.delete,
         )
+        self.disable = to_streamed_response_wrapper(
+            api_keys.disable,
+        )
+        self.enable = to_streamed_response_wrapper(
+            api_keys.enable,
+        )
         self.rotate = to_streamed_response_wrapper(
             api_keys.rotate,
         )
-
-    @cached_property
-    def access(self) -> AccessResourceWithStreamingResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
-        """
-        return AccessResourceWithStreamingResponse(self._api_keys.access)
 
 
 class AsyncAPIKeysResourceWithStreamingResponse:
@@ -766,14 +912,12 @@ class AsyncAPIKeysResourceWithStreamingResponse:
         self.delete = async_to_streamed_response_wrapper(
             api_keys.delete,
         )
+        self.disable = async_to_streamed_response_wrapper(
+            api_keys.disable,
+        )
+        self.enable = async_to_streamed_response_wrapper(
+            api_keys.enable,
+        )
         self.rotate = async_to_streamed_response_wrapper(
             api_keys.rotate,
         )
-
-    @cached_property
-    def access(self) -> AsyncAccessResourceWithStreamingResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
-        """
-        return AsyncAccessResourceWithStreamingResponse(self._api_keys.access)

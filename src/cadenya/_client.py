@@ -47,6 +47,7 @@ if TYPE_CHECKING:
         objectives,
         workspaces,
         memory_layers,
+        global_api_key,
         workspace_admin,
         ai_provider_keys,
         workspace_secrets,
@@ -55,12 +56,13 @@ if TYPE_CHECKING:
     from .resources.search import SearchResource, AsyncSearchResource
     from .resources.account import AccountResource, AsyncAccountResource
     from .resources.uploads import UploadsResource, AsyncUploadsResource
+    from .resources.api_keys import APIKeysResource, AsyncAPIKeysResource
     from .resources.profiles import ProfilesResource, AsyncProfilesResource
     from .resources.webhooks import WebhooksResource, AsyncWebhooksResource
     from .resources.workspaces import WorkspacesResource, AsyncWorkspacesResource
     from .resources.agents.agents import AgentsResource, AsyncAgentsResource
+    from .resources.global_api_key import GlobalAPIKeyResource, AsyncGlobalAPIKeyResource
     from .resources.ai_provider_keys import AIProviderKeysResource, AsyncAIProviderKeysResource
-    from .resources.api_keys.api_keys import APIKeysResource, AsyncAPIKeysResource
     from .resources.workspace_secrets import WorkspaceSecretsResource, AsyncWorkspaceSecretsResource
     from .resources.tool_sets.tool_sets import ToolSetsResource, AsyncToolSetsResource
     from .resources.objectives.objectives import ObjectivesResource, AsyncObjectivesResource
@@ -243,13 +245,28 @@ class Cadenya(SyncAPIClient):
 
     @cached_property
     def api_keys(self) -> APIKeysResource:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import APIKeysResource
 
         return APIKeysResource(self)
+
+    @cached_property
+    def global_api_key(self) -> GlobalAPIKeyResource:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import GlobalAPIKeyResource
+
+        return GlobalAPIKeyResource(self)
 
     @cached_property
     def workspace_secrets(self) -> WorkspaceSecretsResource:
@@ -580,13 +597,28 @@ class AsyncCadenya(AsyncAPIClient):
 
     @cached_property
     def api_keys(self) -> AsyncAPIKeysResource:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import AsyncAPIKeysResource
 
         return AsyncAPIKeysResource(self)
+
+    @cached_property
+    def global_api_key(self) -> AsyncGlobalAPIKeyResource:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import AsyncGlobalAPIKeyResource
+
+        return AsyncGlobalAPIKeyResource(self)
 
     @cached_property
     def workspace_secrets(self) -> AsyncWorkspaceSecretsResource:
@@ -849,13 +881,28 @@ class CadenyaWithRawResponse:
 
     @cached_property
     def api_keys(self) -> api_keys.APIKeysResourceWithRawResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import APIKeysResourceWithRawResponse
 
         return APIKeysResourceWithRawResponse(self._client.api_keys)
+
+    @cached_property
+    def global_api_key(self) -> global_api_key.GlobalAPIKeyResourceWithRawResponse:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import GlobalAPIKeyResourceWithRawResponse
+
+        return GlobalAPIKeyResourceWithRawResponse(self._client.global_api_key)
 
     @cached_property
     def workspace_secrets(self) -> workspace_secrets.WorkspaceSecretsResourceWithRawResponse:
@@ -998,13 +1045,28 @@ class AsyncCadenyaWithRawResponse:
 
     @cached_property
     def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithRawResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import AsyncAPIKeysResourceWithRawResponse
 
         return AsyncAPIKeysResourceWithRawResponse(self._client.api_keys)
+
+    @cached_property
+    def global_api_key(self) -> global_api_key.AsyncGlobalAPIKeyResourceWithRawResponse:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import AsyncGlobalAPIKeyResourceWithRawResponse
+
+        return AsyncGlobalAPIKeyResourceWithRawResponse(self._client.global_api_key)
 
     @cached_property
     def workspace_secrets(self) -> workspace_secrets.AsyncWorkspaceSecretsResourceWithRawResponse:
@@ -1147,13 +1209,28 @@ class CadenyaWithStreamedResponse:
 
     @cached_property
     def api_keys(self) -> api_keys.APIKeysResourceWithStreamingResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import APIKeysResourceWithStreamingResponse
 
         return APIKeysResourceWithStreamingResponse(self._client.api_keys)
+
+    @cached_property
+    def global_api_key(self) -> global_api_key.GlobalAPIKeyResourceWithStreamingResponse:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import GlobalAPIKeyResourceWithStreamingResponse
+
+        return GlobalAPIKeyResourceWithStreamingResponse(self._client.global_api_key)
 
     @cached_property
     def workspace_secrets(self) -> workspace_secrets.WorkspaceSecretsResourceWithStreamingResponse:
@@ -1296,13 +1373,28 @@ class AsyncCadenyaWithStreamedResponse:
 
     @cached_property
     def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithStreamingResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import AsyncAPIKeysResourceWithStreamingResponse
 
         return AsyncAPIKeysResourceWithStreamingResponse(self._client.api_keys)
+
+    @cached_property
+    def global_api_key(self) -> global_api_key.AsyncGlobalAPIKeyResourceWithStreamingResponse:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import AsyncGlobalAPIKeyResourceWithStreamingResponse
+
+        return AsyncGlobalAPIKeyResourceWithStreamingResponse(self._client.global_api_key)
 
     @cached_property
     def workspace_secrets(self) -> workspace_secrets.AsyncWorkspaceSecretsResourceWithStreamingResponse:

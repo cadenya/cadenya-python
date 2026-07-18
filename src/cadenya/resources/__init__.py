@@ -89,6 +89,14 @@ from .memory_layers import (
     MemoryLayersResourceWithStreamingResponse,
     AsyncMemoryLayersResourceWithStreamingResponse,
 )
+from .global_api_key import (
+    GlobalAPIKeyResource,
+    AsyncGlobalAPIKeyResource,
+    GlobalAPIKeyResourceWithRawResponse,
+    AsyncGlobalAPIKeyResourceWithRawResponse,
+    GlobalAPIKeyResourceWithStreamingResponse,
+    AsyncGlobalAPIKeyResourceWithStreamingResponse,
+)
 from .workspace_admin import (
     WorkspaceAdminResource,
     AsyncWorkspaceAdminResource,
@@ -181,6 +189,12 @@ __all__ = [
     "AsyncAPIKeysResourceWithRawResponse",
     "APIKeysResourceWithStreamingResponse",
     "AsyncAPIKeysResourceWithStreamingResponse",
+    "GlobalAPIKeyResource",
+    "AsyncGlobalAPIKeyResource",
+    "GlobalAPIKeyResourceWithRawResponse",
+    "AsyncGlobalAPIKeyResourceWithRawResponse",
+    "GlobalAPIKeyResourceWithStreamingResponse",
+    "AsyncGlobalAPIKeyResourceWithStreamingResponse",
     "WorkspaceSecretsResource",
     "AsyncWorkspaceSecretsResource",
     "WorkspaceSecretsResourceWithRawResponse",
