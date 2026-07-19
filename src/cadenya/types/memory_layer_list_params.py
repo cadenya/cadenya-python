@@ -10,6 +10,8 @@ __all__ = ["MemoryLayerListParams"]
 
 
 class MemoryLayerListParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     agent_id: Annotated[str, PropertyInfo(alias="agentId")]
     """Filter to episodic layers belonging to this agent."""
 

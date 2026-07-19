@@ -22,7 +22,7 @@ class TestAPIKeys:
     @parametrize
     def test_method_create(self, client: Cadenya) -> None:
         api_key = client.api_keys.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -32,7 +32,7 @@ class TestAPIKeys:
     @parametrize
     def test_method_create_with_all_params(self, client: Cadenya) -> None:
         api_key = client.api_keys.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -49,7 +49,7 @@ class TestAPIKeys:
     @parametrize
     def test_raw_response_create(self, client: Cadenya) -> None:
         response = client.api_keys.with_raw_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -63,7 +63,7 @@ class TestAPIKeys:
     @parametrize
     def test_streaming_response_create(self, client: Cadenya) -> None:
         with client.api_keys.with_streaming_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         ) as response:
@@ -89,8 +89,8 @@ class TestAPIKeys:
     @parametrize
     def test_method_retrieve(self, client: Cadenya) -> None:
         api_key = client.api_keys.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(APIKey, api_key, path=["response"])
 
@@ -98,8 +98,8 @@ class TestAPIKeys:
     @parametrize
     def test_raw_response_retrieve(self, client: Cadenya) -> None:
         response = client.api_keys.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -111,8 +111,8 @@ class TestAPIKeys:
     @parametrize
     def test_streaming_response_retrieve(self, client: Cadenya) -> None:
         with client.api_keys.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -127,22 +127,22 @@ class TestAPIKeys:
     def test_path_params_retrieve(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.api_keys.with_raw_response.retrieve(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.api_keys.with_raw_response.retrieve(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_update(self, client: Cadenya) -> None:
         api_key = client.api_keys.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(APIKey, api_key, path=["response"])
 
@@ -150,8 +150,8 @@ class TestAPIKeys:
     @parametrize
     def test_method_update_with_all_params(self, client: Cadenya) -> None:
         api_key = client.api_keys.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -169,8 +169,8 @@ class TestAPIKeys:
     @parametrize
     def test_raw_response_update(self, client: Cadenya) -> None:
         response = client.api_keys.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -182,8 +182,8 @@ class TestAPIKeys:
     @parametrize
     def test_streaming_response_update(self, client: Cadenya) -> None:
         with client.api_keys.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -198,21 +198,21 @@ class TestAPIKeys:
     def test_path_params_update(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.api_keys.with_raw_response.update(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.api_keys.with_raw_response.update(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_list(self, client: Cadenya) -> None:
         api_key = client.api_keys.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(SyncCursorPagination[APIKey], api_key, path=["response"])
 
@@ -220,7 +220,7 @@ class TestAPIKeys:
     @parametrize
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         api_key = client.api_keys.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
             labels="labels",
@@ -235,7 +235,7 @@ class TestAPIKeys:
     @parametrize
     def test_raw_response_list(self, client: Cadenya) -> None:
         response = client.api_keys.with_raw_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -247,7 +247,7 @@ class TestAPIKeys:
     @parametrize
     def test_streaming_response_list(self, client: Cadenya) -> None:
         with client.api_keys.with_streaming_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -269,8 +269,8 @@ class TestAPIKeys:
     @parametrize
     def test_method_delete(self, client: Cadenya) -> None:
         api_key = client.api_keys.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert api_key is None
 
@@ -278,8 +278,8 @@ class TestAPIKeys:
     @parametrize
     def test_raw_response_delete(self, client: Cadenya) -> None:
         response = client.api_keys.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -291,8 +291,8 @@ class TestAPIKeys:
     @parametrize
     def test_streaming_response_delete(self, client: Cadenya) -> None:
         with client.api_keys.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -307,22 +307,22 @@ class TestAPIKeys:
     def test_path_params_delete(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.api_keys.with_raw_response.delete(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.api_keys.with_raw_response.delete(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_disable(self, client: Cadenya) -> None:
         api_key = client.api_keys.disable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(APIKey, api_key, path=["response"])
 
@@ -330,8 +330,8 @@ class TestAPIKeys:
     @parametrize
     def test_raw_response_disable(self, client: Cadenya) -> None:
         response = client.api_keys.with_raw_response.disable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -343,8 +343,8 @@ class TestAPIKeys:
     @parametrize
     def test_streaming_response_disable(self, client: Cadenya) -> None:
         with client.api_keys.with_streaming_response.disable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -359,22 +359,22 @@ class TestAPIKeys:
     def test_path_params_disable(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.api_keys.with_raw_response.disable(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.api_keys.with_raw_response.disable(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_enable(self, client: Cadenya) -> None:
         api_key = client.api_keys.enable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(APIKey, api_key, path=["response"])
 
@@ -382,8 +382,8 @@ class TestAPIKeys:
     @parametrize
     def test_raw_response_enable(self, client: Cadenya) -> None:
         response = client.api_keys.with_raw_response.enable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -395,8 +395,8 @@ class TestAPIKeys:
     @parametrize
     def test_streaming_response_enable(self, client: Cadenya) -> None:
         with client.api_keys.with_streaming_response.enable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -411,22 +411,22 @@ class TestAPIKeys:
     def test_path_params_enable(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.api_keys.with_raw_response.enable(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.api_keys.with_raw_response.enable(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_rotate(self, client: Cadenya) -> None:
         api_key = client.api_keys.rotate(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(APIKey, api_key, path=["response"])
 
@@ -434,8 +434,8 @@ class TestAPIKeys:
     @parametrize
     def test_raw_response_rotate(self, client: Cadenya) -> None:
         response = client.api_keys.with_raw_response.rotate(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -447,8 +447,8 @@ class TestAPIKeys:
     @parametrize
     def test_streaming_response_rotate(self, client: Cadenya) -> None:
         with client.api_keys.with_streaming_response.rotate(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -463,14 +463,14 @@ class TestAPIKeys:
     def test_path_params_rotate(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.api_keys.with_raw_response.rotate(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.api_keys.with_raw_response.rotate(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
 
@@ -483,7 +483,7 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_method_create(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -493,7 +493,7 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -510,7 +510,7 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncCadenya) -> None:
         response = await async_client.api_keys.with_raw_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -524,7 +524,7 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncCadenya) -> None:
         async with async_client.api_keys.with_streaming_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         ) as response:
@@ -550,8 +550,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(APIKey, api_key, path=["response"])
 
@@ -559,8 +559,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncCadenya) -> None:
         response = await async_client.api_keys.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -572,8 +572,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncCadenya) -> None:
         async with async_client.api_keys.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -588,22 +588,22 @@ class TestAsyncAPIKeys:
     async def test_path_params_retrieve(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.api_keys.with_raw_response.retrieve(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.api_keys.with_raw_response.retrieve(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_update(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(APIKey, api_key, path=["response"])
 
@@ -611,8 +611,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_method_update_with_all_params(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -630,8 +630,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_raw_response_update(self, async_client: AsyncCadenya) -> None:
         response = await async_client.api_keys.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -643,8 +643,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_streaming_response_update(self, async_client: AsyncCadenya) -> None:
         async with async_client.api_keys.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -659,21 +659,21 @@ class TestAsyncAPIKeys:
     async def test_path_params_update(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.api_keys.with_raw_response.update(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.api_keys.with_raw_response.update(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_list(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AsyncCursorPagination[APIKey], api_key, path=["response"])
 
@@ -681,7 +681,7 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
             labels="labels",
@@ -696,7 +696,7 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncCadenya) -> None:
         response = await async_client.api_keys.with_raw_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -708,7 +708,7 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncCadenya) -> None:
         async with async_client.api_keys.with_streaming_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -730,8 +730,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_method_delete(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert api_key is None
 
@@ -739,8 +739,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_raw_response_delete(self, async_client: AsyncCadenya) -> None:
         response = await async_client.api_keys.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -752,8 +752,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_streaming_response_delete(self, async_client: AsyncCadenya) -> None:
         async with async_client.api_keys.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -768,22 +768,22 @@ class TestAsyncAPIKeys:
     async def test_path_params_delete(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.api_keys.with_raw_response.delete(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.api_keys.with_raw_response.delete(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_disable(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.disable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(APIKey, api_key, path=["response"])
 
@@ -791,8 +791,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_raw_response_disable(self, async_client: AsyncCadenya) -> None:
         response = await async_client.api_keys.with_raw_response.disable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -804,8 +804,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_streaming_response_disable(self, async_client: AsyncCadenya) -> None:
         async with async_client.api_keys.with_streaming_response.disable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -820,22 +820,22 @@ class TestAsyncAPIKeys:
     async def test_path_params_disable(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.api_keys.with_raw_response.disable(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.api_keys.with_raw_response.disable(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_enable(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.enable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(APIKey, api_key, path=["response"])
 
@@ -843,8 +843,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_raw_response_enable(self, async_client: AsyncCadenya) -> None:
         response = await async_client.api_keys.with_raw_response.enable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -856,8 +856,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_streaming_response_enable(self, async_client: AsyncCadenya) -> None:
         async with async_client.api_keys.with_streaming_response.enable(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -872,22 +872,22 @@ class TestAsyncAPIKeys:
     async def test_path_params_enable(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.api_keys.with_raw_response.enable(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.api_keys.with_raw_response.enable(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_rotate(self, async_client: AsyncCadenya) -> None:
         api_key = await async_client.api_keys.rotate(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(APIKey, api_key, path=["response"])
 
@@ -895,8 +895,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_raw_response_rotate(self, async_client: AsyncCadenya) -> None:
         response = await async_client.api_keys.with_raw_response.rotate(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -908,8 +908,8 @@ class TestAsyncAPIKeys:
     @parametrize
     async def test_streaming_response_rotate(self, async_client: AsyncCadenya) -> None:
         async with async_client.api_keys.with_streaming_response.rotate(
-            id="id",
-            workspace_id="workspaceId",
+            id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -924,12 +924,12 @@ class TestAsyncAPIKeys:
     async def test_path_params_rotate(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.api_keys.with_raw_response.rotate(
-                id="id",
+                id="apikey_01HXKD2E5NQM3T9AYWCFCSPNQY",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.api_keys.with_raw_response.rotate(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )

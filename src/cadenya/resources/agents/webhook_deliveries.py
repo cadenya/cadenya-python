@@ -50,7 +50,7 @@ class WebhookDeliveriesResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         event_type: Literal[
             "OBJECTIVE_EVENT_TYPE_UNSPECIFIED",
@@ -107,6 +107,8 @@ class WebhookDeliveriesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -164,7 +166,7 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         event_type: Literal[
             "OBJECTIVE_EVENT_TYPE_UNSPECIFIED",
@@ -221,6 +223,8 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:

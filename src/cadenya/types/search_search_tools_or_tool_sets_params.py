@@ -2,10 +2,14 @@
 
 from __future__ import annotations
 
-from typing_extensions import TypedDict
+from typing_extensions import Required, Annotated, TypedDict
+
+from .._utils import PropertyInfo
 
 __all__ = ["SearchSearchToolsOrToolSetsParams"]
 
 
 class SearchSearchToolsOrToolSetsParams(TypedDict, total=False):
-    query: str
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
+    query: Required[str]

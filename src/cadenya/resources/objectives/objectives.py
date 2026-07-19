@@ -111,8 +111,8 @@ class ObjectivesResource(SyncAPIResource):
 
     def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         agent_id: str,
         system_prompt_data: Dict[str, object],
         episodic_memory: objective_create_params.EpisodicMemory | Omit = omit,
@@ -181,6 +181,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._post(
@@ -209,7 +211,7 @@ class ObjectivesResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -229,6 +231,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -243,8 +247,8 @@ class ObjectivesResource(SyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         agent_id: str | Omit = omit,
         agent_schedule_id: str | Omit = omit,
         cursor: str | Omit = omit,
@@ -305,6 +309,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -338,7 +344,7 @@ class ObjectivesResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         reason: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -363,6 +369,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -384,7 +392,7 @@ class ObjectivesResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         compaction_config: AgentVariationSpecCompactionConfigParam | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -410,6 +418,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -433,9 +443,9 @@ class ObjectivesResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
+        message: str,
         enqueue: bool | Omit = omit,
-        message: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -447,10 +457,10 @@ class ObjectivesResource(SyncAPIResource):
         Continues an objective that has completed
 
         Args:
+          message: The message to continue an objective that has completed (or you are enqueing)
+
           enqueue: When set to true, the message will be enqueued for when the agent loop is
               available to process it.
-
-          message: The message to continue an objective that has completed (or you are enqueing)
 
           extra_headers: Send extra headers
 
@@ -460,6 +470,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -472,8 +484,8 @@ class ObjectivesResource(SyncAPIResource):
             ),
             body=maybe_transform(
                 {
-                    "enqueue": enqueue,
                     "message": message,
+                    "enqueue": enqueue,
                 },
                 objective_continue_params.ObjectiveContinueParams,
             ),
@@ -487,7 +499,7 @@ class ObjectivesResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         labels: str | Omit = omit,
@@ -522,6 +534,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -555,7 +569,7 @@ class ObjectivesResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         labels: str | Omit = omit,
@@ -598,6 +612,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -634,7 +650,7 @@ class ObjectivesResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -657,6 +673,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -677,7 +695,7 @@ class ObjectivesResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -697,6 +715,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -755,8 +775,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
     async def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         agent_id: str,
         system_prompt_data: Dict[str, object],
         episodic_memory: objective_create_params.EpisodicMemory | Omit = omit,
@@ -825,6 +845,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return await self._post(
@@ -853,7 +875,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -873,6 +895,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -887,8 +911,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         agent_id: str | Omit = omit,
         agent_schedule_id: str | Omit = omit,
         cursor: str | Omit = omit,
@@ -949,6 +973,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -982,7 +1008,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         reason: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1007,6 +1033,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -1028,7 +1056,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         compaction_config: AgentVariationSpecCompactionConfigParam | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1054,6 +1082,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -1077,9 +1107,9 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
+        message: str,
         enqueue: bool | Omit = omit,
-        message: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1091,10 +1121,10 @@ class AsyncObjectivesResource(AsyncAPIResource):
         Continues an objective that has completed
 
         Args:
+          message: The message to continue an objective that has completed (or you are enqueing)
+
           enqueue: When set to true, the message will be enqueued for when the agent loop is
               available to process it.
-
-          message: The message to continue an objective that has completed (or you are enqueing)
 
           extra_headers: Send extra headers
 
@@ -1104,6 +1134,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -1116,8 +1148,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
             ),
             body=await async_maybe_transform(
                 {
-                    "enqueue": enqueue,
                     "message": message,
+                    "enqueue": enqueue,
                 },
                 objective_continue_params.ObjectiveContinueParams,
             ),
@@ -1131,7 +1163,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         labels: str | Omit = omit,
@@ -1166,6 +1198,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -1199,7 +1233,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         labels: str | Omit = omit,
@@ -1242,6 +1276,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -1278,7 +1314,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1301,6 +1337,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -1321,7 +1359,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1341,6 +1379,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:

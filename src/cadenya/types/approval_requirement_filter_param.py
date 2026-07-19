@@ -2,19 +2,14 @@
 
 from __future__ import annotations
 
-from typing_extensions import TypedDict
+from typing import Union
+from typing_extensions import TypeAlias
 
-from .tool_filter_param import ToolFilterParam
+from .approval_requirement_filter_only_param import ApprovalRequirementFilterOnlyParam
+from .approval_requirement_filter_always_param import ApprovalRequirementFilterAlwaysParam
 
 __all__ = ["ApprovalRequirementFilterParam"]
 
-
-class ApprovalRequirementFilterParam(TypedDict, total=False):
-    """
-    Approval filters that will automatically set the approval requirement on tools synced from an external source
-    """
-
-    always: bool
-
-    only: ToolFilterParam
-    """Top-level filter with simple boolean logic (no nesting)"""
+ApprovalRequirementFilterParam: TypeAlias = Union[
+    ApprovalRequirementFilterAlwaysParam, ApprovalRequirementFilterOnlyParam
+]

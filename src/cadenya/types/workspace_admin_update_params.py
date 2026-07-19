@@ -12,6 +12,8 @@ __all__ = ["WorkspaceAdminUpdateParams", "Metadata"]
 
 
 class WorkspaceAdminUpdateParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     metadata: Metadata
     """
     UpdateAccountResourceMetadata contains the user-provided fields for updating an

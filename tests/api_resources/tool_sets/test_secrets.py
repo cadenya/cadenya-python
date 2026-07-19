@@ -24,8 +24,8 @@ class TestSecrets:
     @parametrize
     def test_method_create(self, client: Cadenya) -> None:
         secret = client.tool_sets.secrets.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -35,8 +35,8 @@ class TestSecrets:
     @parametrize
     def test_method_create_with_all_params(self, client: Cadenya) -> None:
         secret = client.tool_sets.secrets.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -50,8 +50,8 @@ class TestSecrets:
     @parametrize
     def test_raw_response_create(self, client: Cadenya) -> None:
         response = client.tool_sets.secrets.with_raw_response.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -65,8 +65,8 @@ class TestSecrets:
     @parametrize
     def test_streaming_response_create(self, client: Cadenya) -> None:
         with client.tool_sets.secrets.with_streaming_response.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         ) as response:
@@ -83,7 +83,7 @@ class TestSecrets:
     def test_path_params_create(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.secrets.with_raw_response.create(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
                 metadata={"name": "name"},
                 spec={},
@@ -92,7 +92,7 @@ class TestSecrets:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.secrets.with_raw_response.create(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
                 metadata={"name": "name"},
                 spec={},
             )
@@ -101,9 +101,9 @@ class TestSecrets:
     @parametrize
     def test_method_retrieve(self, client: Cadenya) -> None:
         secret = client.tool_sets.secrets.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSetSecret, secret, path=["response"])
 
@@ -111,9 +111,9 @@ class TestSecrets:
     @parametrize
     def test_raw_response_retrieve(self, client: Cadenya) -> None:
         response = client.tool_sets.secrets.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -125,9 +125,9 @@ class TestSecrets:
     @parametrize
     def test_streaming_response_retrieve(self, client: Cadenya) -> None:
         with client.tool_sets.secrets.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -142,32 +142,32 @@ class TestSecrets:
     def test_path_params_retrieve(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.secrets.with_raw_response.retrieve(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.secrets.with_raw_response.retrieve(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.secrets.with_raw_response.retrieve(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_update(self, client: Cadenya) -> None:
         secret = client.tool_sets.secrets.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSetSecret, secret, path=["response"])
 
@@ -175,9 +175,9 @@ class TestSecrets:
     @parametrize
     def test_method_update_with_all_params(self, client: Cadenya) -> None:
         secret = client.tool_sets.secrets.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -192,9 +192,9 @@ class TestSecrets:
     @parametrize
     def test_raw_response_update(self, client: Cadenya) -> None:
         response = client.tool_sets.secrets.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -206,9 +206,9 @@ class TestSecrets:
     @parametrize
     def test_streaming_response_update(self, client: Cadenya) -> None:
         with client.tool_sets.secrets.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -223,31 +223,31 @@ class TestSecrets:
     def test_path_params_update(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.secrets.with_raw_response.update(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.secrets.with_raw_response.update(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.secrets.with_raw_response.update(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_list(self, client: Cadenya) -> None:
         secret = client.tool_sets.secrets.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(SyncCursorPagination[ToolSetSecret], secret, path=["response"])
 
@@ -255,8 +255,8 @@ class TestSecrets:
     @parametrize
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         secret = client.tool_sets.secrets.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
             limit=0,
@@ -270,8 +270,8 @@ class TestSecrets:
     @parametrize
     def test_raw_response_list(self, client: Cadenya) -> None:
         response = client.tool_sets.secrets.with_raw_response.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -283,8 +283,8 @@ class TestSecrets:
     @parametrize
     def test_streaming_response_list(self, client: Cadenya) -> None:
         with client.tool_sets.secrets.with_streaming_response.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -299,23 +299,23 @@ class TestSecrets:
     def test_path_params_list(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.secrets.with_raw_response.list(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.secrets.with_raw_response.list(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_delete(self, client: Cadenya) -> None:
         secret = client.tool_sets.secrets.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert secret is None
 
@@ -323,9 +323,9 @@ class TestSecrets:
     @parametrize
     def test_raw_response_delete(self, client: Cadenya) -> None:
         response = client.tool_sets.secrets.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -337,9 +337,9 @@ class TestSecrets:
     @parametrize
     def test_streaming_response_delete(self, client: Cadenya) -> None:
         with client.tool_sets.secrets.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -354,23 +354,23 @@ class TestSecrets:
     def test_path_params_delete(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.secrets.with_raw_response.delete(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.secrets.with_raw_response.delete(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.secrets.with_raw_response.delete(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
 
@@ -383,8 +383,8 @@ class TestAsyncSecrets:
     @parametrize
     async def test_method_create(self, async_client: AsyncCadenya) -> None:
         secret = await async_client.tool_sets.secrets.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -394,8 +394,8 @@ class TestAsyncSecrets:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncCadenya) -> None:
         secret = await async_client.tool_sets.secrets.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -409,8 +409,8 @@ class TestAsyncSecrets:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.secrets.with_raw_response.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -424,8 +424,8 @@ class TestAsyncSecrets:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.secrets.with_streaming_response.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         ) as response:
@@ -442,7 +442,7 @@ class TestAsyncSecrets:
     async def test_path_params_create(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.create(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
                 metadata={"name": "name"},
                 spec={},
@@ -451,7 +451,7 @@ class TestAsyncSecrets:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.create(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
                 metadata={"name": "name"},
                 spec={},
             )
@@ -460,9 +460,9 @@ class TestAsyncSecrets:
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncCadenya) -> None:
         secret = await async_client.tool_sets.secrets.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSetSecret, secret, path=["response"])
 
@@ -470,9 +470,9 @@ class TestAsyncSecrets:
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.secrets.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -484,9 +484,9 @@ class TestAsyncSecrets:
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.secrets.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -501,32 +501,32 @@ class TestAsyncSecrets:
     async def test_path_params_retrieve(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.retrieve(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.retrieve(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.retrieve(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_update(self, async_client: AsyncCadenya) -> None:
         secret = await async_client.tool_sets.secrets.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSetSecret, secret, path=["response"])
 
@@ -534,9 +534,9 @@ class TestAsyncSecrets:
     @parametrize
     async def test_method_update_with_all_params(self, async_client: AsyncCadenya) -> None:
         secret = await async_client.tool_sets.secrets.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -551,9 +551,9 @@ class TestAsyncSecrets:
     @parametrize
     async def test_raw_response_update(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.secrets.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -565,9 +565,9 @@ class TestAsyncSecrets:
     @parametrize
     async def test_streaming_response_update(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.secrets.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -582,31 +582,31 @@ class TestAsyncSecrets:
     async def test_path_params_update(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.update(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.update(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.update(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_list(self, async_client: AsyncCadenya) -> None:
         secret = await async_client.tool_sets.secrets.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AsyncCursorPagination[ToolSetSecret], secret, path=["response"])
 
@@ -614,8 +614,8 @@ class TestAsyncSecrets:
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         secret = await async_client.tool_sets.secrets.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
             limit=0,
@@ -629,8 +629,8 @@ class TestAsyncSecrets:
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.secrets.with_raw_response.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -642,8 +642,8 @@ class TestAsyncSecrets:
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.secrets.with_streaming_response.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -658,23 +658,23 @@ class TestAsyncSecrets:
     async def test_path_params_list(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.list(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.list(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_delete(self, async_client: AsyncCadenya) -> None:
         secret = await async_client.tool_sets.secrets.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert secret is None
 
@@ -682,9 +682,9 @@ class TestAsyncSecrets:
     @parametrize
     async def test_raw_response_delete(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.secrets.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -696,9 +696,9 @@ class TestAsyncSecrets:
     @parametrize
     async def test_streaming_response_delete(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.secrets.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -713,21 +713,21 @@ class TestAsyncSecrets:
     async def test_path_params_delete(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.delete(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.delete(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="toolsecret_01HXKD2E5NQM3T9AYWCF8PWC4R",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.secrets.with_raw_response.delete(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )

@@ -52,7 +52,7 @@ class FeedbackResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         agent_variation_id: str | Omit = omit,
         created_after: Union[str, datetime] | Omit = omit,
         created_before: Union[str, datetime] | Omit = omit,
@@ -109,6 +109,8 @@ class FeedbackResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -168,7 +170,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         agent_variation_id: str | Omit = omit,
         created_after: Union[str, datetime] | Omit = omit,
         created_before: Union[str, datetime] | Omit = omit,
@@ -225,6 +227,8 @@ class AsyncFeedbackResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:

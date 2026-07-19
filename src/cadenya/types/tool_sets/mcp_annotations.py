@@ -6,10 +6,10 @@ from pydantic import Field as FieldInfo
 
 from ..._models import BaseModel
 
-__all__ = ["McpAnnotations"]
+__all__ = ["MCPAnnotations"]
 
 
-class McpAnnotations(BaseModel):
+class MCPAnnotations(BaseModel):
     """
     Behavior hints synced from the MCP server's tool definition
      (ToolAnnotations in the MCP specification). All hints are advisory:

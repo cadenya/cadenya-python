@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Required, Annotated, TypedDict
+from typing_extensions import Annotated, TypedDict
 
 from ..._utils import PropertyInfo
 from .memory_entry_update_spec_param import MemoryEntryUpdateSpecParam
@@ -12,9 +12,7 @@ __all__ = ["EntryUpdateParams"]
 
 
 class EntryUpdateParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
-
-    memory_layer_id: Required[Annotated[str, PropertyInfo(alias="memoryLayerId")]]
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     metadata: UpdateResourceMetadata
     """

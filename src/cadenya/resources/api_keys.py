@@ -52,8 +52,8 @@ class APIKeysResource(SyncAPIResource):
 
     def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: api_key_create_params.Metadata,
         spec: APIKeySpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -81,6 +81,8 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._post(
@@ -102,7 +104,7 @@ class APIKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -122,6 +124,8 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -138,7 +142,7 @@ class APIKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: api_key_update_params.Metadata | Omit = omit,
         spec: APIKeySpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -169,6 +173,8 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -191,8 +197,8 @@ class APIKeysResource(SyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         labels: str | Omit = omit,
@@ -236,6 +242,8 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -266,7 +274,7 @@ class APIKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -286,6 +294,8 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -303,7 +313,7 @@ class APIKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -325,6 +335,8 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -341,7 +353,7 @@ class APIKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -362,6 +374,8 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -378,7 +392,7 @@ class APIKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -400,6 +414,8 @@ class APIKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -442,8 +458,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
     async def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: api_key_create_params.Metadata,
         spec: APIKeySpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -471,6 +487,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return await self._post(
@@ -492,7 +510,7 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -512,6 +530,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -528,7 +548,7 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: api_key_update_params.Metadata | Omit = omit,
         spec: APIKeySpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -559,6 +579,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -581,8 +603,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         labels: str | Omit = omit,
@@ -626,6 +648,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -656,7 +680,7 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -676,6 +700,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -693,7 +719,7 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -715,6 +741,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -731,7 +759,7 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -752,6 +780,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -768,7 +798,7 @@ class AsyncAPIKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -790,6 +820,8 @@ class AsyncAPIKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:

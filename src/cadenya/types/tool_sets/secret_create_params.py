@@ -12,7 +12,7 @@ __all__ = ["SecretCreateParams"]
 
 
 class SecretCreateParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     metadata: Required[CreateResourceMetadata]
     """

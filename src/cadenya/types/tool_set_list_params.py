@@ -10,6 +10,8 @@ __all__ = ["ToolSetListParams"]
 
 
 class ToolSetListParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     cursor: str
     """Pagination cursor from previous response"""
 

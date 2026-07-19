@@ -6,10 +6,10 @@ from typing_extensions import Annotated, TypedDict
 
 from ..._utils import PropertyInfo
 
-__all__ = ["McpAnnotationsParam"]
+__all__ = ["MCPAnnotationsParam"]
 
 
-class McpAnnotationsParam(TypedDict, total=False):
+class MCPAnnotationsParam(TypedDict, total=False):
     """
     Behavior hints synced from the MCP server's tool definition
      (ToolAnnotations in the MCP specification). All hints are advisory:

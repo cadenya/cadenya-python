@@ -51,10 +51,10 @@ class ToolCallsResource(SyncAPIResource):
 
     def retrieve(
         self,
+        objective_id: str,
         tool_call_id: str,
         *,
-        workspace_id: str,
-        objective_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -76,6 +76,8 @@ class ToolCallsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -99,7 +101,7 @@ class ToolCallsResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         execution_status: Literal[
             "TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED",
@@ -156,6 +158,8 @@ class ToolCallsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -189,10 +193,10 @@ class ToolCallsResource(SyncAPIResource):
 
     def approve(
         self,
+        objective_id: str,
         tool_call_id: str,
         *,
-        workspace_id: str,
-        objective_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -213,6 +217,8 @@ class ToolCallsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -234,10 +240,10 @@ class ToolCallsResource(SyncAPIResource):
 
     def deny(
         self,
+        objective_id: str,
         tool_call_id: str,
         *,
-        workspace_id: str,
-        objective_id: str,
+        workspace_id: str | None = None,
         memo: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -263,6 +269,8 @@ class ToolCallsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -285,10 +293,10 @@ class ToolCallsResource(SyncAPIResource):
 
     def set_content(
         self,
+        objective_id: str,
         tool_call_id: str,
         *,
-        workspace_id: str,
-        objective_id: str,
+        workspace_id: str | None = None,
         content: Iterable[SetToolCallContentRequestContentBlockParam],
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -315,6 +323,8 @@ class ToolCallsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -358,10 +368,10 @@ class AsyncToolCallsResource(AsyncAPIResource):
 
     async def retrieve(
         self,
+        objective_id: str,
         tool_call_id: str,
         *,
-        workspace_id: str,
-        objective_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -383,6 +393,8 @@ class AsyncToolCallsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -406,7 +418,7 @@ class AsyncToolCallsResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         execution_status: Literal[
             "TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED",
@@ -463,6 +475,8 @@ class AsyncToolCallsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -496,10 +510,10 @@ class AsyncToolCallsResource(AsyncAPIResource):
 
     async def approve(
         self,
+        objective_id: str,
         tool_call_id: str,
         *,
-        workspace_id: str,
-        objective_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -520,6 +534,8 @@ class AsyncToolCallsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -541,10 +557,10 @@ class AsyncToolCallsResource(AsyncAPIResource):
 
     async def deny(
         self,
+        objective_id: str,
         tool_call_id: str,
         *,
-        workspace_id: str,
-        objective_id: str,
+        workspace_id: str | None = None,
         memo: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -570,6 +586,8 @@ class AsyncToolCallsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -592,10 +610,10 @@ class AsyncToolCallsResource(AsyncAPIResource):
 
     async def set_content(
         self,
+        objective_id: str,
         tool_call_id: str,
         *,
-        workspace_id: str,
-        objective_id: str,
+        workspace_id: str | None = None,
         content: Iterable[SetToolCallContentRequestContentBlockParam],
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -622,6 +640,8 @@ class AsyncToolCallsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:

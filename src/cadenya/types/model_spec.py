@@ -10,8 +10,11 @@ __all__ = ["ModelSpec"]
 
 
 class ModelSpec(BaseModel):
-    family: Optional[str] = None
+    family: str
     """The model family (e.g., "claude-sonnet-4.6", "gpt-5.4", "gemini-2.5-flash")"""
+
+    provider: str
+    """The model provider (e.g., "anthropic", "openai", "google")"""
 
     input_price_per_million_tokens: Optional[str] = FieldInfo(alias="inputPricePerMillionTokens", default=None)
     """Cost per million input tokens in cents (e.g., 300 = $3.00)"""
@@ -24,6 +27,3 @@ class ModelSpec(BaseModel):
 
     output_price_per_million_tokens: Optional[str] = FieldInfo(alias="outputPricePerMillionTokens", default=None)
     """Cost per million output tokens in cents (e.g., 1500 = $15.00)"""
-
-    provider: Optional[str] = None
-    """The model provider (e.g., "anthropic", "openai", "google")"""

@@ -10,6 +10,8 @@ __all__ = ["APIKeyListParams"]
 
 
 class APIKeyListParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     cursor: str
     """Pagination cursor from previous response."""
 

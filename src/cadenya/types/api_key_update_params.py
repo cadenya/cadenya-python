@@ -12,7 +12,7 @@ __all__ = ["APIKeyUpdateParams", "Metadata"]
 
 
 class APIKeyUpdateParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     metadata: Metadata
     """

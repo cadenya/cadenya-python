@@ -13,6 +13,8 @@ __all__ = ["AgentCreateParams", "DefaultVariation"]
 
 
 class AgentCreateParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     metadata: Required[CreateResourceMetadata]
     """
     CreateResourceMetadata contains the user-provided fields for creating a

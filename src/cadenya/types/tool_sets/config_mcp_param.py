@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from typing_extensions import TypedDict
 
-from .mcp_annotations_param import McpAnnotationsParam
+from .mcp_annotations_param import MCPAnnotationsParam
 
-__all__ = ["ConfigMcpParam"]
+__all__ = ["ConfigMCPParam"]
 
 
-class ConfigMcpParam(TypedDict, total=False):
-    annotations: McpAnnotationsParam
+class ConfigMCPParam(TypedDict, total=False):
+    annotations: MCPAnnotationsParam
     """
     Behavior hints synced from the MCP server's tool definition (ToolAnnotations in
     the MCP specification). All hints are advisory: servers are not required to send

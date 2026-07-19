@@ -11,6 +11,8 @@ __all__ = ["ModelSwapParams", "ModelSwap"]
 
 
 class ModelSwapParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     model_swaps: Annotated[Iterable[ModelSwap], PropertyInfo(alias="modelSwaps")]
     """The swaps to perform."""
 

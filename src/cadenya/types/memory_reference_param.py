@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Annotated, TypedDict
+from typing_extensions import Required, Annotated, TypedDict
 
 from .._utils import PropertyInfo
 
@@ -20,6 +20,8 @@ class MemoryReferenceParam(TypedDict, total=False):
      memory_entry_id when set.
     """
 
+    memory_layer_id: Required[Annotated[str, PropertyInfo(alias="memoryLayerId")]]
+
     memory_entry_id: Annotated[str, PropertyInfo(alias="memoryEntryId")]
     """
     When set, inserts only this entry from memory_layer_id into the cascade —
@@ -27,5 +29,3 @@ class MemoryReferenceParam(TypedDict, total=False):
     entry must belong to memory_layer_id; mismatches are rejected with
     InvalidArgument.
     """
-
-    memory_layer_id: Annotated[str, PropertyInfo(alias="memoryLayerId")]

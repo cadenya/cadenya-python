@@ -2,23 +2,17 @@
 
 from __future__ import annotations
 
-from typing_extensions import TypedDict
+from typing import Union
+from typing_extensions import TypeAlias
 
-from .set_tool_call_content_request_text_block_param import SetToolCallContentRequestTextBlockParam
-from .set_tool_call_content_request_audio_block_param import SetToolCallContentRequestAudioBlockParam
-from .set_tool_call_content_request_image_block_param import SetToolCallContentRequestImageBlockParam
+from .set_tool_call_content_request_content_block_text_param import SetToolCallContentRequestContentBlockTextParam
+from .set_tool_call_content_request_content_block_audio_param import SetToolCallContentRequestContentBlockAudioParam
+from .set_tool_call_content_request_content_block_image_param import SetToolCallContentRequestContentBlockImageParam
 
 __all__ = ["SetToolCallContentRequestContentBlockParam"]
 
-
-class SetToolCallContentRequestContentBlockParam(TypedDict, total=False):
-    """
-    ContentBlock is a single block of tool call content supplied on input.
-     Exactly one of the variants is set.
-    """
-
-    audio: SetToolCallContentRequestAudioBlockParam
-
-    image: SetToolCallContentRequestImageBlockParam
-
-    text: SetToolCallContentRequestTextBlockParam
+SetToolCallContentRequestContentBlockParam: TypeAlias = Union[
+    SetToolCallContentRequestContentBlockTextParam,
+    SetToolCallContentRequestContentBlockImageParam,
+    SetToolCallContentRequestContentBlockAudioParam,
+]

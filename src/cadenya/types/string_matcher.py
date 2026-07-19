@@ -1,25 +1,20 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Optional
+from typing import Union
+from typing_extensions import Annotated, TypeAlias
 
-from pydantic import Field as FieldInfo
-
-from .._models import BaseModel
+from .._utils import PropertyInfo
+from .string_matcher_exact import StringMatcherExact
+from .string_matcher_regex import StringMatcherRegex
+from .string_matcher_contains import StringMatcherContains
+from .string_matcher_ends_with import StringMatcherEndsWith
+from .string_matcher_starts_with import StringMatcherStartsWith
 
 __all__ = ["StringMatcher"]
 
-
-class StringMatcher(BaseModel):
-    """String matching operations"""
-
-    case_sensitive: Optional[bool] = FieldInfo(alias="caseSensitive", default=None)
-
-    contains: Optional[str] = None
-
-    ends_with: Optional[str] = FieldInfo(alias="endsWith", default=None)
-
-    exact: Optional[str] = None
-
-    regex: Optional[str] = None
-
-    starts_with: Optional[str] = FieldInfo(alias="startsWith", default=None)
+StringMatcher: TypeAlias = Annotated[
+    Union[
+        StringMatcherExact, StringMatcherStartsWith, StringMatcherEndsWith, StringMatcherContains, StringMatcherRegex
+    ],
+    PropertyInfo(discriminator="type"),
+]

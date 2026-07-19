@@ -3,13 +3,13 @@
 from typing import Optional
 
 from ..._models import BaseModel
-from .mcp_annotations import McpAnnotations
+from .mcp_annotations import MCPAnnotations
 
-__all__ = ["ConfigMcp"]
+__all__ = ["ConfigMCP"]
 
 
-class ConfigMcp(BaseModel):
-    annotations: Optional[McpAnnotations] = None
+class ConfigMCP(BaseModel):
+    annotations: Optional[MCPAnnotations] = None
     """
     Behavior hints synced from the MCP server's tool definition (ToolAnnotations in
     the MCP specification). All hints are advisory: servers are not required to send
