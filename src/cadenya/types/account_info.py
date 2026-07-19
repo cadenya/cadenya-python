@@ -4,6 +4,7 @@ from typing import Optional
 
 from pydantic import Field as FieldInfo
 
+from .api_key import APIKey
 from .._models import BaseModel
 
 __all__ = ["AccountInfo"]
@@ -19,6 +20,15 @@ class AccountInfo(BaseModel):
     challenge token in place of per-user auth when listing tools, while still
     requiring real auth on tools/call. Rotate with RotateChallengeToken; update any
     servers validating the token before rotating.
+    """
+
+    global_api_key: Optional[APIKey] = FieldInfo(alias="globalApiKey", default=None)
+    """An API key.
+
+    Every key belongs to exactly one workspace and is managed via the
+    workspace-scoped API key routes. The only exception is the system-managed global
+    account key, which spans all workspaces and is managed via the account
+    global_api_key routes.
     """
 
     webhook_events_hmac_secret: Optional[str] = FieldInfo(alias="webhookEventsHmacSecret", default=None)
