@@ -145,7 +145,7 @@ class TestCadenya:
         # options that have a default are overridden correctly
         copied = client.copy(max_retries=7)
         assert copied.max_retries == 7
-        assert client.max_retries == 2
+        assert client.max_retries == 0
 
         copied2 = copied.copy(max_retries=6)
         assert copied2.max_retries == 6
@@ -451,6 +451,18 @@ class TestCadenya:
             )
         )
         assert request.url.raw_path == b"/files/a%2Fb?beta=true&limit=10"
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    def test_workspace_id_client_params(self, client: Cadenya) -> None:
+        # Test with base client (no custom params)
+        with pytest.raises(ValueError, match="Missing workspace_id argument;"):
+            client.ai_provider_keys.create(metadata={"name": "name"}, spec={})
+
+        client = Cadenya(
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, workspace_id="My Workspace ID"
+        )
+        with client as c2:
+            c2.ai_provider_keys.create(metadata={"name": "name"}, spec={})
 
     def test_request_extra_json(self, client: Cadenya) -> None:
         request = client._build_request(
@@ -1067,7 +1079,7 @@ class TestAsyncCadenya:
         # options that have a default are overridden correctly
         copied = async_client.copy(max_retries=7)
         assert copied.max_retries == 7
-        assert async_client.max_retries == 2
+        assert async_client.max_retries == 0
 
         copied2 = copied.copy(max_retries=6)
         assert copied2.max_retries == 6
@@ -1377,6 +1389,18 @@ class TestAsyncCadenya:
             )
         )
         assert request.url.raw_path == b"/files/a%2Fb?beta=true&limit=10"
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    async def test_workspace_id_client_params(self, async_client: AsyncCadenya) -> None:
+        # Test with base client (no custom params)
+        with pytest.raises(ValueError, match="Missing workspace_id argument;"):
+            await async_client.ai_provider_keys.create(metadata={"name": "name"}, spec={})
+
+        client = AsyncCadenya(
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, workspace_id="My Workspace ID"
+        )
+        async with client as c2:
+            await c2.ai_provider_keys.create(metadata={"name": "name"}, spec={})
 
     def test_request_extra_json(self, client: Cadenya) -> None:
         request = client._build_request(

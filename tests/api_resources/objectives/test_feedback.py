@@ -24,8 +24,8 @@ class TestFeedback:
     @parametrize
     def test_method_create(self, client: Cadenya) -> None:
         feedback = client.objectives.feedback.create(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             data={},
             metadata={},
         )
@@ -35,8 +35,8 @@ class TestFeedback:
     @parametrize
     def test_method_create_with_all_params(self, client: Cadenya) -> None:
         feedback = client.objectives.feedback.create(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             data={
                 "comment": "comment",
                 "score": 0,
@@ -52,8 +52,8 @@ class TestFeedback:
     @parametrize
     def test_raw_response_create(self, client: Cadenya) -> None:
         response = client.objectives.feedback.with_raw_response.create(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             data={},
             metadata={},
         )
@@ -67,8 +67,8 @@ class TestFeedback:
     @parametrize
     def test_streaming_response_create(self, client: Cadenya) -> None:
         with client.objectives.feedback.with_streaming_response.create(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             data={},
             metadata={},
         ) as response:
@@ -85,7 +85,7 @@ class TestFeedback:
     def test_path_params_create(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.objectives.feedback.with_raw_response.create(
-                objective_id="objectiveId",
+                objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
                 workspace_id="",
                 data={},
                 metadata={},
@@ -94,7 +94,7 @@ class TestFeedback:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
             client.objectives.feedback.with_raw_response.create(
                 objective_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
                 data={},
                 metadata={},
             )
@@ -103,8 +103,8 @@ class TestFeedback:
     @parametrize
     def test_method_list(self, client: Cadenya) -> None:
         feedback = client.objectives.feedback.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(SyncCursorPagination[ObjectiveFeedback], feedback, path=["response"])
 
@@ -112,8 +112,8 @@ class TestFeedback:
     @parametrize
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         feedback = client.objectives.feedback.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             labels="labels",
             limit=0,
@@ -124,8 +124,8 @@ class TestFeedback:
     @parametrize
     def test_raw_response_list(self, client: Cadenya) -> None:
         response = client.objectives.feedback.with_raw_response.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -137,8 +137,8 @@ class TestFeedback:
     @parametrize
     def test_streaming_response_list(self, client: Cadenya) -> None:
         with client.objectives.feedback.with_streaming_response.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -153,14 +153,14 @@ class TestFeedback:
     def test_path_params_list(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.objectives.feedback.with_raw_response.list(
-                objective_id="objectiveId",
+                objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
             client.objectives.feedback.with_raw_response.list(
                 objective_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
 
@@ -173,8 +173,8 @@ class TestAsyncFeedback:
     @parametrize
     async def test_method_create(self, async_client: AsyncCadenya) -> None:
         feedback = await async_client.objectives.feedback.create(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             data={},
             metadata={},
         )
@@ -184,8 +184,8 @@ class TestAsyncFeedback:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncCadenya) -> None:
         feedback = await async_client.objectives.feedback.create(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             data={
                 "comment": "comment",
                 "score": 0,
@@ -201,8 +201,8 @@ class TestAsyncFeedback:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncCadenya) -> None:
         response = await async_client.objectives.feedback.with_raw_response.create(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             data={},
             metadata={},
         )
@@ -216,8 +216,8 @@ class TestAsyncFeedback:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncCadenya) -> None:
         async with async_client.objectives.feedback.with_streaming_response.create(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             data={},
             metadata={},
         ) as response:
@@ -234,7 +234,7 @@ class TestAsyncFeedback:
     async def test_path_params_create(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.objectives.feedback.with_raw_response.create(
-                objective_id="objectiveId",
+                objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
                 workspace_id="",
                 data={},
                 metadata={},
@@ -243,7 +243,7 @@ class TestAsyncFeedback:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
             await async_client.objectives.feedback.with_raw_response.create(
                 objective_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
                 data={},
                 metadata={},
             )
@@ -252,8 +252,8 @@ class TestAsyncFeedback:
     @parametrize
     async def test_method_list(self, async_client: AsyncCadenya) -> None:
         feedback = await async_client.objectives.feedback.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AsyncCursorPagination[ObjectiveFeedback], feedback, path=["response"])
 
@@ -261,8 +261,8 @@ class TestAsyncFeedback:
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         feedback = await async_client.objectives.feedback.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             labels="labels",
             limit=0,
@@ -273,8 +273,8 @@ class TestAsyncFeedback:
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncCadenya) -> None:
         response = await async_client.objectives.feedback.with_raw_response.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -286,8 +286,8 @@ class TestAsyncFeedback:
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncCadenya) -> None:
         async with async_client.objectives.feedback.with_streaming_response.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -302,12 +302,12 @@ class TestAsyncFeedback:
     async def test_path_params_list(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.objectives.feedback.with_raw_response.list(
-                objective_id="objectiveId",
+                objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
             await async_client.objectives.feedback.with_raw_response.list(
                 objective_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )

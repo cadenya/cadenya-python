@@ -1,105 +1,26 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Dict, Optional
-from typing_extensions import Literal
+from typing import Union, Optional
+from typing_extensions import Literal, Annotated, TypeAlias
 
-from pydantic import Field as FieldInfo
-
+from .._utils import PropertyInfo
 from .._models import BaseModel
+from .ai_provider_config_openai import AIProviderConfigOpenAI
+from .ai_provider_config_openrouter import AIProviderConfigOpenrouter
+from .ai_provider_credential_api_key import AIProviderCredentialAPIKey
+from .ai_provider_credential_headers import AIProviderCredentialHeaders
+from .ai_provider_config_openai_compatible import AIProviderConfigOpenAICompatible
 
-__all__ = [
-    "AIProviderKeySpec",
-    "Config",
-    "ConfigOpenAI",
-    "ConfigOpenAICompatible",
-    "ConfigOpenrouter",
-    "Credentials",
-    "CredentialsAPIKey",
-    "CredentialsHeaders",
+__all__ = ["AIProviderKeySpec", "Config", "Credentials"]
+
+Config: TypeAlias = Annotated[
+    Union[AIProviderConfigOpenrouter, AIProviderConfigOpenAI, AIProviderConfigOpenAICompatible],
+    PropertyInfo(discriminator="type"),
 ]
 
-
-class ConfigOpenAI(BaseModel):
-    """OpenAIConfig holds OpenAI-specific settings."""
-
-    organization_id: Optional[str] = FieldInfo(alias="organizationId", default=None)
-    """Sent as the OpenAI-Organization header when set."""
-
-    project_id: Optional[str] = FieldInfo(alias="projectId", default=None)
-    """Sent as the OpenAI-Project header when set."""
-
-
-class ConfigOpenAICompatible(BaseModel):
-    """
-    OpenAICompatibleConfig configures a generic endpoint that speaks the OpenAI
-     Chat Completions API. The base URL is required and its model catalog is
-     discovered live via GET {base_url}/models.
-    """
-
-    base_url: Optional[str] = FieldInfo(alias="baseUrl", default=None)
-
-
-class ConfigOpenrouter(BaseModel):
-    """OpenRouterConfig holds OpenRouter-specific settings."""
-
-    region: Optional[str] = None
-    """Data-residency region (e.g. "us", "eu"). Empty uses the provider default."""
-
-
-class Config(BaseModel):
-    """AIProviderConfig holds non-secret, provider-specific settings.
-
-    The set case
-     must correspond to AIProviderKeySpec.provider. Providers with no settings
-     (Anthropic, Gemini) simply leave this unset. The endpoint of a named provider
-     is fixed and intentionally not overridable here; use the OpenAI-compatible
-     provider to target a custom endpoint.
-    """
-
-    openai: Optional[ConfigOpenAI] = None
-    """OpenAIConfig holds OpenAI-specific settings."""
-
-    openai_compatible: Optional[ConfigOpenAICompatible] = FieldInfo(alias="openaiCompatible", default=None)
-    """
-    OpenAICompatibleConfig configures a generic endpoint that speaks the OpenAI Chat
-    Completions API. The base URL is required and its model catalog is discovered
-    live via GET {base_url}/models.
-    """
-
-    openrouter: Optional[ConfigOpenrouter] = None
-    """OpenRouterConfig holds OpenRouter-specific settings."""
-
-
-class CredentialsAPIKey(BaseModel):
-    """CredentialAPIKey carries a single bearer/header API key."""
-
-    api_key: Optional[str] = FieldInfo(alias="apiKey", default=None)
-
-
-class CredentialsHeaders(BaseModel):
-    """
-    CredentialHeaders carries arbitrary HTTP headers sent with every request to
-     the provider (e.g. {"Authorization": "Bearer ...", "X-Api-Key": "..."}).
-    """
-
-    headers: Optional[Dict[str, str]] = None
-
-
-class Credentials(BaseModel):
-    """
-    AIProviderCredential is the secret material used to authenticate with a
-     provider. The set case must correspond to AIProviderKeySpec.provider. The
-     server encrypts the serialized message at rest and never returns it on reads.
-    """
-
-    api_key: Optional[CredentialsAPIKey] = FieldInfo(alias="apiKey", default=None)
-    """CredentialAPIKey carries a single bearer/header API key."""
-
-    headers: Optional[CredentialsHeaders] = None
-    """
-    CredentialHeaders carries arbitrary HTTP headers sent with every request to the
-    provider (e.g. {"Authorization": "Bearer ...", "X-Api-Key": "..."}).
-    """
+Credentials: TypeAlias = Annotated[
+    Union[AIProviderCredentialAPIKey, AIProviderCredentialHeaders], PropertyInfo(discriminator="type")
+]
 
 
 class AIProviderKeySpec(BaseModel):

@@ -20,6 +20,8 @@ class MemoryReference(BaseModel):
      memory_entry_id when set.
     """
 
+    memory_layer_id: str = FieldInfo(alias="memoryLayerId")
+
     memory_entry_id: Optional[str] = FieldInfo(alias="memoryEntryId", default=None)
     """
     When set, inserts only this entry from memory_layer_id into the cascade —
@@ -27,5 +29,3 @@ class MemoryReference(BaseModel):
     entry must belong to memory_layer_id; mismatches are rejected with
     InvalidArgument.
     """
-
-    memory_layer_id: Optional[str] = FieldInfo(alias="memoryLayerId", default=None)

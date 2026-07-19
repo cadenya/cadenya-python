@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from typing import Any, cast
+from typing_extensions import Literal, overload
+
 import httpx
 
 from ..._types import Body, Omit, Query, Headers, NoneType, NotGiven, omit, not_given
-from ..._utils import path_template, maybe_transform, async_maybe_transform
+from ..._utils import path_template, required_args, maybe_transform, async_maybe_transform
 from ..._compat import cached_property
 from ..._resource import SyncAPIResource, AsyncAPIResource
 from ..._response import (
@@ -62,7 +65,7 @@ class VariationsResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: AgentVariationSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -90,6 +93,8 @@ class VariationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -115,10 +120,10 @@ class VariationsResource(SyncAPIResource):
 
     def retrieve(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -138,6 +143,8 @@ class VariationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -159,10 +166,10 @@ class VariationsResource(SyncAPIResource):
 
     def update(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: AgentVariationSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -193,6 +200,8 @@ class VariationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -224,7 +233,7 @@ class VariationsResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         labels: str | Omit = omit,
@@ -262,6 +271,8 @@ class VariationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -294,10 +305,10 @@ class VariationsResource(SyncAPIResource):
 
     def delete(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -317,6 +328,8 @@ class VariationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -337,15 +350,15 @@ class VariationsResource(SyncAPIResource):
             cast_to=NoneType,
         )
 
+    @overload
     def add_assignment(
         self,
+        agent_id: str,
         variation_id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
-        sub_agent_id: str | Omit = omit,
-        tool_id: str | Omit = omit,
-        tool_set_id: str | Omit = omit,
+        workspace_id: str | None = None,
+        tool_id: str,
+        type: Literal["toolId"],
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -367,40 +380,132 @@ class VariationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        ...
+
+    @overload
+    def add_assignment(
+        self,
+        agent_id: str,
+        variation_id: str,
+        *,
+        workspace_id: str | None = None,
+        tool_set_id: str,
+        type: Literal["toolSetId"],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> VariationAssignment:
+        """Assigns a tool, tool set, or sub-agent to a variation.
+
+        Exactly one target ID
+        must be set.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        ...
+
+    @overload
+    def add_assignment(
+        self,
+        agent_id: str,
+        variation_id: str,
+        *,
+        workspace_id: str | None = None,
+        sub_agent_id: str,
+        type: Literal["subAgentId"],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> VariationAssignment:
+        """Assigns a tool, tool set, or sub-agent to a variation.
+
+        Exactly one target ID
+        must be set.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        ...
+
+    @required_args(["tool_id", "type"], ["tool_set_id", "type"], ["sub_agent_id", "type"])
+    def add_assignment(
+        self,
+        agent_id: str,
+        variation_id: str,
+        *,
+        workspace_id: str | None = None,
+        tool_id: str | Omit = omit,
+        type: Literal["toolId"] | Literal["toolSetId"] | Literal["subAgentId"],
+        tool_set_id: str | Omit = omit,
+        sub_agent_id: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> VariationAssignment:
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
         if not variation_id:
             raise ValueError(f"Expected a non-empty value for `variation_id` but received {variation_id!r}")
-        return self._post(
-            path_template(
-                "/v1/workspaces/{workspace_id}/agents/{agent_id}/variations/{variation_id}/assignments",
-                workspace_id=workspace_id,
-                agent_id=agent_id,
-                variation_id=variation_id,
+        return cast(
+            VariationAssignment,
+            self._post(
+                path_template(
+                    "/v1/workspaces/{workspace_id}/agents/{agent_id}/variations/{variation_id}/assignments",
+                    workspace_id=workspace_id,
+                    agent_id=agent_id,
+                    variation_id=variation_id,
+                ),
+                body=maybe_transform(
+                    {
+                        "tool_id": tool_id,
+                        "type": type,
+                        "tool_set_id": tool_set_id,
+                        "sub_agent_id": sub_agent_id,
+                    },
+                    variation_add_assignment_params.VariationAddAssignmentParams,
+                ),
+                options=make_request_options(
+                    extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                ),
+                cast_to=cast(
+                    Any, VariationAssignment
+                ),  # Union types cannot be passed in as arguments in the type system
             ),
-            body=maybe_transform(
-                {
-                    "sub_agent_id": sub_agent_id,
-                    "tool_id": tool_id,
-                    "tool_set_id": tool_set_id,
-                },
-                variation_add_assignment_params.VariationAddAssignmentParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=VariationAssignment,
         )
 
     def add_memory_layer(
         self,
+        agent_id: str,
         variation_id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
-        memory_layer_id: str | Omit = omit,
+        workspace_id: str | None = None,
+        memory_layer_id: str,
         position: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -428,6 +533,8 @@ class VariationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -456,11 +563,11 @@ class VariationsResource(SyncAPIResource):
 
     def remove_assignment(
         self,
-        id: str,
-        *,
-        workspace_id: str,
         agent_id: str,
         variation_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -481,6 +588,8 @@ class VariationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -506,11 +615,11 @@ class VariationsResource(SyncAPIResource):
 
     def remove_memory_layer(
         self,
-        id: str,
-        *,
-        workspace_id: str,
         agent_id: str,
         variation_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -531,6 +640,8 @@ class VariationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -556,11 +667,11 @@ class VariationsResource(SyncAPIResource):
 
     def update_memory_layer(
         self,
-        id: str,
-        *,
-        workspace_id: str,
         agent_id: str,
         variation_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
         position: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -583,6 +694,8 @@ class VariationsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -637,7 +750,7 @@ class AsyncVariationsResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: AgentVariationSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -665,6 +778,8 @@ class AsyncVariationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -690,10 +805,10 @@ class AsyncVariationsResource(AsyncAPIResource):
 
     async def retrieve(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -713,6 +828,8 @@ class AsyncVariationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -734,10 +851,10 @@ class AsyncVariationsResource(AsyncAPIResource):
 
     async def update(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: AgentVariationSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -768,6 +885,8 @@ class AsyncVariationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -799,7 +918,7 @@ class AsyncVariationsResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         labels: str | Omit = omit,
@@ -837,6 +956,8 @@ class AsyncVariationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -869,10 +990,10 @@ class AsyncVariationsResource(AsyncAPIResource):
 
     async def delete(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -892,6 +1013,8 @@ class AsyncVariationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -912,15 +1035,15 @@ class AsyncVariationsResource(AsyncAPIResource):
             cast_to=NoneType,
         )
 
+    @overload
     async def add_assignment(
         self,
+        agent_id: str,
         variation_id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
-        sub_agent_id: str | Omit = omit,
-        tool_id: str | Omit = omit,
-        tool_set_id: str | Omit = omit,
+        workspace_id: str | None = None,
+        tool_id: str,
+        type: Literal["toolId"],
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -942,40 +1065,132 @@ class AsyncVariationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        ...
+
+    @overload
+    async def add_assignment(
+        self,
+        agent_id: str,
+        variation_id: str,
+        *,
+        workspace_id: str | None = None,
+        tool_set_id: str,
+        type: Literal["toolSetId"],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> VariationAssignment:
+        """Assigns a tool, tool set, or sub-agent to a variation.
+
+        Exactly one target ID
+        must be set.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        ...
+
+    @overload
+    async def add_assignment(
+        self,
+        agent_id: str,
+        variation_id: str,
+        *,
+        workspace_id: str | None = None,
+        sub_agent_id: str,
+        type: Literal["subAgentId"],
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> VariationAssignment:
+        """Assigns a tool, tool set, or sub-agent to a variation.
+
+        Exactly one target ID
+        must be set.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        ...
+
+    @required_args(["tool_id", "type"], ["tool_set_id", "type"], ["sub_agent_id", "type"])
+    async def add_assignment(
+        self,
+        agent_id: str,
+        variation_id: str,
+        *,
+        workspace_id: str | None = None,
+        tool_id: str | Omit = omit,
+        type: Literal["toolId"] | Literal["toolSetId"] | Literal["subAgentId"],
+        tool_set_id: str | Omit = omit,
+        sub_agent_id: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> VariationAssignment:
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
             raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
         if not variation_id:
             raise ValueError(f"Expected a non-empty value for `variation_id` but received {variation_id!r}")
-        return await self._post(
-            path_template(
-                "/v1/workspaces/{workspace_id}/agents/{agent_id}/variations/{variation_id}/assignments",
-                workspace_id=workspace_id,
-                agent_id=agent_id,
-                variation_id=variation_id,
+        return cast(
+            VariationAssignment,
+            await self._post(
+                path_template(
+                    "/v1/workspaces/{workspace_id}/agents/{agent_id}/variations/{variation_id}/assignments",
+                    workspace_id=workspace_id,
+                    agent_id=agent_id,
+                    variation_id=variation_id,
+                ),
+                body=await async_maybe_transform(
+                    {
+                        "tool_id": tool_id,
+                        "type": type,
+                        "tool_set_id": tool_set_id,
+                        "sub_agent_id": sub_agent_id,
+                    },
+                    variation_add_assignment_params.VariationAddAssignmentParams,
+                ),
+                options=make_request_options(
+                    extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+                ),
+                cast_to=cast(
+                    Any, VariationAssignment
+                ),  # Union types cannot be passed in as arguments in the type system
             ),
-            body=await async_maybe_transform(
-                {
-                    "sub_agent_id": sub_agent_id,
-                    "tool_id": tool_id,
-                    "tool_set_id": tool_set_id,
-                },
-                variation_add_assignment_params.VariationAddAssignmentParams,
-            ),
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=VariationAssignment,
         )
 
     async def add_memory_layer(
         self,
+        agent_id: str,
         variation_id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
-        memory_layer_id: str | Omit = omit,
+        workspace_id: str | None = None,
+        memory_layer_id: str,
         position: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1003,6 +1218,8 @@ class AsyncVariationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -1031,11 +1248,11 @@ class AsyncVariationsResource(AsyncAPIResource):
 
     async def remove_assignment(
         self,
-        id: str,
-        *,
-        workspace_id: str,
         agent_id: str,
         variation_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1056,6 +1273,8 @@ class AsyncVariationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -1081,11 +1300,11 @@ class AsyncVariationsResource(AsyncAPIResource):
 
     async def remove_memory_layer(
         self,
-        id: str,
-        *,
-        workspace_id: str,
         agent_id: str,
         variation_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1106,6 +1325,8 @@ class AsyncVariationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -1131,11 +1352,11 @@ class AsyncVariationsResource(AsyncAPIResource):
 
     async def update_memory_layer(
         self,
-        id: str,
-        *,
-        workspace_id: str,
         agent_id: str,
         variation_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
         position: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1158,6 +1379,8 @@ class AsyncVariationsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:

@@ -12,9 +12,7 @@ __all__ = ["ToolCallSetContentParams"]
 
 
 class ToolCallSetContentParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
-
-    objective_id: Required[Annotated[str, PropertyInfo(alias="objectiveId")]]
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     content: Required[Iterable[SetToolCallContentRequestContentBlockParam]]
     """The content to set on the tool call.

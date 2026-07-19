@@ -10,6 +10,8 @@ __all__ = ["MemberAddParams"]
 
 
 class MemberAddParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     email: str
     """Email address to add (resolve-or-invite). Mutually exclusive with profile_id."""
 

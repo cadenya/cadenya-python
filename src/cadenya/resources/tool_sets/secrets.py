@@ -58,7 +58,7 @@ class SecretsResource(SyncAPIResource):
         self,
         tool_set_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: ToolSetSecretSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -84,6 +84,8 @@ class SecretsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -109,10 +111,10 @@ class SecretsResource(SyncAPIResource):
 
     def retrieve(
         self,
+        tool_set_id: str,
         id: str,
         *,
-        workspace_id: str,
-        tool_set_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -132,6 +134,8 @@ class SecretsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -153,10 +157,10 @@ class SecretsResource(SyncAPIResource):
 
     def update(
         self,
+        tool_set_id: str,
         id: str,
         *,
-        workspace_id: str,
-        tool_set_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: ToolSetSecretSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -185,6 +189,8 @@ class SecretsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -216,7 +222,7 @@ class SecretsResource(SyncAPIResource):
         self,
         tool_set_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -254,6 +260,8 @@ class SecretsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -287,10 +295,10 @@ class SecretsResource(SyncAPIResource):
 
     def delete(
         self,
+        tool_set_id: str,
         id: str,
         *,
-        workspace_id: str,
-        tool_set_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -310,6 +318,8 @@ class SecretsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -364,7 +374,7 @@ class AsyncSecretsResource(AsyncAPIResource):
         self,
         tool_set_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: ToolSetSecretSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -390,6 +400,8 @@ class AsyncSecretsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -415,10 +427,10 @@ class AsyncSecretsResource(AsyncAPIResource):
 
     async def retrieve(
         self,
+        tool_set_id: str,
         id: str,
         *,
-        workspace_id: str,
-        tool_set_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -438,6 +450,8 @@ class AsyncSecretsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -459,10 +473,10 @@ class AsyncSecretsResource(AsyncAPIResource):
 
     async def update(
         self,
+        tool_set_id: str,
         id: str,
         *,
-        workspace_id: str,
-        tool_set_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: ToolSetSecretSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -491,6 +505,8 @@ class AsyncSecretsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -522,7 +538,7 @@ class AsyncSecretsResource(AsyncAPIResource):
         self,
         tool_set_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
         limit: int | Omit = omit,
@@ -560,6 +576,8 @@ class AsyncSecretsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -593,10 +611,10 @@ class AsyncSecretsResource(AsyncAPIResource):
 
     async def delete(
         self,
+        tool_set_id: str,
         id: str,
         *,
-        workspace_id: str,
-        tool_set_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -616,6 +634,8 @@ class AsyncSecretsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:

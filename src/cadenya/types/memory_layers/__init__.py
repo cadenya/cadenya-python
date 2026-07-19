@@ -11,3 +11,9 @@ from .entry_update_params import EntryUpdateParams as EntryUpdateParams
 from .memory_entry_detail import MemoryEntryDetail as MemoryEntryDetail
 from .memory_entry_create_spec_param import MemoryEntryCreateSpecParam as MemoryEntryCreateSpecParam
 from .memory_entry_update_spec_param import MemoryEntryUpdateSpecParam as MemoryEntryUpdateSpecParam
+from .memory_entry_create_spec_content_param import (
+    MemoryEntryCreateSpecContentParam as MemoryEntryCreateSpecContentParam,
+)
+from .memory_entry_create_spec_upload_id_param import (
+    MemoryEntryCreateSpecUploadIDParam as MemoryEntryCreateSpecUploadIDParam,
+)

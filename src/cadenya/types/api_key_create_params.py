@@ -12,6 +12,8 @@ __all__ = ["APIKeyCreateParams", "Metadata"]
 
 
 class APIKeyCreateParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     metadata: Required[Metadata]
     """
     CreateAccountResourceMetadata contains the user-provided fields for creating an

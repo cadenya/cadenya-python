@@ -10,6 +10,8 @@ __all__ = ["ObjectiveListParams"]
 
 
 class ObjectiveListParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     agent_id: Annotated[str, PropertyInfo(alias="agentId")]
     """Agent ID for filtering"""
 

@@ -76,12 +76,14 @@ class Cadenya(SyncAPIClient):
     # client options
     api_key: str
     webhook_key: str | None
+    workspace_id: str | None
 
     def __init__(
         self,
         *,
         api_key: str | None = None,
         webhook_key: str | None = None,
+        workspace_id: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = not_given,
         max_retries: int = DEFAULT_MAX_RETRIES,
@@ -106,6 +108,7 @@ class Cadenya(SyncAPIClient):
         This automatically infers the following arguments from their corresponding environment variables if they are not provided:
         - `api_key` from `CADENYA_API_KEY`
         - `webhook_key` from `CADENYA_WEBHOOK_KEY`
+        - `workspace_id` from `CADENYA_WORKSPACE_ID`
         """
         if api_key is None:
             api_key = os.environ.get("CADENYA_API_KEY")
@@ -118,6 +121,10 @@ class Cadenya(SyncAPIClient):
         if webhook_key is None:
             webhook_key = os.environ.get("CADENYA_WEBHOOK_KEY")
         self.webhook_key = webhook_key
+
+        if workspace_id is None:
+            workspace_id = os.environ.get("CADENYA_WORKSPACE_ID")
+        self.workspace_id = workspace_id
 
         if base_url is None:
             base_url = os.environ.get("CADENYA_BASE_URL")
@@ -342,6 +349,7 @@ class Cadenya(SyncAPIClient):
         *,
         api_key: str | None = None,
         webhook_key: str | None = None,
+        workspace_id: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.Client | None = None,
@@ -377,6 +385,7 @@ class Cadenya(SyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             webhook_key=webhook_key or self.webhook_key,
+            workspace_id=workspace_id or self.workspace_id,
             base_url=base_url or self.base_url,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
@@ -389,6 +398,15 @@ class Cadenya(SyncAPIClient):
     # Alias for `copy` for nicer inline usage, e.g.
     # client.with_options(timeout=10).foo.create(...)
     with_options = copy
+
+    def _get_workspace_id_path_param(self) -> str:
+        from_client = self.workspace_id
+        if from_client is not None:
+            return from_client
+
+        raise ValueError(
+            "Missing workspace_id argument; Please provide it at the client level, e.g. Cadenya(workspace_id='abcd') or per method."
+        )
 
     @override
     def _make_status_error(
@@ -428,12 +446,14 @@ class AsyncCadenya(AsyncAPIClient):
     # client options
     api_key: str
     webhook_key: str | None
+    workspace_id: str | None
 
     def __init__(
         self,
         *,
         api_key: str | None = None,
         webhook_key: str | None = None,
+        workspace_id: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = not_given,
         max_retries: int = DEFAULT_MAX_RETRIES,
@@ -458,6 +478,7 @@ class AsyncCadenya(AsyncAPIClient):
         This automatically infers the following arguments from their corresponding environment variables if they are not provided:
         - `api_key` from `CADENYA_API_KEY`
         - `webhook_key` from `CADENYA_WEBHOOK_KEY`
+        - `workspace_id` from `CADENYA_WORKSPACE_ID`
         """
         if api_key is None:
             api_key = os.environ.get("CADENYA_API_KEY")
@@ -470,6 +491,10 @@ class AsyncCadenya(AsyncAPIClient):
         if webhook_key is None:
             webhook_key = os.environ.get("CADENYA_WEBHOOK_KEY")
         self.webhook_key = webhook_key
+
+        if workspace_id is None:
+            workspace_id = os.environ.get("CADENYA_WORKSPACE_ID")
+        self.workspace_id = workspace_id
 
         if base_url is None:
             base_url = os.environ.get("CADENYA_BASE_URL")
@@ -694,6 +719,7 @@ class AsyncCadenya(AsyncAPIClient):
         *,
         api_key: str | None = None,
         webhook_key: str | None = None,
+        workspace_id: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.AsyncClient | None = None,
@@ -729,6 +755,7 @@ class AsyncCadenya(AsyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             webhook_key=webhook_key or self.webhook_key,
+            workspace_id=workspace_id or self.workspace_id,
             base_url=base_url or self.base_url,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
@@ -741,6 +768,15 @@ class AsyncCadenya(AsyncAPIClient):
     # Alias for `copy` for nicer inline usage, e.g.
     # client.with_options(timeout=10).foo.create(...)
     with_options = copy
+
+    def _get_workspace_id_path_param(self) -> str:
+        from_client = self.workspace_id
+        if from_client is not None:
+            return from_client
+
+        raise ValueError(
+            "Missing workspace_id argument; Please provide it at the client level, e.g. AsyncCadenya(workspace_id='abcd') or per method."
+        )
 
     @override
     def _make_status_error(

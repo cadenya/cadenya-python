@@ -18,7 +18,7 @@ __all__ = ["Objective", "EpisodicMemory"]
 class EpisodicMemory(BaseModel):
     """Episodic is used to configure the episodic memory for the objective"""
 
-    key: Optional[str] = None
+    key: str
     """The caller-supplied episodic key.
 
     Objectives created with the same key (for the same agent) share one episodic

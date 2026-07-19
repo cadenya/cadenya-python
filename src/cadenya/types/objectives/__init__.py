@@ -32,6 +32,15 @@ from .objective_tool_call_result_image_block import (
 from .objective_tool_call_result_content_block import (
     ObjectiveToolCallResultContentBlock as ObjectiveToolCallResultContentBlock,
 )
+from .objective_tool_call_result_content_block_text import (
+    ObjectiveToolCallResultContentBlockText as ObjectiveToolCallResultContentBlockText,
+)
+from .objective_tool_call_result_content_block_audio import (
+    ObjectiveToolCallResultContentBlockAudio as ObjectiveToolCallResultContentBlockAudio,
+)
+from .objective_tool_call_result_content_block_image import (
+    ObjectiveToolCallResultContentBlockImage as ObjectiveToolCallResultContentBlockImage,
+)
 from .set_tool_call_content_request_text_block_param import (
     SetToolCallContentRequestTextBlockParam as SetToolCallContentRequestTextBlockParam,
 )
@@ -43,4 +52,13 @@ from .set_tool_call_content_request_image_block_param import (
 )
 from .set_tool_call_content_request_content_block_param import (
     SetToolCallContentRequestContentBlockParam as SetToolCallContentRequestContentBlockParam,
+)
+from .set_tool_call_content_request_content_block_text_param import (
+    SetToolCallContentRequestContentBlockTextParam as SetToolCallContentRequestContentBlockTextParam,
+)
+from .set_tool_call_content_request_content_block_audio_param import (
+    SetToolCallContentRequestContentBlockAudioParam as SetToolCallContentRequestContentBlockAudioParam,
+)
+from .set_tool_call_content_request_content_block_image_param import (
+    SetToolCallContentRequestContentBlockImageParam as SetToolCallContentRequestContentBlockImageParam,
 )

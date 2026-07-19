@@ -10,6 +10,8 @@ __all__ = ["ModelListParams"]
 
 
 class ModelListParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     ai_provider_key_id: Annotated[str, PropertyInfo(alias="aiProviderKeyId")]
     """Filter to models provisioned on a specific AI provider key.
 

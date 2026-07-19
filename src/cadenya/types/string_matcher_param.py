@@ -2,24 +2,21 @@
 
 from __future__ import annotations
 
-from typing_extensions import Annotated, TypedDict
+from typing import Union
+from typing_extensions import TypeAlias
 
-from .._utils import PropertyInfo
+from .string_matcher_exact_param import StringMatcherExactParam
+from .string_matcher_regex_param import StringMatcherRegexParam
+from .string_matcher_contains_param import StringMatcherContainsParam
+from .string_matcher_ends_with_param import StringMatcherEndsWithParam
+from .string_matcher_starts_with_param import StringMatcherStartsWithParam
 
 __all__ = ["StringMatcherParam"]
 
-
-class StringMatcherParam(TypedDict, total=False):
-    """String matching operations"""
-
-    case_sensitive: Annotated[bool, PropertyInfo(alias="caseSensitive")]
-
-    contains: str
-
-    ends_with: Annotated[str, PropertyInfo(alias="endsWith")]
-
-    exact: str
-
-    regex: str
-
-    starts_with: Annotated[str, PropertyInfo(alias="startsWith")]
+StringMatcherParam: TypeAlias = Union[
+    StringMatcherExactParam,
+    StringMatcherStartsWithParam,
+    StringMatcherEndsWithParam,
+    StringMatcherContainsParam,
+    StringMatcherRegexParam,
+]

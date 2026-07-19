@@ -9,7 +9,7 @@ from .._utils import PropertyInfo
 from .tool_filter_param import ToolFilterParam
 from .approval_requirement_filter_param import ApprovalRequirementFilterParam
 
-__all__ = ["ToolSetAdapterMcpParam", "JustInTime"]
+__all__ = ["ToolSetAdapterMCPParam", "JustInTime"]
 
 
 class JustInTime(TypedDict, total=False):
@@ -26,7 +26,7 @@ class JustInTime(TypedDict, total=False):
     """
 
 
-class ToolSetAdapterMcpParam(TypedDict, total=False):
+class ToolSetAdapterMCPParam(TypedDict, total=False):
     exclude_tools: Annotated[ToolFilterParam, PropertyInfo(alias="excludeTools")]
     """Top-level filter with simple boolean logic (no nesting)"""
 

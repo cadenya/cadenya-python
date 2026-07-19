@@ -26,7 +26,7 @@ class TestToolSets:
     @parametrize
     def test_method_create(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -36,7 +36,7 @@ class TestToolSets:
     @parametrize
     def test_method_create_with_all_params(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -44,11 +44,6 @@ class TestToolSets:
             },
             spec={
                 "adapter": {
-                    "bare": {"content_timeout": 0},
-                    "http": {
-                        "base_url": "baseUrl",
-                        "headers": {"foo": "string"},
-                    },
                     "mcp": {
                         "exclude_tools": {
                             "operator": "OPERATOR_UNSPECIFIED",
@@ -56,12 +51,9 @@ class TestToolSets:
                                 {
                                     "attribute": "ATTRIBUTE_UNSPECIFIED",
                                     "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
                                         "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
+                                        "type": "exact",
+                                        "case_sensitive": True,
                                     },
                                 }
                             ],
@@ -73,12 +65,9 @@ class TestToolSets:
                                 {
                                     "attribute": "ATTRIBUTE_UNSPECIFIED",
                                     "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
                                         "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
+                                        "type": "exact",
+                                        "case_sensitive": True,
                                     },
                                 }
                             ],
@@ -89,83 +78,11 @@ class TestToolSets:
                         },
                         "tool_approvals": {
                             "always": True,
-                            "only": {
-                                "operator": "OPERATOR_UNSPECIFIED",
-                                "filters": [
-                                    {
-                                        "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                        "matcher": {
-                                            "case_sensitive": True,
-                                            "contains": "contains",
-                                            "ends_with": "endsWith",
-                                            "exact": "exact",
-                                            "regex": "regex",
-                                            "starts_with": "startsWith",
-                                        },
-                                    }
-                                ],
-                            },
+                            "type": "always",
                         },
                         "url": "url",
                     },
-                    "openapi": {
-                        "base_url": "baseUrl",
-                        "exclude_tools": {
-                            "operator": "OPERATOR_UNSPECIFIED",
-                            "filters": [
-                                {
-                                    "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                    "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
-                                        "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
-                                    },
-                                }
-                            ],
-                        },
-                        "headers": {"foo": "string"},
-                        "include_tools": {
-                            "operator": "OPERATOR_UNSPECIFIED",
-                            "filters": [
-                                {
-                                    "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                    "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
-                                        "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
-                                    },
-                                }
-                            ],
-                        },
-                        "server_name": "serverName",
-                        "tool_approvals": {
-                            "always": True,
-                            "only": {
-                                "operator": "OPERATOR_UNSPECIFIED",
-                                "filters": [
-                                    {
-                                        "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                        "matcher": {
-                                            "case_sensitive": True,
-                                            "contains": "contains",
-                                            "ends_with": "endsWith",
-                                            "exact": "exact",
-                                            "regex": "regex",
-                                            "starts_with": "startsWith",
-                                        },
-                                    }
-                                ],
-                            },
-                        },
-                        "upload_id": "uploadId",
-                        "url": "url",
-                    },
+                    "type": "mcp",
                 },
                 "description": "description",
             },
@@ -176,7 +93,7 @@ class TestToolSets:
     @parametrize
     def test_raw_response_create(self, client: Cadenya) -> None:
         response = client.tool_sets.with_raw_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -190,7 +107,7 @@ class TestToolSets:
     @parametrize
     def test_streaming_response_create(self, client: Cadenya) -> None:
         with client.tool_sets.with_streaming_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         ) as response:
@@ -216,8 +133,8 @@ class TestToolSets:
     @parametrize
     def test_method_retrieve(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSet, tool_set, path=["response"])
 
@@ -225,8 +142,8 @@ class TestToolSets:
     @parametrize
     def test_raw_response_retrieve(self, client: Cadenya) -> None:
         response = client.tool_sets.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -238,8 +155,8 @@ class TestToolSets:
     @parametrize
     def test_streaming_response_retrieve(self, client: Cadenya) -> None:
         with client.tool_sets.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -254,22 +171,22 @@ class TestToolSets:
     def test_path_params_retrieve(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.with_raw_response.retrieve(
-                id="id",
+                id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.with_raw_response.retrieve(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_update(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSet, tool_set, path=["response"])
 
@@ -277,8 +194,8 @@ class TestToolSets:
     @parametrize
     def test_method_update_with_all_params(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -286,11 +203,6 @@ class TestToolSets:
             },
             spec={
                 "adapter": {
-                    "bare": {"content_timeout": 0},
-                    "http": {
-                        "base_url": "baseUrl",
-                        "headers": {"foo": "string"},
-                    },
                     "mcp": {
                         "exclude_tools": {
                             "operator": "OPERATOR_UNSPECIFIED",
@@ -298,12 +210,9 @@ class TestToolSets:
                                 {
                                     "attribute": "ATTRIBUTE_UNSPECIFIED",
                                     "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
                                         "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
+                                        "type": "exact",
+                                        "case_sensitive": True,
                                     },
                                 }
                             ],
@@ -315,12 +224,9 @@ class TestToolSets:
                                 {
                                     "attribute": "ATTRIBUTE_UNSPECIFIED",
                                     "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
                                         "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
+                                        "type": "exact",
+                                        "case_sensitive": True,
                                     },
                                 }
                             ],
@@ -331,83 +237,11 @@ class TestToolSets:
                         },
                         "tool_approvals": {
                             "always": True,
-                            "only": {
-                                "operator": "OPERATOR_UNSPECIFIED",
-                                "filters": [
-                                    {
-                                        "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                        "matcher": {
-                                            "case_sensitive": True,
-                                            "contains": "contains",
-                                            "ends_with": "endsWith",
-                                            "exact": "exact",
-                                            "regex": "regex",
-                                            "starts_with": "startsWith",
-                                        },
-                                    }
-                                ],
-                            },
+                            "type": "always",
                         },
                         "url": "url",
                     },
-                    "openapi": {
-                        "base_url": "baseUrl",
-                        "exclude_tools": {
-                            "operator": "OPERATOR_UNSPECIFIED",
-                            "filters": [
-                                {
-                                    "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                    "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
-                                        "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
-                                    },
-                                }
-                            ],
-                        },
-                        "headers": {"foo": "string"},
-                        "include_tools": {
-                            "operator": "OPERATOR_UNSPECIFIED",
-                            "filters": [
-                                {
-                                    "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                    "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
-                                        "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
-                                    },
-                                }
-                            ],
-                        },
-                        "server_name": "serverName",
-                        "tool_approvals": {
-                            "always": True,
-                            "only": {
-                                "operator": "OPERATOR_UNSPECIFIED",
-                                "filters": [
-                                    {
-                                        "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                        "matcher": {
-                                            "case_sensitive": True,
-                                            "contains": "contains",
-                                            "ends_with": "endsWith",
-                                            "exact": "exact",
-                                            "regex": "regex",
-                                            "starts_with": "startsWith",
-                                        },
-                                    }
-                                ],
-                            },
-                        },
-                        "upload_id": "uploadId",
-                        "url": "url",
-                    },
+                    "type": "mcp",
                 },
                 "description": "description",
             },
@@ -419,8 +253,8 @@ class TestToolSets:
     @parametrize
     def test_raw_response_update(self, client: Cadenya) -> None:
         response = client.tool_sets.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -432,8 +266,8 @@ class TestToolSets:
     @parametrize
     def test_streaming_response_update(self, client: Cadenya) -> None:
         with client.tool_sets.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -448,21 +282,21 @@ class TestToolSets:
     def test_path_params_update(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.with_raw_response.update(
-                id="id",
+                id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.with_raw_response.update(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_list(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(SyncCursorPagination[ToolSet], tool_set, path=["response"])
 
@@ -470,7 +304,7 @@ class TestToolSets:
     @parametrize
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
             labels="labels",
@@ -486,7 +320,7 @@ class TestToolSets:
     @parametrize
     def test_raw_response_list(self, client: Cadenya) -> None:
         response = client.tool_sets.with_raw_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -498,7 +332,7 @@ class TestToolSets:
     @parametrize
     def test_streaming_response_list(self, client: Cadenya) -> None:
         with client.tool_sets.with_streaming_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -520,8 +354,8 @@ class TestToolSets:
     @parametrize
     def test_method_delete(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert tool_set is None
 
@@ -529,8 +363,8 @@ class TestToolSets:
     @parametrize
     def test_raw_response_delete(self, client: Cadenya) -> None:
         response = client.tool_sets.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -542,8 +376,8 @@ class TestToolSets:
     @parametrize
     def test_streaming_response_delete(self, client: Cadenya) -> None:
         with client.tool_sets.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -558,22 +392,22 @@ class TestToolSets:
     def test_path_params_delete(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.with_raw_response.delete(
-                id="id",
+                id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.with_raw_response.delete(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_archive(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.archive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSet, tool_set, path=["response"])
 
@@ -581,8 +415,8 @@ class TestToolSets:
     @parametrize
     def test_raw_response_archive(self, client: Cadenya) -> None:
         response = client.tool_sets.with_raw_response.archive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -594,8 +428,8 @@ class TestToolSets:
     @parametrize
     def test_streaming_response_archive(self, client: Cadenya) -> None:
         with client.tool_sets.with_streaming_response.archive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -610,22 +444,22 @@ class TestToolSets:
     def test_path_params_archive(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.with_raw_response.archive(
-                id="id",
+                id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.with_raw_response.archive(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_get_openapi_spec(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.get_openapi_spec(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSetGetOpenAPISpecResponse, tool_set, path=["response"])
 
@@ -633,8 +467,8 @@ class TestToolSets:
     @parametrize
     def test_raw_response_get_openapi_spec(self, client: Cadenya) -> None:
         response = client.tool_sets.with_raw_response.get_openapi_spec(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -646,8 +480,8 @@ class TestToolSets:
     @parametrize
     def test_streaming_response_get_openapi_spec(self, client: Cadenya) -> None:
         with client.tool_sets.with_streaming_response.get_openapi_spec(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -662,22 +496,22 @@ class TestToolSets:
     def test_path_params_get_openapi_spec(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.with_raw_response.get_openapi_spec(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.with_raw_response.get_openapi_spec(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_list_events(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.list_events(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(SyncCursorPagination[ToolSetEvent], tool_set, path=["response"])
 
@@ -685,8 +519,8 @@ class TestToolSets:
     @parametrize
     def test_method_list_events_with_all_params(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.list_events(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
             labels="labels",
@@ -699,8 +533,8 @@ class TestToolSets:
     @parametrize
     def test_raw_response_list_events(self, client: Cadenya) -> None:
         response = client.tool_sets.with_raw_response.list_events(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -712,8 +546,8 @@ class TestToolSets:
     @parametrize
     def test_streaming_response_list_events(self, client: Cadenya) -> None:
         with client.tool_sets.with_streaming_response.list_events(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -728,22 +562,22 @@ class TestToolSets:
     def test_path_params_list_events(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.with_raw_response.list_events(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.with_raw_response.list_events(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_unarchive(self, client: Cadenya) -> None:
         tool_set = client.tool_sets.unarchive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSet, tool_set, path=["response"])
 
@@ -751,8 +585,8 @@ class TestToolSets:
     @parametrize
     def test_raw_response_unarchive(self, client: Cadenya) -> None:
         response = client.tool_sets.with_raw_response.unarchive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -764,8 +598,8 @@ class TestToolSets:
     @parametrize
     def test_streaming_response_unarchive(self, client: Cadenya) -> None:
         with client.tool_sets.with_streaming_response.unarchive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -780,14 +614,14 @@ class TestToolSets:
     def test_path_params_unarchive(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.with_raw_response.unarchive(
-                id="id",
+                id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.with_raw_response.unarchive(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
 
@@ -800,7 +634,7 @@ class TestAsyncToolSets:
     @parametrize
     async def test_method_create(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -810,7 +644,7 @@ class TestAsyncToolSets:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -818,11 +652,6 @@ class TestAsyncToolSets:
             },
             spec={
                 "adapter": {
-                    "bare": {"content_timeout": 0},
-                    "http": {
-                        "base_url": "baseUrl",
-                        "headers": {"foo": "string"},
-                    },
                     "mcp": {
                         "exclude_tools": {
                             "operator": "OPERATOR_UNSPECIFIED",
@@ -830,12 +659,9 @@ class TestAsyncToolSets:
                                 {
                                     "attribute": "ATTRIBUTE_UNSPECIFIED",
                                     "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
                                         "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
+                                        "type": "exact",
+                                        "case_sensitive": True,
                                     },
                                 }
                             ],
@@ -847,12 +673,9 @@ class TestAsyncToolSets:
                                 {
                                     "attribute": "ATTRIBUTE_UNSPECIFIED",
                                     "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
                                         "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
+                                        "type": "exact",
+                                        "case_sensitive": True,
                                     },
                                 }
                             ],
@@ -863,83 +686,11 @@ class TestAsyncToolSets:
                         },
                         "tool_approvals": {
                             "always": True,
-                            "only": {
-                                "operator": "OPERATOR_UNSPECIFIED",
-                                "filters": [
-                                    {
-                                        "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                        "matcher": {
-                                            "case_sensitive": True,
-                                            "contains": "contains",
-                                            "ends_with": "endsWith",
-                                            "exact": "exact",
-                                            "regex": "regex",
-                                            "starts_with": "startsWith",
-                                        },
-                                    }
-                                ],
-                            },
+                            "type": "always",
                         },
                         "url": "url",
                     },
-                    "openapi": {
-                        "base_url": "baseUrl",
-                        "exclude_tools": {
-                            "operator": "OPERATOR_UNSPECIFIED",
-                            "filters": [
-                                {
-                                    "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                    "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
-                                        "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
-                                    },
-                                }
-                            ],
-                        },
-                        "headers": {"foo": "string"},
-                        "include_tools": {
-                            "operator": "OPERATOR_UNSPECIFIED",
-                            "filters": [
-                                {
-                                    "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                    "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
-                                        "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
-                                    },
-                                }
-                            ],
-                        },
-                        "server_name": "serverName",
-                        "tool_approvals": {
-                            "always": True,
-                            "only": {
-                                "operator": "OPERATOR_UNSPECIFIED",
-                                "filters": [
-                                    {
-                                        "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                        "matcher": {
-                                            "case_sensitive": True,
-                                            "contains": "contains",
-                                            "ends_with": "endsWith",
-                                            "exact": "exact",
-                                            "regex": "regex",
-                                            "starts_with": "startsWith",
-                                        },
-                                    }
-                                ],
-                            },
-                        },
-                        "upload_id": "uploadId",
-                        "url": "url",
-                    },
+                    "type": "mcp",
                 },
                 "description": "description",
             },
@@ -950,7 +701,7 @@ class TestAsyncToolSets:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.with_raw_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -964,7 +715,7 @@ class TestAsyncToolSets:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.with_streaming_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         ) as response:
@@ -990,8 +741,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSet, tool_set, path=["response"])
 
@@ -999,8 +750,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -1012,8 +763,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -1028,22 +779,22 @@ class TestAsyncToolSets:
     async def test_path_params_retrieve(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.with_raw_response.retrieve(
-                id="id",
+                id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.with_raw_response.retrieve(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_update(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSet, tool_set, path=["response"])
 
@@ -1051,8 +802,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_method_update_with_all_params(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -1060,11 +811,6 @@ class TestAsyncToolSets:
             },
             spec={
                 "adapter": {
-                    "bare": {"content_timeout": 0},
-                    "http": {
-                        "base_url": "baseUrl",
-                        "headers": {"foo": "string"},
-                    },
                     "mcp": {
                         "exclude_tools": {
                             "operator": "OPERATOR_UNSPECIFIED",
@@ -1072,12 +818,9 @@ class TestAsyncToolSets:
                                 {
                                     "attribute": "ATTRIBUTE_UNSPECIFIED",
                                     "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
                                         "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
+                                        "type": "exact",
+                                        "case_sensitive": True,
                                     },
                                 }
                             ],
@@ -1089,12 +832,9 @@ class TestAsyncToolSets:
                                 {
                                     "attribute": "ATTRIBUTE_UNSPECIFIED",
                                     "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
                                         "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
+                                        "type": "exact",
+                                        "case_sensitive": True,
                                     },
                                 }
                             ],
@@ -1105,83 +845,11 @@ class TestAsyncToolSets:
                         },
                         "tool_approvals": {
                             "always": True,
-                            "only": {
-                                "operator": "OPERATOR_UNSPECIFIED",
-                                "filters": [
-                                    {
-                                        "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                        "matcher": {
-                                            "case_sensitive": True,
-                                            "contains": "contains",
-                                            "ends_with": "endsWith",
-                                            "exact": "exact",
-                                            "regex": "regex",
-                                            "starts_with": "startsWith",
-                                        },
-                                    }
-                                ],
-                            },
+                            "type": "always",
                         },
                         "url": "url",
                     },
-                    "openapi": {
-                        "base_url": "baseUrl",
-                        "exclude_tools": {
-                            "operator": "OPERATOR_UNSPECIFIED",
-                            "filters": [
-                                {
-                                    "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                    "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
-                                        "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
-                                    },
-                                }
-                            ],
-                        },
-                        "headers": {"foo": "string"},
-                        "include_tools": {
-                            "operator": "OPERATOR_UNSPECIFIED",
-                            "filters": [
-                                {
-                                    "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                    "matcher": {
-                                        "case_sensitive": True,
-                                        "contains": "contains",
-                                        "ends_with": "endsWith",
-                                        "exact": "exact",
-                                        "regex": "regex",
-                                        "starts_with": "startsWith",
-                                    },
-                                }
-                            ],
-                        },
-                        "server_name": "serverName",
-                        "tool_approvals": {
-                            "always": True,
-                            "only": {
-                                "operator": "OPERATOR_UNSPECIFIED",
-                                "filters": [
-                                    {
-                                        "attribute": "ATTRIBUTE_UNSPECIFIED",
-                                        "matcher": {
-                                            "case_sensitive": True,
-                                            "contains": "contains",
-                                            "ends_with": "endsWith",
-                                            "exact": "exact",
-                                            "regex": "regex",
-                                            "starts_with": "startsWith",
-                                        },
-                                    }
-                                ],
-                            },
-                        },
-                        "upload_id": "uploadId",
-                        "url": "url",
-                    },
+                    "type": "mcp",
                 },
                 "description": "description",
             },
@@ -1193,8 +861,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_raw_response_update(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -1206,8 +874,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_streaming_response_update(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -1222,21 +890,21 @@ class TestAsyncToolSets:
     async def test_path_params_update(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.with_raw_response.update(
-                id="id",
+                id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.with_raw_response.update(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_list(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AsyncCursorPagination[ToolSet], tool_set, path=["response"])
 
@@ -1244,7 +912,7 @@ class TestAsyncToolSets:
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
             labels="labels",
@@ -1260,7 +928,7 @@ class TestAsyncToolSets:
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.with_raw_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -1272,7 +940,7 @@ class TestAsyncToolSets:
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.with_streaming_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -1294,8 +962,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_method_delete(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert tool_set is None
 
@@ -1303,8 +971,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_raw_response_delete(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -1316,8 +984,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_streaming_response_delete(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -1332,22 +1000,22 @@ class TestAsyncToolSets:
     async def test_path_params_delete(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.with_raw_response.delete(
-                id="id",
+                id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.with_raw_response.delete(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_archive(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.archive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSet, tool_set, path=["response"])
 
@@ -1355,8 +1023,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_raw_response_archive(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.with_raw_response.archive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -1368,8 +1036,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_streaming_response_archive(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.with_streaming_response.archive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -1384,22 +1052,22 @@ class TestAsyncToolSets:
     async def test_path_params_archive(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.with_raw_response.archive(
-                id="id",
+                id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.with_raw_response.archive(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_get_openapi_spec(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.get_openapi_spec(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSetGetOpenAPISpecResponse, tool_set, path=["response"])
 
@@ -1407,8 +1075,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_raw_response_get_openapi_spec(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.with_raw_response.get_openapi_spec(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -1420,8 +1088,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_streaming_response_get_openapi_spec(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.with_streaming_response.get_openapi_spec(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -1436,22 +1104,22 @@ class TestAsyncToolSets:
     async def test_path_params_get_openapi_spec(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.with_raw_response.get_openapi_spec(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.with_raw_response.get_openapi_spec(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_list_events(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.list_events(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AsyncCursorPagination[ToolSetEvent], tool_set, path=["response"])
 
@@ -1459,8 +1127,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_method_list_events_with_all_params(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.list_events(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
             labels="labels",
@@ -1473,8 +1141,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_raw_response_list_events(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.with_raw_response.list_events(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -1486,8 +1154,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_streaming_response_list_events(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.with_streaming_response.list_events(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -1502,22 +1170,22 @@ class TestAsyncToolSets:
     async def test_path_params_list_events(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.with_raw_response.list_events(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.with_raw_response.list_events(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_unarchive(self, async_client: AsyncCadenya) -> None:
         tool_set = await async_client.tool_sets.unarchive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(ToolSet, tool_set, path=["response"])
 
@@ -1525,8 +1193,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_raw_response_unarchive(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.with_raw_response.unarchive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -1538,8 +1206,8 @@ class TestAsyncToolSets:
     @parametrize
     async def test_streaming_response_unarchive(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.with_streaming_response.unarchive(
-            id="id",
-            workspace_id="workspaceId",
+            id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -1554,12 +1222,12 @@ class TestAsyncToolSets:
     async def test_path_params_unarchive(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.with_raw_response.unarchive(
-                id="id",
+                id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.with_raw_response.unarchive(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )

@@ -10,11 +10,9 @@ __all__ = ["VariationAddMemoryLayerParams"]
 
 
 class VariationAddMemoryLayerParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
-    agent_id: Required[Annotated[str, PropertyInfo(alias="agentId")]]
-
-    memory_layer_id: Annotated[str, PropertyInfo(alias="memoryLayerId")]
+    memory_layer_id: Required[Annotated[str, PropertyInfo(alias="memoryLayerId")]]
     """Layer to attach.
 
     Accepts the canonical `memlyr_…` form or the `external_id:<value>` form.

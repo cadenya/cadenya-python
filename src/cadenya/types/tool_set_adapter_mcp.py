@@ -8,7 +8,7 @@ from .._models import BaseModel
 from .tool_filter import ToolFilter
 from .approval_requirement_filter import ApprovalRequirementFilter
 
-__all__ = ["ToolSetAdapterMcp", "JustInTime"]
+__all__ = ["ToolSetAdapterMCP", "JustInTime"]
 
 
 class JustInTime(BaseModel):
@@ -25,7 +25,7 @@ class JustInTime(BaseModel):
     """
 
 
-class ToolSetAdapterMcp(BaseModel):
+class ToolSetAdapterMCP(BaseModel):
     exclude_tools: Optional[ToolFilter] = FieldInfo(alias="excludeTools", default=None)
     """Top-level filter with simple boolean logic (no nesting)"""
 

@@ -13,6 +13,8 @@ __all__ = ["ObjectiveCreateParams", "EpisodicMemory", "Secret"]
 
 
 class ObjectiveCreateParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     agent_id: Required[Annotated[str, PropertyInfo(alias="agentId")]]
 
     system_prompt_data: Required[Annotated[Dict[str, object], PropertyInfo(alias="systemPromptData")]]
@@ -81,7 +83,7 @@ class ObjectiveCreateParams(TypedDict, total=False):
 class EpisodicMemory(TypedDict, total=False):
     """Episodic is used to configure the episodic memory for the objective"""
 
-    key: str
+    key: Required[str]
     """The caller-supplied episodic key.
 
     Objectives created with the same key (for the same agent) share one episodic

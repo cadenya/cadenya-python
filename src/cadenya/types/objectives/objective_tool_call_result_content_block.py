@@ -1,24 +1,20 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Optional
+from typing import Union
+from typing_extensions import Annotated, TypeAlias
 
-from ..._models import BaseModel
-from .objective_tool_call_result_text_block import ObjectiveToolCallResultTextBlock
-from .objective_tool_call_result_audio_block import ObjectiveToolCallResultAudioBlock
-from .objective_tool_call_result_image_block import ObjectiveToolCallResultImageBlock
+from ..._utils import PropertyInfo
+from .objective_tool_call_result_content_block_text import ObjectiveToolCallResultContentBlockText
+from .objective_tool_call_result_content_block_audio import ObjectiveToolCallResultContentBlockAudio
+from .objective_tool_call_result_content_block_image import ObjectiveToolCallResultContentBlockImage
 
 __all__ = ["ObjectiveToolCallResultContentBlock"]
 
-
-class ObjectiveToolCallResultContentBlock(BaseModel):
-    """ContentBlock is a single block of tool result content.
-
-    Exactly one of
-     the variants is set.
-    """
-
-    audio: Optional[ObjectiveToolCallResultAudioBlock] = None
-
-    image: Optional[ObjectiveToolCallResultImageBlock] = None
-
-    text: Optional[ObjectiveToolCallResultTextBlock] = None
+ObjectiveToolCallResultContentBlock: TypeAlias = Annotated[
+    Union[
+        ObjectiveToolCallResultContentBlockText,
+        ObjectiveToolCallResultContentBlockImage,
+        ObjectiveToolCallResultContentBlockAudio,
+    ],
+    PropertyInfo(discriminator="type"),
+]
