@@ -36,19 +36,17 @@ class ResourceMetadata(BaseModel):
     workspace_id: str = FieldInfo(alias="workspaceId")
     """Workspace this resource belongs to for organizational grouping (prefixed ULID)"""
 
-    bundle_key: Optional[str] = FieldInfo(alias="bundleKey", default=None)
-    """Optional bundle ownership key.
-
-    When set, indicates the resource is managed by a configuration bundle identified
-    by this key. Used by BulkWorkspaceResources.Apply to track which resources
-    belong to which bundle for reconciliation / soft-delete on re-apply.
-    """
-
     external_id: Optional[str] = FieldInfo(alias="externalId", default=None)
     """External ID for the resource (e.g., a workflow ID from an external system)"""
 
     labels: Optional[Dict[str, str]] = None
-    """
-    Arbitrary key-value pairs for categorization and filtering Examples:
+    """Key-value pairs for categorization and filtering.
+
+    Values are 0-63 alphanumeric characters with "-", "\\__", or "." allowed between;
+    keys follow the same shape and additionally accept an optional DNS-subdomain
+    prefix (e.g. "cadenya.com/") of at most 253 characters. Examples:
     {"environment": "production", "team": "platform", "version": "v2"}
     """
+
+    updated_at: Optional[datetime] = FieldInfo(alias="updatedAt", default=None)
+    """Timestamp when this resource was last updated"""

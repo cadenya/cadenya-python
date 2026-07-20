@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Required, Annotated, TypedDict
+from typing_extensions import Annotated, TypedDict
 
 from ..._utils import PropertyInfo
 
@@ -10,10 +10,7 @@ __all__ = ["ScheduleListParams"]
 
 
 class ScheduleListParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
-
-    bundle_key: Annotated[str, PropertyInfo(alias="bundleKey")]
-    """Filter by bundle_key — return only resources owned by this bundle."""
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     cursor: str
     """Pagination cursor from previous response."""
@@ -22,6 +19,13 @@ class ScheduleListParams(TypedDict, total=False):
     """
     When true, the `info` field on each returned schedule is populated. Requests
     with this flag count more against your rate limit.
+    """
+
+    labels: str
+    """Filters by metadata labels.
+
+    Comma-separated key=value pairs, e.g. "env=prod,team=ai". A resource matches
+    only if every pair matches exactly (AND semantics).
     """
 
     limit: int

@@ -83,7 +83,7 @@ class WorkspaceAdminResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return WorkspaceAdminResourceWithRawResponse(self)
 
@@ -92,7 +92,7 @@ class WorkspaceAdminResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return WorkspaceAdminResourceWithStreamingResponse(self)
 
@@ -142,8 +142,8 @@ class WorkspaceAdminResource(SyncAPIResource):
 
     def retrieve(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -164,6 +164,8 @@ class WorkspaceAdminResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get(
@@ -176,8 +178,8 @@ class WorkspaceAdminResource(SyncAPIResource):
 
     def update(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: workspace_admin_update_params.Metadata | Omit = omit,
         spec: WorkspaceSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -207,6 +209,8 @@ class WorkspaceAdminResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._patch(
@@ -230,6 +234,7 @@ class WorkspaceAdminResource(SyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_archived: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -248,6 +253,10 @@ class WorkspaceAdminResource(SyncAPIResource):
 
           include_archived: When true, archived workspaces are included in the results. Defaults to false
               (active workspaces only).
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -271,6 +280,7 @@ class WorkspaceAdminResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_archived": include_archived,
+                        "labels": labels,
                         "limit": limit,
                     },
                     workspace_admin_list_params.WorkspaceAdminListParams,
@@ -281,8 +291,8 @@ class WorkspaceAdminResource(SyncAPIResource):
 
     def archive(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -306,6 +316,8 @@ class WorkspaceAdminResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         extra_headers = {"Accept": "*/*", **(extra_headers or {})}
@@ -358,7 +370,7 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncWorkspaceAdminResourceWithRawResponse(self)
 
@@ -367,7 +379,7 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncWorkspaceAdminResourceWithStreamingResponse(self)
 
@@ -417,8 +429,8 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
 
     async def retrieve(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -439,6 +451,8 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return await self._get(
@@ -451,8 +465,8 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
 
     async def update(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: workspace_admin_update_params.Metadata | Omit = omit,
         spec: WorkspaceSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -482,6 +496,8 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return await self._patch(
@@ -505,6 +521,7 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_archived: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -523,6 +540,10 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
 
           include_archived: When true, archived workspaces are included in the results. Defaults to false
               (active workspaces only).
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -546,6 +567,7 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_archived": include_archived,
+                        "labels": labels,
                         "limit": limit,
                     },
                     workspace_admin_list_params.WorkspaceAdminListParams,
@@ -556,8 +578,8 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
 
     async def archive(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -581,6 +603,8 @@ class AsyncWorkspaceAdminResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         extra_headers = {"Accept": "*/*", **(extra_headers or {})}

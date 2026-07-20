@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Required, Annotated, TypedDict
+from typing_extensions import Annotated, TypedDict
 
 from ..._utils import PropertyInfo
 from .tool_spec_param import ToolSpecParam
@@ -12,9 +12,7 @@ __all__ = ["ToolUpdateParams"]
 
 
 class ToolUpdateParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
-
-    tool_set_id: Required[Annotated[str, PropertyInfo(alias="toolSetId")]]
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     metadata: UpdateResourceMetadata
     """

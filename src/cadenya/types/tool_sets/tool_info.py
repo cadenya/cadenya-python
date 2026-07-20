@@ -19,6 +19,14 @@ class ToolInfo(BaseModel):
     workspaces.
     """
 
+    signature: Optional[str] = None
+    """
+    Content signature identifying the tool within its tool set: a hash of the
+    sanitized llm_tool_name, description, and canonical parameters. Two tools with
+    the same llm_tool_name but different parameters or description (as MCP servers
+    may return per user) have distinct signatures.
+    """
+
     tool_set: Optional[ResourceMetadata] = FieldInfo(alias="toolSet", default=None)
     """
     Standard metadata for persistent, named resources (e.g., agents, tools, prompts)

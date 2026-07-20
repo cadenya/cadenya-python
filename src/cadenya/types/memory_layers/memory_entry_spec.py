@@ -30,8 +30,8 @@ class MemoryEntrySpec(BaseModel):
     - Case-sensitive
     - Unique within the parent layer
 
-    For skills entries, this key is also the id the model passes to
-    memory_load_skill when it decides to load the entry's content.
+    For skills entries, this key is what the model passes to get_memory to load the
+    entry's content.
     """
 
     description: Optional[str] = None

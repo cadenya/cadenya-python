@@ -94,7 +94,7 @@ class AgentsResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AgentsResourceWithRawResponse(self)
 
@@ -103,14 +103,14 @@ class AgentsResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AgentsResourceWithStreamingResponse(self)
 
     def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: AgentSpecParam,
         default_variation: agent_create_params.DefaultVariation | Omit = omit,
@@ -141,6 +141,8 @@ class AgentsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._post(
@@ -163,7 +165,7 @@ class AgentsResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -183,6 +185,8 @@ class AgentsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -199,7 +203,7 @@ class AgentsResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: AgentSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -230,6 +234,8 @@ class AgentsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -252,19 +258,16 @@ class AgentsResource(SyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
-        bundle_key: str | Omit = omit,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
-        status: Literal[
-            "AGENT_STATUS_UNSPECIFIED", "AGENT_STATUS_DRAFT", "AGENT_STATUS_PUBLISHED", "AGENT_STATUS_ARCHIVED"
-        ]
-        | Omit = omit,
+        state: Literal["STATE_UNSPECIFIED", "STATE_DRAFT", "STATE_PUBLISHED", "STATE_ARCHIVED"] | Omit = omit,
         variation_selection_mode: Literal[
             "VARIATION_SELECTION_MODE_UNSPECIFIED",
             "VARIATION_SELECTION_MODE_RANDOM",
@@ -282,12 +285,14 @@ class AgentsResource(SyncAPIResource):
         Lists all agents in the workspace
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When true, the `info` field on each returned agent is populated. Requests with
               this flag count more against your rate limit.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -297,7 +302,7 @@ class AgentsResource(SyncAPIResource):
 
           sort_order: Sort order for results (asc or desc by creation time)
 
-          status: Filter by agent publication status
+          state: Filter by agent lifecycle state
 
           variation_selection_mode: Filter by variation selection mode
 
@@ -309,6 +314,8 @@ class AgentsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -321,14 +328,14 @@ class AgentsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
                         "sort_order": sort_order,
-                        "status": status,
+                        "state": state,
                         "variation_selection_mode": variation_selection_mode,
                     },
                     agent_list_params.AgentListParams,
@@ -341,7 +348,7 @@ class AgentsResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -361,6 +368,8 @@ class AgentsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -372,6 +381,166 @@ class AgentsResource(SyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=NoneType,
+        )
+
+    def archive(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an agent to STATE_ARCHIVED.
+
+        Archived agents are hidden from list
+        results and cannot be used for objectives; active schedules are paused.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:archive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    def publish(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an agent to STATE_PUBLISHED, making it available for objectives.
+
+        The
+        agent must have at least one variation.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:publish", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    def unarchive(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an archived agent back to STATE_DRAFT.
+
+        Publish the agent again to
+        make it available for objectives.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:unarchive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    def unpublish(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions a published agent back to STATE_DRAFT.
+
+        Active schedules for the
+        agent are paused until it is published again.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:unpublish", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
         )
 
 
@@ -410,7 +579,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncAgentsResourceWithRawResponse(self)
 
@@ -419,14 +588,14 @@ class AsyncAgentsResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncAgentsResourceWithStreamingResponse(self)
 
     async def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: AgentSpecParam,
         default_variation: agent_create_params.DefaultVariation | Omit = omit,
@@ -457,6 +626,8 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return await self._post(
@@ -479,7 +650,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -499,6 +670,8 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -515,7 +688,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: AgentSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -546,6 +719,8 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -568,19 +743,16 @@ class AsyncAgentsResource(AsyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
-        bundle_key: str | Omit = omit,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
-        status: Literal[
-            "AGENT_STATUS_UNSPECIFIED", "AGENT_STATUS_DRAFT", "AGENT_STATUS_PUBLISHED", "AGENT_STATUS_ARCHIVED"
-        ]
-        | Omit = omit,
+        state: Literal["STATE_UNSPECIFIED", "STATE_DRAFT", "STATE_PUBLISHED", "STATE_ARCHIVED"] | Omit = omit,
         variation_selection_mode: Literal[
             "VARIATION_SELECTION_MODE_UNSPECIFIED",
             "VARIATION_SELECTION_MODE_RANDOM",
@@ -598,12 +770,14 @@ class AsyncAgentsResource(AsyncAPIResource):
         Lists all agents in the workspace
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When true, the `info` field on each returned agent is populated. Requests with
               this flag count more against your rate limit.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -613,7 +787,7 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           sort_order: Sort order for results (asc or desc by creation time)
 
-          status: Filter by agent publication status
+          state: Filter by agent lifecycle state
 
           variation_selection_mode: Filter by variation selection mode
 
@@ -625,6 +799,8 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -637,14 +813,14 @@ class AsyncAgentsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
                         "sort_order": sort_order,
-                        "status": status,
+                        "state": state,
                         "variation_selection_mode": variation_selection_mode,
                     },
                     agent_list_params.AgentListParams,
@@ -657,7 +833,7 @@ class AsyncAgentsResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -677,6 +853,8 @@ class AsyncAgentsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -688,6 +866,166 @@ class AsyncAgentsResource(AsyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=NoneType,
+        )
+
+    async def archive(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an agent to STATE_ARCHIVED.
+
+        Archived agents are hidden from list
+        results and cannot be used for objectives; active schedules are paused.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:archive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    async def publish(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an agent to STATE_PUBLISHED, making it available for objectives.
+
+        The
+        agent must have at least one variation.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:publish", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    async def unarchive(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions an archived agent back to STATE_DRAFT.
+
+        Publish the agent again to
+        make it available for objectives.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:unarchive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
+        )
+
+    async def unpublish(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Agent:
+        """Transitions a published agent back to STATE_DRAFT.
+
+        Active schedules for the
+        agent are paused until it is published again.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/agents/{id}:unpublish", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=Agent,
         )
 
 
@@ -709,6 +1047,18 @@ class AgentsResourceWithRawResponse:
         )
         self.delete = to_raw_response_wrapper(
             agents.delete,
+        )
+        self.archive = to_raw_response_wrapper(
+            agents.archive,
+        )
+        self.publish = to_raw_response_wrapper(
+            agents.publish,
+        )
+        self.unarchive = to_raw_response_wrapper(
+            agents.unarchive,
+        )
+        self.unpublish = to_raw_response_wrapper(
+            agents.unpublish,
         )
 
     @cached_property
@@ -757,6 +1107,18 @@ class AsyncAgentsResourceWithRawResponse:
         self.delete = async_to_raw_response_wrapper(
             agents.delete,
         )
+        self.archive = async_to_raw_response_wrapper(
+            agents.archive,
+        )
+        self.publish = async_to_raw_response_wrapper(
+            agents.publish,
+        )
+        self.unarchive = async_to_raw_response_wrapper(
+            agents.unarchive,
+        )
+        self.unpublish = async_to_raw_response_wrapper(
+            agents.unpublish,
+        )
 
     @cached_property
     def feedback(self) -> AsyncFeedbackResourceWithRawResponse:
@@ -804,6 +1166,18 @@ class AgentsResourceWithStreamingResponse:
         self.delete = to_streamed_response_wrapper(
             agents.delete,
         )
+        self.archive = to_streamed_response_wrapper(
+            agents.archive,
+        )
+        self.publish = to_streamed_response_wrapper(
+            agents.publish,
+        )
+        self.unarchive = to_streamed_response_wrapper(
+            agents.unarchive,
+        )
+        self.unpublish = to_streamed_response_wrapper(
+            agents.unpublish,
+        )
 
     @cached_property
     def feedback(self) -> FeedbackResourceWithStreamingResponse:
@@ -850,6 +1224,18 @@ class AsyncAgentsResourceWithStreamingResponse:
         )
         self.delete = async_to_streamed_response_wrapper(
             agents.delete,
+        )
+        self.archive = async_to_streamed_response_wrapper(
+            agents.archive,
+        )
+        self.publish = async_to_streamed_response_wrapper(
+            agents.publish,
+        )
+        self.unarchive = async_to_streamed_response_wrapper(
+            agents.unarchive,
+        )
+        self.unpublish = async_to_streamed_response_wrapper(
+            agents.unpublish,
         )
 
     @cached_property

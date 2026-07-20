@@ -24,7 +24,7 @@ class TestMemoryLayers:
     @parametrize
     def test_method_create(self, client: Cadenya) -> None:
         memory_layer = client.memory_layers.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={"type": "MEMORY_LAYER_TYPE_UNSPECIFIED"},
         )
@@ -34,10 +34,9 @@ class TestMemoryLayers:
     @parametrize
     def test_method_create_with_all_params(self, client: Cadenya) -> None:
         memory_layer = client.memory_layers.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -52,7 +51,7 @@ class TestMemoryLayers:
     @parametrize
     def test_raw_response_create(self, client: Cadenya) -> None:
         response = client.memory_layers.with_raw_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={"type": "MEMORY_LAYER_TYPE_UNSPECIFIED"},
         )
@@ -66,7 +65,7 @@ class TestMemoryLayers:
     @parametrize
     def test_streaming_response_create(self, client: Cadenya) -> None:
         with client.memory_layers.with_streaming_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={"type": "MEMORY_LAYER_TYPE_UNSPECIFIED"},
         ) as response:
@@ -92,8 +91,8 @@ class TestMemoryLayers:
     @parametrize
     def test_method_retrieve(self, client: Cadenya) -> None:
         memory_layer = client.memory_layers.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(MemoryLayer, memory_layer, path=["response"])
 
@@ -101,8 +100,8 @@ class TestMemoryLayers:
     @parametrize
     def test_raw_response_retrieve(self, client: Cadenya) -> None:
         response = client.memory_layers.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -114,8 +113,8 @@ class TestMemoryLayers:
     @parametrize
     def test_streaming_response_retrieve(self, client: Cadenya) -> None:
         with client.memory_layers.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -130,22 +129,22 @@ class TestMemoryLayers:
     def test_path_params_retrieve(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.memory_layers.with_raw_response.retrieve(
-                id="id",
+                id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.memory_layers.with_raw_response.retrieve(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_update(self, client: Cadenya) -> None:
         memory_layer = client.memory_layers.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(MemoryLayer, memory_layer, path=["response"])
 
@@ -153,11 +152,10 @@ class TestMemoryLayers:
     @parametrize
     def test_method_update_with_all_params(self, client: Cadenya) -> None:
         memory_layer = client.memory_layers.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -173,8 +171,8 @@ class TestMemoryLayers:
     @parametrize
     def test_raw_response_update(self, client: Cadenya) -> None:
         response = client.memory_layers.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -186,8 +184,8 @@ class TestMemoryLayers:
     @parametrize
     def test_streaming_response_update(self, client: Cadenya) -> None:
         with client.memory_layers.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -202,21 +200,21 @@ class TestMemoryLayers:
     def test_path_params_update(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.memory_layers.with_raw_response.update(
-                id="id",
+                id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.memory_layers.with_raw_response.update(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_list(self, client: Cadenya) -> None:
         memory_layer = client.memory_layers.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(SyncCursorPagination[MemoryLayer], memory_layer, path=["response"])
 
@@ -224,10 +222,12 @@ class TestMemoryLayers:
     @parametrize
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         memory_layer = client.memory_layers.list(
-            workspace_id="workspaceId",
-            bundle_key="bundleKey",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            agent_id="agent_01HXKD2E5NQM3T9AYWCFMGWT9Y",
             cursor="cursor",
+            episodic_key_prefix="episodicKeyPrefix",
             include_info=True,
+            labels="labels",
             limit=0,
             prefix="prefix",
             query="query",
@@ -240,7 +240,7 @@ class TestMemoryLayers:
     @parametrize
     def test_raw_response_list(self, client: Cadenya) -> None:
         response = client.memory_layers.with_raw_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -252,7 +252,7 @@ class TestMemoryLayers:
     @parametrize
     def test_streaming_response_list(self, client: Cadenya) -> None:
         with client.memory_layers.with_streaming_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -274,8 +274,8 @@ class TestMemoryLayers:
     @parametrize
     def test_method_delete(self, client: Cadenya) -> None:
         memory_layer = client.memory_layers.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert memory_layer is None
 
@@ -283,8 +283,8 @@ class TestMemoryLayers:
     @parametrize
     def test_raw_response_delete(self, client: Cadenya) -> None:
         response = client.memory_layers.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -296,8 +296,8 @@ class TestMemoryLayers:
     @parametrize
     def test_streaming_response_delete(self, client: Cadenya) -> None:
         with client.memory_layers.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -312,14 +312,14 @@ class TestMemoryLayers:
     def test_path_params_delete(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.memory_layers.with_raw_response.delete(
-                id="id",
+                id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.memory_layers.with_raw_response.delete(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
 
@@ -332,7 +332,7 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_method_create(self, async_client: AsyncCadenya) -> None:
         memory_layer = await async_client.memory_layers.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={"type": "MEMORY_LAYER_TYPE_UNSPECIFIED"},
         )
@@ -342,10 +342,9 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncCadenya) -> None:
         memory_layer = await async_client.memory_layers.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -360,7 +359,7 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncCadenya) -> None:
         response = await async_client.memory_layers.with_raw_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={"type": "MEMORY_LAYER_TYPE_UNSPECIFIED"},
         )
@@ -374,7 +373,7 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncCadenya) -> None:
         async with async_client.memory_layers.with_streaming_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={"type": "MEMORY_LAYER_TYPE_UNSPECIFIED"},
         ) as response:
@@ -400,8 +399,8 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncCadenya) -> None:
         memory_layer = await async_client.memory_layers.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(MemoryLayer, memory_layer, path=["response"])
 
@@ -409,8 +408,8 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncCadenya) -> None:
         response = await async_client.memory_layers.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -422,8 +421,8 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncCadenya) -> None:
         async with async_client.memory_layers.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -438,22 +437,22 @@ class TestAsyncMemoryLayers:
     async def test_path_params_retrieve(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.memory_layers.with_raw_response.retrieve(
-                id="id",
+                id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.memory_layers.with_raw_response.retrieve(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_update(self, async_client: AsyncCadenya) -> None:
         memory_layer = await async_client.memory_layers.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(MemoryLayer, memory_layer, path=["response"])
 
@@ -461,11 +460,10 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_method_update_with_all_params(self, async_client: AsyncCadenya) -> None:
         memory_layer = await async_client.memory_layers.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -481,8 +479,8 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_raw_response_update(self, async_client: AsyncCadenya) -> None:
         response = await async_client.memory_layers.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -494,8 +492,8 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_streaming_response_update(self, async_client: AsyncCadenya) -> None:
         async with async_client.memory_layers.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -510,21 +508,21 @@ class TestAsyncMemoryLayers:
     async def test_path_params_update(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.memory_layers.with_raw_response.update(
-                id="id",
+                id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.memory_layers.with_raw_response.update(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_list(self, async_client: AsyncCadenya) -> None:
         memory_layer = await async_client.memory_layers.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AsyncCursorPagination[MemoryLayer], memory_layer, path=["response"])
 
@@ -532,10 +530,12 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         memory_layer = await async_client.memory_layers.list(
-            workspace_id="workspaceId",
-            bundle_key="bundleKey",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            agent_id="agent_01HXKD2E5NQM3T9AYWCFMGWT9Y",
             cursor="cursor",
+            episodic_key_prefix="episodicKeyPrefix",
             include_info=True,
+            labels="labels",
             limit=0,
             prefix="prefix",
             query="query",
@@ -548,7 +548,7 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncCadenya) -> None:
         response = await async_client.memory_layers.with_raw_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -560,7 +560,7 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncCadenya) -> None:
         async with async_client.memory_layers.with_streaming_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -582,8 +582,8 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_method_delete(self, async_client: AsyncCadenya) -> None:
         memory_layer = await async_client.memory_layers.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert memory_layer is None
 
@@ -591,8 +591,8 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_raw_response_delete(self, async_client: AsyncCadenya) -> None:
         response = await async_client.memory_layers.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -604,8 +604,8 @@ class TestAsyncMemoryLayers:
     @parametrize
     async def test_streaming_response_delete(self, async_client: AsyncCadenya) -> None:
         async with async_client.memory_layers.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -620,12 +620,12 @@ class TestAsyncMemoryLayers:
     async def test_path_params_delete(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.memory_layers.with_raw_response.delete(
-                id="id",
+                id="memlyr_01HXKD2E5NQM3T9AYWCFFFBMJH",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.memory_layers.with_raw_response.delete(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )

@@ -21,15 +21,7 @@ class TestSearch:
     @parametrize
     def test_method_search_tools_or_tool_sets(self, client: Cadenya) -> None:
         search = client.search.search_tools_or_tool_sets(
-            workspace_id="workspaceId",
-        )
-        assert_matches_type(SearchSearchToolsOrToolSetsResponse, search, path=["response"])
-
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    def test_method_search_tools_or_tool_sets_with_all_params(self, client: Cadenya) -> None:
-        search = client.search.search_tools_or_tool_sets(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             query="query",
         )
         assert_matches_type(SearchSearchToolsOrToolSetsResponse, search, path=["response"])
@@ -38,7 +30,8 @@ class TestSearch:
     @parametrize
     def test_raw_response_search_tools_or_tool_sets(self, client: Cadenya) -> None:
         response = client.search.with_raw_response.search_tools_or_tool_sets(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            query="query",
         )
 
         assert response.is_closed is True
@@ -50,7 +43,8 @@ class TestSearch:
     @parametrize
     def test_streaming_response_search_tools_or_tool_sets(self, client: Cadenya) -> None:
         with client.search.with_streaming_response.search_tools_or_tool_sets(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            query="query",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -66,6 +60,7 @@ class TestSearch:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.search.with_raw_response.search_tools_or_tool_sets(
                 workspace_id="",
+                query="query",
             )
 
 
@@ -78,15 +73,7 @@ class TestAsyncSearch:
     @parametrize
     async def test_method_search_tools_or_tool_sets(self, async_client: AsyncCadenya) -> None:
         search = await async_client.search.search_tools_or_tool_sets(
-            workspace_id="workspaceId",
-        )
-        assert_matches_type(SearchSearchToolsOrToolSetsResponse, search, path=["response"])
-
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    async def test_method_search_tools_or_tool_sets_with_all_params(self, async_client: AsyncCadenya) -> None:
-        search = await async_client.search.search_tools_or_tool_sets(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             query="query",
         )
         assert_matches_type(SearchSearchToolsOrToolSetsResponse, search, path=["response"])
@@ -95,7 +82,8 @@ class TestAsyncSearch:
     @parametrize
     async def test_raw_response_search_tools_or_tool_sets(self, async_client: AsyncCadenya) -> None:
         response = await async_client.search.with_raw_response.search_tools_or_tool_sets(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            query="query",
         )
 
         assert response.is_closed is True
@@ -107,7 +95,8 @@ class TestAsyncSearch:
     @parametrize
     async def test_streaming_response_search_tools_or_tool_sets(self, async_client: AsyncCadenya) -> None:
         async with async_client.search.with_streaming_response.search_tools_or_tool_sets(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            query="query",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -123,4 +112,5 @@ class TestAsyncSearch:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.search.with_raw_response.search_tools_or_tool_sets(
                 workspace_id="",
+                query="query",
             )

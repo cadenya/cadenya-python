@@ -42,33 +42,32 @@ if TYPE_CHECKING:
         account,
         uploads,
         api_keys,
+        profiles,
         tool_sets,
         objectives,
         workspaces,
         memory_layers,
+        global_api_key,
         workspace_admin,
         ai_provider_keys,
         workspace_secrets,
-        bulk_workspace_resources,
     )
     from .resources.models import ModelsResource, AsyncModelsResource
     from .resources.search import SearchResource, AsyncSearchResource
     from .resources.account import AccountResource, AsyncAccountResource
     from .resources.uploads import UploadsResource, AsyncUploadsResource
+    from .resources.api_keys import APIKeysResource, AsyncAPIKeysResource
+    from .resources.profiles import ProfilesResource, AsyncProfilesResource
     from .resources.webhooks import WebhooksResource, AsyncWebhooksResource
     from .resources.workspaces import WorkspacesResource, AsyncWorkspacesResource
     from .resources.agents.agents import AgentsResource, AsyncAgentsResource
+    from .resources.global_api_key import GlobalAPIKeyResource, AsyncGlobalAPIKeyResource
     from .resources.ai_provider_keys import AIProviderKeysResource, AsyncAIProviderKeysResource
-    from .resources.api_keys.api_keys import APIKeysResource, AsyncAPIKeysResource
     from .resources.workspace_secrets import WorkspaceSecretsResource, AsyncWorkspaceSecretsResource
     from .resources.tool_sets.tool_sets import ToolSetsResource, AsyncToolSetsResource
     from .resources.objectives.objectives import ObjectivesResource, AsyncObjectivesResource
     from .resources.memory_layers.memory_layers import MemoryLayersResource, AsyncMemoryLayersResource
     from .resources.workspace_admin.workspace_admin import WorkspaceAdminResource, AsyncWorkspaceAdminResource
-    from .resources.bulk_workspace_resources.bulk_workspace_resources import (
-        BulkWorkspaceResourcesResource,
-        AsyncBulkWorkspaceResourcesResource,
-    )
 
 __all__ = ["Timeout", "Transport", "ProxiesTypes", "RequestOptions", "Cadenya", "AsyncCadenya", "Client", "AsyncClient"]
 
@@ -77,12 +76,14 @@ class Cadenya(SyncAPIClient):
     # client options
     api_key: str
     webhook_key: str | None
+    workspace_id: str | None
 
     def __init__(
         self,
         *,
         api_key: str | None = None,
         webhook_key: str | None = None,
+        workspace_id: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = not_given,
         max_retries: int = DEFAULT_MAX_RETRIES,
@@ -107,6 +108,7 @@ class Cadenya(SyncAPIClient):
         This automatically infers the following arguments from their corresponding environment variables if they are not provided:
         - `api_key` from `CADENYA_API_KEY`
         - `webhook_key` from `CADENYA_WEBHOOK_KEY`
+        - `workspace_id` from `CADENYA_WORKSPACE_ID`
         """
         if api_key is None:
             api_key = os.environ.get("CADENYA_API_KEY")
@@ -119,6 +121,10 @@ class Cadenya(SyncAPIClient):
         if webhook_key is None:
             webhook_key = os.environ.get("CADENYA_WEBHOOK_KEY")
         self.webhook_key = webhook_key
+
+        if workspace_id is None:
+            workspace_id = os.environ.get("CADENYA_WORKSPACE_ID")
+        self.workspace_id = workspace_id
 
         if base_url is None:
             base_url = os.environ.get("CADENYA_BASE_URL")
@@ -145,6 +151,8 @@ class Cadenya(SyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
+        self._default_stream_cls = Stream
+
     @cached_property
     def ai_provider_keys(self) -> AIProviderKeysResource:
         from .resources.ai_provider_keys import AIProviderKeysResource
@@ -161,6 +169,16 @@ class Cadenya(SyncAPIClient):
         from .resources.account import AccountResource
 
         return AccountResource(self)
+
+    @cached_property
+    def profiles(self) -> ProfilesResource:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import ProfilesResource
+
+        return ProfilesResource(self)
 
     @cached_property
     def agents(self) -> AgentsResource:
@@ -180,7 +198,7 @@ class Cadenya(SyncAPIClient):
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -234,13 +252,28 @@ class Cadenya(SyncAPIClient):
 
     @cached_property
     def api_keys(self) -> APIKeysResource:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import APIKeysResource
 
         return APIKeysResource(self)
+
+    @cached_property
+    def global_api_key(self) -> GlobalAPIKeyResource:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import GlobalAPIKeyResource
+
+        return GlobalAPIKeyResource(self)
 
     @cached_property
     def workspace_secrets(self) -> WorkspaceSecretsResource:
@@ -284,17 +317,6 @@ class Cadenya(SyncAPIClient):
         return WebhooksResource(self)
 
     @cached_property
-    def bulk_workspace_resources(self) -> BulkWorkspaceResourcesResource:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import BulkWorkspaceResourcesResource
-
-        return BulkWorkspaceResourcesResource(self)
-
-    @cached_property
     def with_raw_response(self) -> CadenyaWithRawResponse:
         return CadenyaWithRawResponse(self)
 
@@ -327,6 +349,7 @@ class Cadenya(SyncAPIClient):
         *,
         api_key: str | None = None,
         webhook_key: str | None = None,
+        workspace_id: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.Client | None = None,
@@ -362,6 +385,7 @@ class Cadenya(SyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             webhook_key=webhook_key or self.webhook_key,
+            workspace_id=workspace_id or self.workspace_id,
             base_url=base_url or self.base_url,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
@@ -374,6 +398,15 @@ class Cadenya(SyncAPIClient):
     # Alias for `copy` for nicer inline usage, e.g.
     # client.with_options(timeout=10).foo.create(...)
     with_options = copy
+
+    def _get_workspace_id_path_param(self) -> str:
+        from_client = self.workspace_id
+        if from_client is not None:
+            return from_client
+
+        raise ValueError(
+            "Missing workspace_id argument; Please provide it at the client level, e.g. Cadenya(workspace_id='abcd') or per method."
+        )
 
     @override
     def _make_status_error(
@@ -413,12 +446,14 @@ class AsyncCadenya(AsyncAPIClient):
     # client options
     api_key: str
     webhook_key: str | None
+    workspace_id: str | None
 
     def __init__(
         self,
         *,
         api_key: str | None = None,
         webhook_key: str | None = None,
+        workspace_id: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = not_given,
         max_retries: int = DEFAULT_MAX_RETRIES,
@@ -443,6 +478,7 @@ class AsyncCadenya(AsyncAPIClient):
         This automatically infers the following arguments from their corresponding environment variables if they are not provided:
         - `api_key` from `CADENYA_API_KEY`
         - `webhook_key` from `CADENYA_WEBHOOK_KEY`
+        - `workspace_id` from `CADENYA_WORKSPACE_ID`
         """
         if api_key is None:
             api_key = os.environ.get("CADENYA_API_KEY")
@@ -455,6 +491,10 @@ class AsyncCadenya(AsyncAPIClient):
         if webhook_key is None:
             webhook_key = os.environ.get("CADENYA_WEBHOOK_KEY")
         self.webhook_key = webhook_key
+
+        if workspace_id is None:
+            workspace_id = os.environ.get("CADENYA_WORKSPACE_ID")
+        self.workspace_id = workspace_id
 
         if base_url is None:
             base_url = os.environ.get("CADENYA_BASE_URL")
@@ -481,6 +521,8 @@ class AsyncCadenya(AsyncAPIClient):
             _strict_response_validation=_strict_response_validation,
         )
 
+        self._default_stream_cls = AsyncStream
+
     @cached_property
     def ai_provider_keys(self) -> AsyncAIProviderKeysResource:
         from .resources.ai_provider_keys import AsyncAIProviderKeysResource
@@ -497,6 +539,16 @@ class AsyncCadenya(AsyncAPIClient):
         from .resources.account import AsyncAccountResource
 
         return AsyncAccountResource(self)
+
+    @cached_property
+    def profiles(self) -> AsyncProfilesResource:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import AsyncProfilesResource
+
+        return AsyncProfilesResource(self)
 
     @cached_property
     def agents(self) -> AsyncAgentsResource:
@@ -516,7 +568,7 @@ class AsyncCadenya(AsyncAPIClient):
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -570,13 +622,28 @@ class AsyncCadenya(AsyncAPIClient):
 
     @cached_property
     def api_keys(self) -> AsyncAPIKeysResource:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import AsyncAPIKeysResource
 
         return AsyncAPIKeysResource(self)
+
+    @cached_property
+    def global_api_key(self) -> AsyncGlobalAPIKeyResource:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import AsyncGlobalAPIKeyResource
+
+        return AsyncGlobalAPIKeyResource(self)
 
     @cached_property
     def workspace_secrets(self) -> AsyncWorkspaceSecretsResource:
@@ -620,17 +687,6 @@ class AsyncCadenya(AsyncAPIClient):
         return AsyncWebhooksResource(self)
 
     @cached_property
-    def bulk_workspace_resources(self) -> AsyncBulkWorkspaceResourcesResource:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import AsyncBulkWorkspaceResourcesResource
-
-        return AsyncBulkWorkspaceResourcesResource(self)
-
-    @cached_property
     def with_raw_response(self) -> AsyncCadenyaWithRawResponse:
         return AsyncCadenyaWithRawResponse(self)
 
@@ -663,6 +719,7 @@ class AsyncCadenya(AsyncAPIClient):
         *,
         api_key: str | None = None,
         webhook_key: str | None = None,
+        workspace_id: str | None = None,
         base_url: str | httpx.URL | None = None,
         timeout: float | Timeout | None | NotGiven = not_given,
         http_client: httpx.AsyncClient | None = None,
@@ -698,6 +755,7 @@ class AsyncCadenya(AsyncAPIClient):
         return self.__class__(
             api_key=api_key or self.api_key,
             webhook_key=webhook_key or self.webhook_key,
+            workspace_id=workspace_id or self.workspace_id,
             base_url=base_url or self.base_url,
             timeout=self.timeout if isinstance(timeout, NotGiven) else timeout,
             http_client=http_client,
@@ -710,6 +768,15 @@ class AsyncCadenya(AsyncAPIClient):
     # Alias for `copy` for nicer inline usage, e.g.
     # client.with_options(timeout=10).foo.create(...)
     with_options = copy
+
+    def _get_workspace_id_path_param(self) -> str:
+        from_client = self.workspace_id
+        if from_client is not None:
+            return from_client
+
+        raise ValueError(
+            "Missing workspace_id argument; Please provide it at the client level, e.g. AsyncCadenya(workspace_id='abcd') or per method."
+        )
 
     @override
     def _make_status_error(
@@ -769,6 +836,16 @@ class CadenyaWithRawResponse:
         return AccountResourceWithRawResponse(self._client.account)
 
     @cached_property
+    def profiles(self) -> profiles.ProfilesResourceWithRawResponse:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import ProfilesResourceWithRawResponse
+
+        return ProfilesResourceWithRawResponse(self._client.profiles)
+
+    @cached_property
     def agents(self) -> agents.AgentsResourceWithRawResponse:
         """Manage AI agents within a workspace. Agents define AI behavior and tool access."""
         from .resources.agents import AgentsResourceWithRawResponse
@@ -786,7 +863,7 @@ class CadenyaWithRawResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -840,13 +917,28 @@ class CadenyaWithRawResponse:
 
     @cached_property
     def api_keys(self) -> api_keys.APIKeysResourceWithRawResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import APIKeysResourceWithRawResponse
 
         return APIKeysResourceWithRawResponse(self._client.api_keys)
+
+    @cached_property
+    def global_api_key(self) -> global_api_key.GlobalAPIKeyResourceWithRawResponse:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import GlobalAPIKeyResourceWithRawResponse
+
+        return GlobalAPIKeyResourceWithRawResponse(self._client.global_api_key)
 
     @cached_property
     def workspace_secrets(self) -> workspace_secrets.WorkspaceSecretsResourceWithRawResponse:
@@ -883,17 +975,6 @@ class CadenyaWithRawResponse:
 
         return WorkspaceAdminResourceWithRawResponse(self._client.workspace_admin)
 
-    @cached_property
-    def bulk_workspace_resources(self) -> bulk_workspace_resources.BulkWorkspaceResourcesResourceWithRawResponse:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import BulkWorkspaceResourcesResourceWithRawResponse
-
-        return BulkWorkspaceResourcesResourceWithRawResponse(self._client.bulk_workspace_resources)
-
 
 class AsyncCadenyaWithRawResponse:
     _client: AsyncCadenya
@@ -919,6 +1000,16 @@ class AsyncCadenyaWithRawResponse:
         return AsyncAccountResourceWithRawResponse(self._client.account)
 
     @cached_property
+    def profiles(self) -> profiles.AsyncProfilesResourceWithRawResponse:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import AsyncProfilesResourceWithRawResponse
+
+        return AsyncProfilesResourceWithRawResponse(self._client.profiles)
+
+    @cached_property
     def agents(self) -> agents.AsyncAgentsResourceWithRawResponse:
         """Manage AI agents within a workspace. Agents define AI behavior and tool access."""
         from .resources.agents import AsyncAgentsResourceWithRawResponse
@@ -936,7 +1027,7 @@ class AsyncCadenyaWithRawResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -990,13 +1081,28 @@ class AsyncCadenyaWithRawResponse:
 
     @cached_property
     def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithRawResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import AsyncAPIKeysResourceWithRawResponse
 
         return AsyncAPIKeysResourceWithRawResponse(self._client.api_keys)
+
+    @cached_property
+    def global_api_key(self) -> global_api_key.AsyncGlobalAPIKeyResourceWithRawResponse:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import AsyncGlobalAPIKeyResourceWithRawResponse
+
+        return AsyncGlobalAPIKeyResourceWithRawResponse(self._client.global_api_key)
 
     @cached_property
     def workspace_secrets(self) -> workspace_secrets.AsyncWorkspaceSecretsResourceWithRawResponse:
@@ -1033,17 +1139,6 @@ class AsyncCadenyaWithRawResponse:
 
         return AsyncWorkspaceAdminResourceWithRawResponse(self._client.workspace_admin)
 
-    @cached_property
-    def bulk_workspace_resources(self) -> bulk_workspace_resources.AsyncBulkWorkspaceResourcesResourceWithRawResponse:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import AsyncBulkWorkspaceResourcesResourceWithRawResponse
-
-        return AsyncBulkWorkspaceResourcesResourceWithRawResponse(self._client.bulk_workspace_resources)
-
 
 class CadenyaWithStreamedResponse:
     _client: Cadenya
@@ -1069,6 +1164,16 @@ class CadenyaWithStreamedResponse:
         return AccountResourceWithStreamingResponse(self._client.account)
 
     @cached_property
+    def profiles(self) -> profiles.ProfilesResourceWithStreamingResponse:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import ProfilesResourceWithStreamingResponse
+
+        return ProfilesResourceWithStreamingResponse(self._client.profiles)
+
+    @cached_property
     def agents(self) -> agents.AgentsResourceWithStreamingResponse:
         """Manage AI agents within a workspace. Agents define AI behavior and tool access."""
         from .resources.agents import AgentsResourceWithStreamingResponse
@@ -1086,7 +1191,7 @@ class CadenyaWithStreamedResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -1140,13 +1245,28 @@ class CadenyaWithStreamedResponse:
 
     @cached_property
     def api_keys(self) -> api_keys.APIKeysResourceWithStreamingResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import APIKeysResourceWithStreamingResponse
 
         return APIKeysResourceWithStreamingResponse(self._client.api_keys)
+
+    @cached_property
+    def global_api_key(self) -> global_api_key.GlobalAPIKeyResourceWithStreamingResponse:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import GlobalAPIKeyResourceWithStreamingResponse
+
+        return GlobalAPIKeyResourceWithStreamingResponse(self._client.global_api_key)
 
     @cached_property
     def workspace_secrets(self) -> workspace_secrets.WorkspaceSecretsResourceWithStreamingResponse:
@@ -1183,17 +1303,6 @@ class CadenyaWithStreamedResponse:
 
         return WorkspaceAdminResourceWithStreamingResponse(self._client.workspace_admin)
 
-    @cached_property
-    def bulk_workspace_resources(self) -> bulk_workspace_resources.BulkWorkspaceResourcesResourceWithStreamingResponse:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import BulkWorkspaceResourcesResourceWithStreamingResponse
-
-        return BulkWorkspaceResourcesResourceWithStreamingResponse(self._client.bulk_workspace_resources)
-
 
 class AsyncCadenyaWithStreamedResponse:
     _client: AsyncCadenya
@@ -1219,6 +1328,16 @@ class AsyncCadenyaWithStreamedResponse:
         return AsyncAccountResourceWithStreamingResponse(self._client.account)
 
     @cached_property
+    def profiles(self) -> profiles.AsyncProfilesResourceWithStreamingResponse:
+        """
+        Operations on profiles, the account-level principals (users, API keys,
+         system) that authenticate against the API.
+        """
+        from .resources.profiles import AsyncProfilesResourceWithStreamingResponse
+
+        return AsyncProfilesResourceWithStreamingResponse(self._client.profiles)
+
+    @cached_property
     def agents(self) -> agents.AsyncAgentsResourceWithStreamingResponse:
         """Manage AI agents within a workspace. Agents define AI behavior and tool access."""
         from .resources.agents import AsyncAgentsResourceWithStreamingResponse
@@ -1236,7 +1355,7 @@ class AsyncCadenyaWithStreamedResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -1290,13 +1409,28 @@ class AsyncCadenyaWithStreamedResponse:
 
     @cached_property
     def api_keys(self) -> api_keys.AsyncAPIKeysResourceWithStreamingResponse:
-        """
-        Issue, rotate, and revoke API keys for the account, and grant or revoke
-         each key's access to individual workspaces.
+        """Issue, rotate, disable, and revoke a workspace's API keys.
+
+        Every key
+         belongs to exactly one workspace; the system-managed global account key is
+         managed via GlobalAPIKeyService instead.
         """
         from .resources.api_keys import AsyncAPIKeysResourceWithStreamingResponse
 
         return AsyncAPIKeysResourceWithStreamingResponse(self._client.api_keys)
+
+    @cached_property
+    def global_api_key(self) -> global_api_key.AsyncGlobalAPIKeyResourceWithStreamingResponse:
+        """Manage the account's system-provisioned global API key.
+
+        The global key is
+         the only key that spans every workspace; it is created by the system and
+         cannot be deleted, so the surface is retrieve, rotate, and the
+         disable/enable kill switch.
+        """
+        from .resources.global_api_key import AsyncGlobalAPIKeyResourceWithStreamingResponse
+
+        return AsyncGlobalAPIKeyResourceWithStreamingResponse(self._client.global_api_key)
 
     @cached_property
     def workspace_secrets(self) -> workspace_secrets.AsyncWorkspaceSecretsResourceWithStreamingResponse:
@@ -1332,19 +1466,6 @@ class AsyncCadenyaWithStreamedResponse:
         from .resources.workspace_admin import AsyncWorkspaceAdminResourceWithStreamingResponse
 
         return AsyncWorkspaceAdminResourceWithStreamingResponse(self._client.workspace_admin)
-
-    @cached_property
-    def bulk_workspace_resources(
-        self,
-    ) -> bulk_workspace_resources.AsyncBulkWorkspaceResourcesResourceWithStreamingResponse:
-        """
-        Apply a declarative bundle of workspace resources — tool sets, memory
-         layers, agents, variations, assignments, and schedules — in a single
-         asynchronous operation.
-        """
-        from .resources.bulk_workspace_resources import AsyncBulkWorkspaceResourcesResourceWithStreamingResponse
-
-        return AsyncBulkWorkspaceResourcesResourceWithStreamingResponse(self._client.bulk_workspace_resources)
 
 
 Client = Cadenya

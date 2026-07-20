@@ -24,7 +24,7 @@ class TestAIProviderKeys:
     @parametrize
     def test_method_create(self, client: Cadenya) -> None:
         ai_provider_key = client.ai_provider_keys.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -34,16 +34,21 @@ class TestAIProviderKeys:
     @parametrize
     def test_method_create_with_all_params(self, client: Cadenya) -> None:
         ai_provider_key = client.ai_provider_keys.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
             spec={
-                "api_key": "apiKey",
-                "openrouter": {},
+                "config": {
+                    "openrouter": {"region": "region"},
+                    "type": "openrouter",
+                },
+                "credentials": {
+                    "api_key": {"api_key": "apiKey"},
+                    "type": "apiKey",
+                },
                 "provider": "AI_PROVIDER_UNSPECIFIED",
             },
         )
@@ -53,7 +58,7 @@ class TestAIProviderKeys:
     @parametrize
     def test_raw_response_create(self, client: Cadenya) -> None:
         response = client.ai_provider_keys.with_raw_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -67,7 +72,7 @@ class TestAIProviderKeys:
     @parametrize
     def test_streaming_response_create(self, client: Cadenya) -> None:
         with client.ai_provider_keys.with_streaming_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         ) as response:
@@ -93,8 +98,8 @@ class TestAIProviderKeys:
     @parametrize
     def test_method_retrieve(self, client: Cadenya) -> None:
         ai_provider_key = client.ai_provider_keys.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AIProviderKey, ai_provider_key, path=["response"])
 
@@ -102,8 +107,8 @@ class TestAIProviderKeys:
     @parametrize
     def test_raw_response_retrieve(self, client: Cadenya) -> None:
         response = client.ai_provider_keys.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -115,8 +120,8 @@ class TestAIProviderKeys:
     @parametrize
     def test_streaming_response_retrieve(self, client: Cadenya) -> None:
         with client.ai_provider_keys.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -131,22 +136,22 @@ class TestAIProviderKeys:
     def test_path_params_retrieve(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.ai_provider_keys.with_raw_response.retrieve(
-                id="id",
+                id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.ai_provider_keys.with_raw_response.retrieve(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_update(self, client: Cadenya) -> None:
         ai_provider_key = client.ai_provider_keys.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AIProviderKey, ai_provider_key, path=["response"])
 
@@ -154,17 +159,22 @@ class TestAIProviderKeys:
     @parametrize
     def test_method_update_with_all_params(self, client: Cadenya) -> None:
         ai_provider_key = client.ai_provider_keys.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
             spec={
-                "api_key": "apiKey",
-                "openrouter": {},
+                "config": {
+                    "openrouter": {"region": "region"},
+                    "type": "openrouter",
+                },
+                "credentials": {
+                    "api_key": {"api_key": "apiKey"},
+                    "type": "apiKey",
+                },
                 "provider": "AI_PROVIDER_UNSPECIFIED",
             },
             update_mask="updateMask",
@@ -175,8 +185,8 @@ class TestAIProviderKeys:
     @parametrize
     def test_raw_response_update(self, client: Cadenya) -> None:
         response = client.ai_provider_keys.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -188,8 +198,8 @@ class TestAIProviderKeys:
     @parametrize
     def test_streaming_response_update(self, client: Cadenya) -> None:
         with client.ai_provider_keys.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -204,21 +214,21 @@ class TestAIProviderKeys:
     def test_path_params_update(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.ai_provider_keys.with_raw_response.update(
-                id="id",
+                id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.ai_provider_keys.with_raw_response.update(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_list(self, client: Cadenya) -> None:
         ai_provider_key = client.ai_provider_keys.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(SyncCursorPagination[AIProviderKey], ai_provider_key, path=["response"])
 
@@ -226,11 +236,13 @@ class TestAIProviderKeys:
     @parametrize
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         ai_provider_key = client.ai_provider_keys.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             prefix="prefix",
+            promotional=True,
             query="query",
             sort_order="sortOrder",
         )
@@ -240,7 +252,7 @@ class TestAIProviderKeys:
     @parametrize
     def test_raw_response_list(self, client: Cadenya) -> None:
         response = client.ai_provider_keys.with_raw_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -252,7 +264,7 @@ class TestAIProviderKeys:
     @parametrize
     def test_streaming_response_list(self, client: Cadenya) -> None:
         with client.ai_provider_keys.with_streaming_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -274,8 +286,8 @@ class TestAIProviderKeys:
     @parametrize
     def test_method_delete(self, client: Cadenya) -> None:
         ai_provider_key = client.ai_provider_keys.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert ai_provider_key is None
 
@@ -283,8 +295,8 @@ class TestAIProviderKeys:
     @parametrize
     def test_raw_response_delete(self, client: Cadenya) -> None:
         response = client.ai_provider_keys.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -296,8 +308,8 @@ class TestAIProviderKeys:
     @parametrize
     def test_streaming_response_delete(self, client: Cadenya) -> None:
         with client.ai_provider_keys.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -312,14 +324,14 @@ class TestAIProviderKeys:
     def test_path_params_delete(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.ai_provider_keys.with_raw_response.delete(
-                id="id",
+                id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.ai_provider_keys.with_raw_response.delete(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
 
@@ -332,7 +344,7 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_method_create(self, async_client: AsyncCadenya) -> None:
         ai_provider_key = await async_client.ai_provider_keys.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -342,16 +354,21 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncCadenya) -> None:
         ai_provider_key = await async_client.ai_provider_keys.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
             spec={
-                "api_key": "apiKey",
-                "openrouter": {},
+                "config": {
+                    "openrouter": {"region": "region"},
+                    "type": "openrouter",
+                },
+                "credentials": {
+                    "api_key": {"api_key": "apiKey"},
+                    "type": "apiKey",
+                },
                 "provider": "AI_PROVIDER_UNSPECIFIED",
             },
         )
@@ -361,7 +378,7 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncCadenya) -> None:
         response = await async_client.ai_provider_keys.with_raw_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         )
@@ -375,7 +392,7 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncCadenya) -> None:
         async with async_client.ai_provider_keys.with_streaming_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={},
         ) as response:
@@ -401,8 +418,8 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncCadenya) -> None:
         ai_provider_key = await async_client.ai_provider_keys.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AIProviderKey, ai_provider_key, path=["response"])
 
@@ -410,8 +427,8 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncCadenya) -> None:
         response = await async_client.ai_provider_keys.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -423,8 +440,8 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncCadenya) -> None:
         async with async_client.ai_provider_keys.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -439,22 +456,22 @@ class TestAsyncAIProviderKeys:
     async def test_path_params_retrieve(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.ai_provider_keys.with_raw_response.retrieve(
-                id="id",
+                id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.ai_provider_keys.with_raw_response.retrieve(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_update(self, async_client: AsyncCadenya) -> None:
         ai_provider_key = await async_client.ai_provider_keys.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AIProviderKey, ai_provider_key, path=["response"])
 
@@ -462,17 +479,22 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_method_update_with_all_params(self, async_client: AsyncCadenya) -> None:
         ai_provider_key = await async_client.ai_provider_keys.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
             spec={
-                "api_key": "apiKey",
-                "openrouter": {},
+                "config": {
+                    "openrouter": {"region": "region"},
+                    "type": "openrouter",
+                },
+                "credentials": {
+                    "api_key": {"api_key": "apiKey"},
+                    "type": "apiKey",
+                },
                 "provider": "AI_PROVIDER_UNSPECIFIED",
             },
             update_mask="updateMask",
@@ -483,8 +505,8 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_raw_response_update(self, async_client: AsyncCadenya) -> None:
         response = await async_client.ai_provider_keys.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -496,8 +518,8 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_streaming_response_update(self, async_client: AsyncCadenya) -> None:
         async with async_client.ai_provider_keys.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -512,21 +534,21 @@ class TestAsyncAIProviderKeys:
     async def test_path_params_update(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.ai_provider_keys.with_raw_response.update(
-                id="id",
+                id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.ai_provider_keys.with_raw_response.update(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_list(self, async_client: AsyncCadenya) -> None:
         ai_provider_key = await async_client.ai_provider_keys.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AsyncCursorPagination[AIProviderKey], ai_provider_key, path=["response"])
 
@@ -534,11 +556,13 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         ai_provider_key = await async_client.ai_provider_keys.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             prefix="prefix",
+            promotional=True,
             query="query",
             sort_order="sortOrder",
         )
@@ -548,7 +572,7 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncCadenya) -> None:
         response = await async_client.ai_provider_keys.with_raw_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -560,7 +584,7 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncCadenya) -> None:
         async with async_client.ai_provider_keys.with_streaming_response.list(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -582,8 +606,8 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_method_delete(self, async_client: AsyncCadenya) -> None:
         ai_provider_key = await async_client.ai_provider_keys.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert ai_provider_key is None
 
@@ -591,8 +615,8 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_raw_response_delete(self, async_client: AsyncCadenya) -> None:
         response = await async_client.ai_provider_keys.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -604,8 +628,8 @@ class TestAsyncAIProviderKeys:
     @parametrize
     async def test_streaming_response_delete(self, async_client: AsyncCadenya) -> None:
         async with async_client.ai_provider_keys.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
+            id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -620,12 +644,12 @@ class TestAsyncAIProviderKeys:
     async def test_path_params_delete(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.ai_provider_keys.with_raw_response.delete(
-                id="id",
+                id="aipk_01HXKD2E5NQM3T9AYWCFQ41VW3",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.ai_provider_keys.with_raw_response.delete(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )

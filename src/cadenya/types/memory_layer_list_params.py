@@ -10,14 +10,30 @@ __all__ = ["MemoryLayerListParams"]
 
 
 class MemoryLayerListParams(TypedDict, total=False):
-    bundle_key: Annotated[str, PropertyInfo(alias="bundleKey")]
-    """Filter by bundle_key — return only resources owned by this bundle."""
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
+    agent_id: Annotated[str, PropertyInfo(alias="agentId")]
+    """Filter to episodic layers belonging to this agent."""
 
     cursor: str
     """Pagination cursor from previous response"""
 
+    episodic_key_prefix: Annotated[str, PropertyInfo(alias="episodicKeyPrefix")]
+    """Filter to episodic layers whose episodic key starts with this prefix (e.g.
+
+    "customer/" matches "customer/42" and "customer/43"). Useful for namespaced
+    keys, similar to a redis key scan.
+    """
+
     include_info: Annotated[bool, PropertyInfo(alias="includeInfo")]
     """When set to true you may use more of your alloted API rate-limit"""
+
+    labels: str
+    """Filters by metadata labels.
+
+    Comma-separated key=value pairs, e.g. "env=prod,team=ai". A resource matches
+    only if every pair matches exactly (AND semantics).
+    """
 
     limit: int
     """Maximum number of results to return"""

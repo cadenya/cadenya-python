@@ -14,11 +14,23 @@ __all__ = ["MemoryLayerSpec"]
 class MemoryLayerSpec(BaseModel):
     type: Literal["MEMORY_LAYER_TYPE_UNSPECIFIED", "MEMORY_LAYER_TYPE_EPISODIC", "MEMORY_LAYER_TYPE_SKILLS"]
 
+    agent_id: Optional[str] = FieldInfo(alias="agentId", default=None)
+    """Server-set on episodic layers: the agent this layer belongs to.
+
+    Unset for non-episodic layers.
+    """
+
     description: Optional[str] = None
     """Human-readable description of the layer's purpose.
 
     Encouraged for user-created layers; system-managed layers may have a generated
     description.
+    """
+
+    episodic_key: Optional[str] = FieldInfo(alias="episodicKey", default=None)
+    """
+    Server-set on episodic layers: the caller-supplied episodic key the layer was
+    created for. Unset for non-episodic layers.
     """
 
     expires_at: Optional[datetime] = FieldInfo(alias="expiresAt", default=None)
@@ -32,6 +44,6 @@ class MemoryLayerSpec(BaseModel):
 
     True for layers managed by the system (e.g., episodic layers created
     automatically when an objective uses an episodic_key). System-managed layers
-    cannot be assigned to objective stacks via the API and cannot be mutated by
+    cannot be assigned to objective cascades via the API and cannot be mutated by
     clients — their lifecycle is controlled entirely by the runtime.
     """

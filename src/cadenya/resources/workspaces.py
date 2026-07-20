@@ -39,7 +39,7 @@ class WorkspacesResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return WorkspacesResourceWithRawResponse(self)
 
@@ -48,7 +48,7 @@ class WorkspacesResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return WorkspacesResourceWithStreamingResponse(self)
 
@@ -57,6 +57,7 @@ class WorkspacesResource(SyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -73,6 +74,10 @@ class WorkspacesResource(SyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -98,6 +103,7 @@ class WorkspacesResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "sort_order": sort_order,
                     },
@@ -105,29 +111,6 @@ class WorkspacesResource(SyncAPIResource):
                 ),
             ),
             model=Workspace,
-        )
-
-    def get(
-        self,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> Workspace:
-        """Retrieves the workspace associated with the current API token.
-
-        Useful for
-        workspace-scoped tokens to identify which workspace they belong to.
-        """
-        return self._get(
-            "/v1/workspaces/current",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=Workspace,
         )
 
 
@@ -148,7 +131,7 @@ class AsyncWorkspacesResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncWorkspacesResourceWithRawResponse(self)
 
@@ -157,7 +140,7 @@ class AsyncWorkspacesResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncWorkspacesResourceWithStreamingResponse(self)
 
@@ -166,6 +149,7 @@ class AsyncWorkspacesResource(AsyncAPIResource):
         *,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -182,6 +166,10 @@ class AsyncWorkspacesResource(AsyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -207,6 +195,7 @@ class AsyncWorkspacesResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "sort_order": sort_order,
                     },
@@ -214,29 +203,6 @@ class AsyncWorkspacesResource(AsyncAPIResource):
                 ),
             ),
             model=Workspace,
-        )
-
-    async def get(
-        self,
-        *,
-        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
-        # The extra values given here take precedence over values defined on the client or passed to this method.
-        extra_headers: Headers | None = None,
-        extra_query: Query | None = None,
-        extra_body: Body | None = None,
-        timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> Workspace:
-        """Retrieves the workspace associated with the current API token.
-
-        Useful for
-        workspace-scoped tokens to identify which workspace they belong to.
-        """
-        return await self._get(
-            "/v1/workspaces/current",
-            options=make_request_options(
-                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
-            ),
-            cast_to=Workspace,
         )
 
 
@@ -247,9 +213,6 @@ class WorkspacesResourceWithRawResponse:
         self.list = to_raw_response_wrapper(
             workspaces.list,
         )
-        self.get = to_raw_response_wrapper(
-            workspaces.get,
-        )
 
 
 class AsyncWorkspacesResourceWithRawResponse:
@@ -258,9 +221,6 @@ class AsyncWorkspacesResourceWithRawResponse:
 
         self.list = async_to_raw_response_wrapper(
             workspaces.list,
-        )
-        self.get = async_to_raw_response_wrapper(
-            workspaces.get,
         )
 
 
@@ -271,9 +231,6 @@ class WorkspacesResourceWithStreamingResponse:
         self.list = to_streamed_response_wrapper(
             workspaces.list,
         )
-        self.get = to_streamed_response_wrapper(
-            workspaces.get,
-        )
 
 
 class AsyncWorkspacesResourceWithStreamingResponse:
@@ -282,7 +239,4 @@ class AsyncWorkspacesResourceWithStreamingResponse:
 
         self.list = async_to_streamed_response_wrapper(
             workspaces.list,
-        )
-        self.get = async_to_streamed_response_wrapper(
-            workspaces.get,
         )

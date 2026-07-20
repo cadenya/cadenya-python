@@ -38,7 +38,7 @@ class ProfilesResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return ProfilesResourceWithRawResponse(self)
 
@@ -47,7 +47,7 @@ class ProfilesResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return ProfilesResourceWithStreamingResponse(self)
 
@@ -55,6 +55,7 @@ class ProfilesResource(SyncAPIResource):
         self,
         *,
         cursor: str | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         query: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -70,6 +71,10 @@ class ProfilesResource(SyncAPIResource):
 
         Args:
           cursor: Pagination cursor from previous response
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -95,6 +100,7 @@ class ProfilesResource(SyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "labels": labels,
                         "limit": limit,
                         "query": query,
                     },
@@ -121,7 +127,7 @@ class AsyncProfilesResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncProfilesResourceWithRawResponse(self)
 
@@ -130,7 +136,7 @@ class AsyncProfilesResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncProfilesResourceWithStreamingResponse(self)
 
@@ -138,6 +144,7 @@ class AsyncProfilesResource(AsyncAPIResource):
         self,
         *,
         cursor: str | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         query: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -153,6 +160,10 @@ class AsyncProfilesResource(AsyncAPIResource):
 
         Args:
           cursor: Pagination cursor from previous response
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -178,6 +189,7 @@ class AsyncProfilesResource(AsyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "labels": labels,
                         "limit": limit,
                         "query": query,
                     },

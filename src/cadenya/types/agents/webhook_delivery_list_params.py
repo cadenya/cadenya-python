@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Literal, Required, Annotated, TypedDict
+from typing_extensions import Literal, Annotated, TypedDict
 
 from ..._utils import PropertyInfo
 
@@ -10,7 +10,7 @@ __all__ = ["WebhookDeliveryListParams"]
 
 
 class WebhookDeliveryListParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     cursor: str
     """Pagination cursor from previous response"""
@@ -33,10 +33,19 @@ class WebhookDeliveryListParams(TypedDict, total=False):
             "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED",
             "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED",
             "OBJECTIVE_EVENT_TYPE_FINALIZED",
+            "OBJECTIVE_EVENT_TYPE_NOTICE",
+            "OBJECTIVE_EVENT_TYPE_TIMED_OUT",
         ],
         PropertyInfo(alias="eventType"),
     ]
     """Optional filter by event type"""
+
+    labels: str
+    """Filters by metadata labels.
+
+    Comma-separated key=value pairs, e.g. "env=prod,team=ai". A resource matches
+    only if every pair matches exactly (AND semantics).
+    """
 
     limit: int
     """Maximum number of results to return"""

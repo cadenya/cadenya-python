@@ -2,25 +2,16 @@
 
 from __future__ import annotations
 
-from typing_extensions import TypedDict
+from typing import Union
+from typing_extensions import TypeAlias
 
-from .config_mcp_param import ConfigMcpParam
-from .config_http_param import ConfigHTTPParam
-from .config_openapi_param import ConfigOpenAPIParam
+from .tool_spec_config_mcp_param import ToolSpecConfigMCPParam
+from .tool_spec_config_bare_param import ToolSpecConfigBareParam
+from .tool_spec_config_http_param import ToolSpecConfigHTTPParam
+from .tool_spec_config_openapi_param import ToolSpecConfigOpenAPIParam
 
 __all__ = ["ToolSpecConfigParam"]
 
-
-class ToolSpecConfigParam(TypedDict, total=False):
-    """
-    Config defines the adapter to use for the tool.
-     This is used to determine how the tool is called.
-     For example, if the tool is an HTTP tool, the adapter will be Http.
-     If the tool is an inline tool, the adapter will be Inline.
-    """
-
-    http: ConfigHTTPParam
-
-    mcp: ConfigMcpParam
-
-    openapi: ConfigOpenAPIParam
+ToolSpecConfigParam: TypeAlias = Union[
+    ToolSpecConfigHTTPParam, ToolSpecConfigMCPParam, ToolSpecConfigOpenAPIParam, ToolSpecConfigBareParam
+]

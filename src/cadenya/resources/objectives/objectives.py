@@ -58,14 +58,15 @@ from ..._response import (
     async_to_raw_response_wrapper,
     async_to_streamed_response_wrapper,
 )
+from ..._streaming import Stream, AsyncStream
 from ...pagination import SyncCursorPagination, AsyncCursorPagination
 from ..._base_client import AsyncPaginator, make_request_options
 from ...types.objective import Objective
+from ...types.objective_event import ObjectiveEvent
 from ...types.memory_reference_param import MemoryReferenceParam
 from ...types.objective_context_window import ObjectiveContextWindow
 from ...types.objective_compact_response import ObjectiveCompactResponse
-from ...types.objective_continue_response import ObjectiveContinueResponse
-from ...types.objective_list_events_response import ObjectiveListEventsResponse
+from ...types.objective_retrieve_diagnostics_response import ObjectiveRetrieveDiagnosticsResponse
 from ...types.shared_params.create_operation_metadata import CreateOperationMetadata
 from ...types.agents.agent_variation_spec_compaction_config_param import AgentVariationSpecCompactionConfigParam
 
@@ -95,7 +96,7 @@ class ObjectivesResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return ObjectivesResourceWithRawResponse(self)
 
@@ -104,18 +105,20 @@ class ObjectivesResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return ObjectivesResourceWithStreamingResponse(self)
 
     def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         agent_id: str,
-        data: Dict[str, object],
-        initial_message: str | Omit = omit,
-        memory_stack: Iterable[MemoryReferenceParam] | Omit = omit,
+        system_prompt_data: Dict[str, object],
+        episodic_memory: objective_create_params.EpisodicMemory | Omit = omit,
+        first_user_message: str | Omit = omit,
+        first_user_message_data: Dict[str, object] | Omit = omit,
+        memory_cascade: Iterable[MemoryReferenceParam] | Omit = omit,
         metadata: CreateOperationMetadata | Omit = omit,
         secrets: Iterable[objective_create_params.Secret] | Omit = omit,
         variation_id: str | Omit = omit,
@@ -130,28 +133,35 @@ class ObjectivesResource(SyncAPIResource):
         Creates a new objective in the workspace
 
         Args:
-          data: Arbitrary data for the objective. May be used in liquid templates for prompts
-              configured on the agent variation
+          system_prompt_data: Arbitrary data rendered into the selected variation's system_prompt_template
+              (liquid) to produce the objective's system prompt. If the agent has a
+              system_prompt_data_schema, this must satisfy it.
 
-          initial_message: Optional override for initial message sent to the agent. This becomes the first
-              user message in the LLM chat history. The agent variation is used to set this if
-              not present.
+          episodic_memory: Episodic is used to configure the episodic memory for the objective
 
-          memory_stack: Memory layers/entries to push onto this objective's memory stack on top of the
-              baseline stack inherited from the selected variation.
+          first_user_message: Optional explicit first user message for the LLM chat history. When not set, the
+              selected variation's first_user_message_template is rendered with
+              first_user_message_data instead. If neither this field nor a
+              first_user_message_template is present, the request is rejected with
+              InvalidArgument.
 
-              Array order is push order: the first element sits lower in the objective's
-              contribution to the stack; the LAST element ends up on top of the effective
-              stack. Entries pinned via memory_entry_id behave as single-entry layers at their
-              position.
+          first_user_message_data: Arbitrary data rendered into the selected variation's
+              first_user_message_template (liquid) to produce the first user message. Separate
+              from `system_prompt_data`, which renders the system prompt template.
+
+          memory_cascade: Memory layers/entries layered over the baseline cascade inherited from the
+              selected variation — element-level rules over inherited styles, in CSS terms.
+
+              Array order is resolution order: EARLIER elements are more specific and are
+              consulted first. Entries pinned via memory_entry_id behave as single-entry
+              layers at their position.
 
               System-managed layers (e.g., episodic) cannot be referenced here; they attach
-              themselves automatically based on episodic_key.
+              themselves automatically based on the episodic key.
 
-              Stack size cap: the TOTAL effective stack (variation's memory layers
-
-              - this field) must not exceed 10 entries. A request that would produce an
-                effective stack larger than 10 is rejected with InvalidArgument.
+              Size cap: the TOTAL effective cascade (this field + the variation's memory layer
+              assignments) must not exceed 10 entries. A request that would produce a larger
+              cascade is rejected with InvalidArgument.
 
           metadata: CreateOperationMetadata contains the user-provided fields for creating an
               operation. Read-only fields (id, account_id, workspace_id, created_at,
@@ -171,6 +181,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._post(
@@ -178,9 +190,11 @@ class ObjectivesResource(SyncAPIResource):
             body=maybe_transform(
                 {
                     "agent_id": agent_id,
-                    "data": data,
-                    "initial_message": initial_message,
-                    "memory_stack": memory_stack,
+                    "system_prompt_data": system_prompt_data,
+                    "episodic_memory": episodic_memory,
+                    "first_user_message": first_user_message,
+                    "first_user_message_data": first_user_message_data,
+                    "memory_cascade": memory_cascade,
                     "metadata": metadata,
                     "secrets": secrets,
                     "variation_id": variation_id,
@@ -197,7 +211,7 @@ class ObjectivesResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -217,6 +231,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -231,12 +247,13 @@ class ObjectivesResource(SyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         agent_id: str | Omit = omit,
         agent_schedule_id: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         parent_objective_id: str | Omit = omit,
         profile_id: str | Omit = omit,
@@ -249,6 +266,7 @@ class ObjectivesResource(SyncAPIResource):
             "STATE_FAILED",
             "STATE_CANCELLED",
             "STATE_FINALIZED",
+            "STATE_TIMED_OUT",
         ]
         | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -271,6 +289,10 @@ class ObjectivesResource(SyncAPIResource):
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           parent_objective_id: Optional filters
@@ -287,6 +309,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -303,6 +327,7 @@ class ObjectivesResource(SyncAPIResource):
                         "agent_schedule_id": agent_schedule_id,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "parent_objective_id": parent_objective_id,
                         "profile_id": profile_id,
@@ -319,7 +344,7 @@ class ObjectivesResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         reason: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -344,6 +369,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -365,7 +392,7 @@ class ObjectivesResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         compaction_config: AgentVariationSpecCompactionConfigParam | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -391,6 +418,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -414,28 +443,24 @@ class ObjectivesResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
+        message: str,
         enqueue: bool | Omit = omit,
-        message: str | Omit = omit,
-        secrets: Iterable[objective_continue_params.Secret] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ObjectiveContinueResponse:
+    ) -> ObjectiveEvent:
         """
         Continues an objective that has completed
 
         Args:
-          enqueue: When set to true, the message will be enqueued for when the agent loop is
-              available to process it.
-
           message: The message to continue an objective that has completed (or you are enqueing)
 
-          secrets: Secrets that should be included with the message. Helpful for when you need to
-              update secrets on the objective (IE: A secret expires and needs to be refreshed)
+          enqueue: When set to true, the message will be enqueued for when the agent loop is
+              available to process it.
 
           extra_headers: Send extra headers
 
@@ -445,6 +470,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -457,25 +484,25 @@ class ObjectivesResource(SyncAPIResource):
             ),
             body=maybe_transform(
                 {
-                    "enqueue": enqueue,
                     "message": message,
-                    "secrets": secrets,
+                    "enqueue": enqueue,
                 },
                 objective_continue_params.ObjectiveContinueParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ObjectiveContinueResponse,
+            cast_to=ObjectiveEvent,
         )
 
     def list_context_windows(
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -493,6 +520,10 @@ class ObjectivesResource(SyncAPIResource):
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           extra_headers: Send extra headers
@@ -503,6 +534,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -523,6 +556,7 @@ class ObjectivesResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                     },
                     objective_list_context_windows_params.ObjectiveListContextWindowsParams,
@@ -535,9 +569,10 @@ class ObjectivesResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         since_event_id: str | Omit = omit,
         sort_order: str | Omit = omit,
@@ -548,7 +583,7 @@ class ObjectivesResource(SyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> SyncCursorPagination[ObjectiveListEventsResponse]:
+    ) -> SyncCursorPagination[ObjectiveEvent]:
         """
         Lists all events for an objective
 
@@ -556,6 +591,10 @@ class ObjectivesResource(SyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -573,6 +612,8 @@ class ObjectivesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -583,7 +624,7 @@ class ObjectivesResource(SyncAPIResource):
                 workspace_id=workspace_id,
                 objective_id=objective_id,
             ),
-            page=SyncCursorPagination[ObjectiveListEventsResponse],
+            page=SyncCursorPagination[ObjectiveEvent],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -593,6 +634,7 @@ class ObjectivesResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "since_event_id": since_event_id,
                         "sort_order": sort_order,
@@ -601,7 +643,97 @@ class ObjectivesResource(SyncAPIResource):
                     objective_list_events_params.ObjectiveListEventsParams,
                 ),
             ),
-            model=ObjectiveListEventsResponse,
+            model=ObjectiveEvent,
+        )
+
+    def retrieve_diagnostics(
+        self,
+        objective_id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ObjectiveRetrieveDiagnosticsResponse:
+        """
+        Returns the context-usage breakdown measured for the objective's most recent
+        iteration: character lengths per context component (system prompt, memory
+        appendices, tool definitions, messages by role) alongside the iteration's input
+        token counts.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        return self._get(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/diagnostics",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveRetrieveDiagnosticsResponse,
+        )
+
+    def stream_events(
+        self,
+        objective_id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> Stream[ObjectiveEvent]:
+        """
+        Streams events for an objective in real-time using server-sent events (SSE)
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        extra_headers = {"Accept": "text/event-stream", **(extra_headers or {})}
+        return self._get(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/events:stream",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveEvent,
+            stream=True,
+            stream_cls=Stream[ObjectiveEvent],
         )
 
 
@@ -628,7 +760,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncObjectivesResourceWithRawResponse(self)
 
@@ -637,18 +769,20 @@ class AsyncObjectivesResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncObjectivesResourceWithStreamingResponse(self)
 
     async def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         agent_id: str,
-        data: Dict[str, object],
-        initial_message: str | Omit = omit,
-        memory_stack: Iterable[MemoryReferenceParam] | Omit = omit,
+        system_prompt_data: Dict[str, object],
+        episodic_memory: objective_create_params.EpisodicMemory | Omit = omit,
+        first_user_message: str | Omit = omit,
+        first_user_message_data: Dict[str, object] | Omit = omit,
+        memory_cascade: Iterable[MemoryReferenceParam] | Omit = omit,
         metadata: CreateOperationMetadata | Omit = omit,
         secrets: Iterable[objective_create_params.Secret] | Omit = omit,
         variation_id: str | Omit = omit,
@@ -663,28 +797,35 @@ class AsyncObjectivesResource(AsyncAPIResource):
         Creates a new objective in the workspace
 
         Args:
-          data: Arbitrary data for the objective. May be used in liquid templates for prompts
-              configured on the agent variation
+          system_prompt_data: Arbitrary data rendered into the selected variation's system_prompt_template
+              (liquid) to produce the objective's system prompt. If the agent has a
+              system_prompt_data_schema, this must satisfy it.
 
-          initial_message: Optional override for initial message sent to the agent. This becomes the first
-              user message in the LLM chat history. The agent variation is used to set this if
-              not present.
+          episodic_memory: Episodic is used to configure the episodic memory for the objective
 
-          memory_stack: Memory layers/entries to push onto this objective's memory stack on top of the
-              baseline stack inherited from the selected variation.
+          first_user_message: Optional explicit first user message for the LLM chat history. When not set, the
+              selected variation's first_user_message_template is rendered with
+              first_user_message_data instead. If neither this field nor a
+              first_user_message_template is present, the request is rejected with
+              InvalidArgument.
 
-              Array order is push order: the first element sits lower in the objective's
-              contribution to the stack; the LAST element ends up on top of the effective
-              stack. Entries pinned via memory_entry_id behave as single-entry layers at their
-              position.
+          first_user_message_data: Arbitrary data rendered into the selected variation's
+              first_user_message_template (liquid) to produce the first user message. Separate
+              from `system_prompt_data`, which renders the system prompt template.
+
+          memory_cascade: Memory layers/entries layered over the baseline cascade inherited from the
+              selected variation — element-level rules over inherited styles, in CSS terms.
+
+              Array order is resolution order: EARLIER elements are more specific and are
+              consulted first. Entries pinned via memory_entry_id behave as single-entry
+              layers at their position.
 
               System-managed layers (e.g., episodic) cannot be referenced here; they attach
-              themselves automatically based on episodic_key.
+              themselves automatically based on the episodic key.
 
-              Stack size cap: the TOTAL effective stack (variation's memory layers
-
-              - this field) must not exceed 10 entries. A request that would produce an
-                effective stack larger than 10 is rejected with InvalidArgument.
+              Size cap: the TOTAL effective cascade (this field + the variation's memory layer
+              assignments) must not exceed 10 entries. A request that would produce a larger
+              cascade is rejected with InvalidArgument.
 
           metadata: CreateOperationMetadata contains the user-provided fields for creating an
               operation. Read-only fields (id, account_id, workspace_id, created_at,
@@ -704,6 +845,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return await self._post(
@@ -711,9 +854,11 @@ class AsyncObjectivesResource(AsyncAPIResource):
             body=await async_maybe_transform(
                 {
                     "agent_id": agent_id,
-                    "data": data,
-                    "initial_message": initial_message,
-                    "memory_stack": memory_stack,
+                    "system_prompt_data": system_prompt_data,
+                    "episodic_memory": episodic_memory,
+                    "first_user_message": first_user_message,
+                    "first_user_message_data": first_user_message_data,
+                    "memory_cascade": memory_cascade,
                     "metadata": metadata,
                     "secrets": secrets,
                     "variation_id": variation_id,
@@ -730,7 +875,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -750,6 +895,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -764,12 +911,13 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         agent_id: str | Omit = omit,
         agent_schedule_id: str | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         parent_objective_id: str | Omit = omit,
         profile_id: str | Omit = omit,
@@ -782,6 +930,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
             "STATE_FAILED",
             "STATE_CANCELLED",
             "STATE_FINALIZED",
+            "STATE_TIMED_OUT",
         ]
         | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -804,6 +953,10 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           parent_objective_id: Optional filters
@@ -820,6 +973,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -836,6 +991,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
                         "agent_schedule_id": agent_schedule_id,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "parent_objective_id": parent_objective_id,
                         "profile_id": profile_id,
@@ -852,7 +1008,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         reason: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -877,6 +1033,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -898,7 +1056,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         compaction_config: AgentVariationSpecCompactionConfigParam | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -924,6 +1082,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -947,28 +1107,24 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
+        message: str,
         enqueue: bool | Omit = omit,
-        message: str | Omit = omit,
-        secrets: Iterable[objective_continue_params.Secret] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> ObjectiveContinueResponse:
+    ) -> ObjectiveEvent:
         """
         Continues an objective that has completed
 
         Args:
-          enqueue: When set to true, the message will be enqueued for when the agent loop is
-              available to process it.
-
           message: The message to continue an objective that has completed (or you are enqueing)
 
-          secrets: Secrets that should be included with the message. Helpful for when you need to
-              update secrets on the objective (IE: A secret expires and needs to be refreshed)
+          enqueue: When set to true, the message will be enqueued for when the agent loop is
+              available to process it.
 
           extra_headers: Send extra headers
 
@@ -978,6 +1134,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -990,25 +1148,25 @@ class AsyncObjectivesResource(AsyncAPIResource):
             ),
             body=await async_maybe_transform(
                 {
-                    "enqueue": enqueue,
                     "message": message,
-                    "secrets": secrets,
+                    "enqueue": enqueue,
                 },
                 objective_continue_params.ObjectiveContinueParams,
             ),
             options=make_request_options(
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
-            cast_to=ObjectiveContinueResponse,
+            cast_to=ObjectiveEvent,
         )
 
     def list_context_windows(
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -1026,6 +1184,10 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           extra_headers: Send extra headers
@@ -1036,6 +1198,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -1056,6 +1220,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                     },
                     objective_list_context_windows_params.ObjectiveListContextWindowsParams,
@@ -1068,9 +1233,10 @@ class AsyncObjectivesResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         since_event_id: str | Omit = omit,
         sort_order: str | Omit = omit,
@@ -1081,7 +1247,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
         extra_query: Query | None = None,
         extra_body: Body | None = None,
         timeout: float | httpx.Timeout | None | NotGiven = not_given,
-    ) -> AsyncPaginator[ObjectiveListEventsResponse, AsyncCursorPagination[ObjectiveListEventsResponse]]:
+    ) -> AsyncPaginator[ObjectiveEvent, AsyncCursorPagination[ObjectiveEvent]]:
         """
         Lists all events for an objective
 
@@ -1089,6 +1255,10 @@ class AsyncObjectivesResource(AsyncAPIResource):
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -1106,6 +1276,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -1116,7 +1288,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
                 workspace_id=workspace_id,
                 objective_id=objective_id,
             ),
-            page=AsyncCursorPagination[ObjectiveListEventsResponse],
+            page=AsyncCursorPagination[ObjectiveEvent],
             options=make_request_options(
                 extra_headers=extra_headers,
                 extra_query=extra_query,
@@ -1126,6 +1298,7 @@ class AsyncObjectivesResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "since_event_id": since_event_id,
                         "sort_order": sort_order,
@@ -1134,7 +1307,97 @@ class AsyncObjectivesResource(AsyncAPIResource):
                     objective_list_events_params.ObjectiveListEventsParams,
                 ),
             ),
-            model=ObjectiveListEventsResponse,
+            model=ObjectiveEvent,
+        )
+
+    async def retrieve_diagnostics(
+        self,
+        objective_id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ObjectiveRetrieveDiagnosticsResponse:
+        """
+        Returns the context-usage breakdown measured for the objective's most recent
+        iteration: character lengths per context component (system prompt, memory
+        appendices, tool definitions, messages by role) alongside the iteration's input
+        token counts.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        return await self._get(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/diagnostics",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveRetrieveDiagnosticsResponse,
+        )
+
+    async def stream_events(
+        self,
+        objective_id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AsyncStream[ObjectiveEvent]:
+        """
+        Streams events for an objective in real-time using server-sent events (SSE)
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not objective_id:
+            raise ValueError(f"Expected a non-empty value for `objective_id` but received {objective_id!r}")
+        extra_headers = {"Accept": "text/event-stream", **(extra_headers or {})}
+        return await self._get(
+            path_template(
+                "/v1/workspaces/{workspace_id}/objectives/{objective_id}/events:stream",
+                workspace_id=workspace_id,
+                objective_id=objective_id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ObjectiveEvent,
+            stream=True,
+            stream_cls=AsyncStream[ObjectiveEvent],
         )
 
 
@@ -1165,6 +1428,12 @@ class ObjectivesResourceWithRawResponse:
         )
         self.list_events = to_raw_response_wrapper(
             objectives.list_events,
+        )
+        self.retrieve_diagnostics = to_raw_response_wrapper(
+            objectives.retrieve_diagnostics,
+        )
+        self.stream_events = to_raw_response_wrapper(
+            objectives.stream_events,
         )
 
     @cached_property
@@ -1212,6 +1481,12 @@ class AsyncObjectivesResourceWithRawResponse:
         self.list_events = async_to_raw_response_wrapper(
             objectives.list_events,
         )
+        self.retrieve_diagnostics = async_to_raw_response_wrapper(
+            objectives.retrieve_diagnostics,
+        )
+        self.stream_events = async_to_raw_response_wrapper(
+            objectives.stream_events,
+        )
 
     @cached_property
     def tools(self) -> AsyncToolsResourceWithRawResponse:
@@ -1258,6 +1533,12 @@ class ObjectivesResourceWithStreamingResponse:
         self.list_events = to_streamed_response_wrapper(
             objectives.list_events,
         )
+        self.retrieve_diagnostics = to_streamed_response_wrapper(
+            objectives.retrieve_diagnostics,
+        )
+        self.stream_events = to_streamed_response_wrapper(
+            objectives.stream_events,
+        )
 
     @cached_property
     def tools(self) -> ToolsResourceWithStreamingResponse:
@@ -1303,6 +1584,12 @@ class AsyncObjectivesResourceWithStreamingResponse:
         )
         self.list_events = async_to_streamed_response_wrapper(
             objectives.list_events,
+        )
+        self.retrieve_diagnostics = async_to_streamed_response_wrapper(
+            objectives.retrieve_diagnostics,
+        )
+        self.stream_events = async_to_streamed_response_wrapper(
+            objectives.stream_events,
         )
 
     @cached_property

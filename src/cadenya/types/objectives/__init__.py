@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from .objective_task import ObjectiveTask as ObjectiveTask
 from .objective_tool import ObjectiveTool as ObjectiveTool
+from .resolved_secret import ResolvedSecret as ResolvedSecret
 from .task_list_params import TaskListParams as TaskListParams
 from .tool_list_params import ToolListParams as ToolListParams
 from .objective_feedback import ObjectiveFeedback as ObjectiveFeedback
@@ -17,4 +18,47 @@ from .objective_feedback_data import ObjectiveFeedbackData as ObjectiveFeedbackD
 from .objective_feedback_info import ObjectiveFeedbackInfo as ObjectiveFeedbackInfo
 from .objective_tool_call_data import ObjectiveToolCallData as ObjectiveToolCallData
 from .objective_tool_call_info import ObjectiveToolCallInfo as ObjectiveToolCallInfo
+from .objective_tool_call_result import ObjectiveToolCallResult as ObjectiveToolCallResult
+from .tool_call_set_content_params import ToolCallSetContentParams as ToolCallSetContentParams
 from .objective_feedback_data_param import ObjectiveFeedbackDataParam as ObjectiveFeedbackDataParam
+from .objective_tool_call_with_result import ObjectiveToolCallWithResult as ObjectiveToolCallWithResult
+from .objective_tool_call_result_text_block import ObjectiveToolCallResultTextBlock as ObjectiveToolCallResultTextBlock
+from .objective_tool_call_result_audio_block import (
+    ObjectiveToolCallResultAudioBlock as ObjectiveToolCallResultAudioBlock,
+)
+from .objective_tool_call_result_image_block import (
+    ObjectiveToolCallResultImageBlock as ObjectiveToolCallResultImageBlock,
+)
+from .objective_tool_call_result_content_block import (
+    ObjectiveToolCallResultContentBlock as ObjectiveToolCallResultContentBlock,
+)
+from .objective_tool_call_result_content_block_text import (
+    ObjectiveToolCallResultContentBlockText as ObjectiveToolCallResultContentBlockText,
+)
+from .objective_tool_call_result_content_block_audio import (
+    ObjectiveToolCallResultContentBlockAudio as ObjectiveToolCallResultContentBlockAudio,
+)
+from .objective_tool_call_result_content_block_image import (
+    ObjectiveToolCallResultContentBlockImage as ObjectiveToolCallResultContentBlockImage,
+)
+from .set_tool_call_content_request_text_block_param import (
+    SetToolCallContentRequestTextBlockParam as SetToolCallContentRequestTextBlockParam,
+)
+from .set_tool_call_content_request_audio_block_param import (
+    SetToolCallContentRequestAudioBlockParam as SetToolCallContentRequestAudioBlockParam,
+)
+from .set_tool_call_content_request_image_block_param import (
+    SetToolCallContentRequestImageBlockParam as SetToolCallContentRequestImageBlockParam,
+)
+from .set_tool_call_content_request_content_block_param import (
+    SetToolCallContentRequestContentBlockParam as SetToolCallContentRequestContentBlockParam,
+)
+from .set_tool_call_content_request_content_block_text_param import (
+    SetToolCallContentRequestContentBlockTextParam as SetToolCallContentRequestContentBlockTextParam,
+)
+from .set_tool_call_content_request_content_block_audio_param import (
+    SetToolCallContentRequestContentBlockAudioParam as SetToolCallContentRequestContentBlockAudioParam,
+)
+from .set_tool_call_content_request_content_block_image_param import (
+    SetToolCallContentRequestContentBlockImageParam as SetToolCallContentRequestContentBlockImageParam,
+)

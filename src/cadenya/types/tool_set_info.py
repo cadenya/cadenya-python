@@ -14,6 +14,8 @@ __all__ = ["ToolSetInfo"]
 class ToolSetInfo(BaseModel):
     agent_count: Optional[int] = FieldInfo(alias="agentCount", default=None)
 
+    available_tools: Optional[int] = FieldInfo(alias="availableTools", default=None)
+
     created_by: Optional[Profile] = FieldInfo(alias="createdBy", default=None)
     """
     A profile identifies a user or non-human principal (such as an API key) at the
@@ -22,5 +24,7 @@ class ToolSetInfo(BaseModel):
     """
 
     last_sync: Optional[datetime] = FieldInfo(alias="lastSync", default=None)
+
+    omitted_tools: Optional[int] = FieldInfo(alias="omittedTools", default=None)
 
     tool_count: Optional[int] = FieldInfo(alias="toolCount", default=None)

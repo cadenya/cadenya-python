@@ -21,7 +21,7 @@ class TestUploads:
     @parametrize
     def test_method_create(self, client: Cadenya) -> None:
         upload = client.uploads.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
                 "content_type": "contentType",
@@ -35,10 +35,9 @@ class TestUploads:
     @parametrize
     def test_method_create_with_all_params(self, client: Cadenya) -> None:
         upload = client.uploads.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -54,7 +53,7 @@ class TestUploads:
     @parametrize
     def test_raw_response_create(self, client: Cadenya) -> None:
         response = client.uploads.with_raw_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
                 "content_type": "contentType",
@@ -72,7 +71,7 @@ class TestUploads:
     @parametrize
     def test_streaming_response_create(self, client: Cadenya) -> None:
         with client.uploads.with_streaming_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
                 "content_type": "contentType",
@@ -106,8 +105,8 @@ class TestUploads:
     @parametrize
     def test_method_retrieve(self, client: Cadenya) -> None:
         upload = client.uploads.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="upload_01HXKD2E5NQM3T9AYWCFZ05DNK",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(Upload, upload, path=["response"])
 
@@ -115,8 +114,8 @@ class TestUploads:
     @parametrize
     def test_raw_response_retrieve(self, client: Cadenya) -> None:
         response = client.uploads.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="upload_01HXKD2E5NQM3T9AYWCFZ05DNK",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -128,8 +127,8 @@ class TestUploads:
     @parametrize
     def test_streaming_response_retrieve(self, client: Cadenya) -> None:
         with client.uploads.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="upload_01HXKD2E5NQM3T9AYWCFZ05DNK",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -144,14 +143,14 @@ class TestUploads:
     def test_path_params_retrieve(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.uploads.with_raw_response.retrieve(
-                id="id",
+                id="upload_01HXKD2E5NQM3T9AYWCFZ05DNK",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.uploads.with_raw_response.retrieve(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
 
@@ -164,7 +163,7 @@ class TestAsyncUploads:
     @parametrize
     async def test_method_create(self, async_client: AsyncCadenya) -> None:
         upload = await async_client.uploads.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
                 "content_type": "contentType",
@@ -178,10 +177,9 @@ class TestAsyncUploads:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncCadenya) -> None:
         upload = await async_client.uploads.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -197,7 +195,7 @@ class TestAsyncUploads:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncCadenya) -> None:
         response = await async_client.uploads.with_raw_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
                 "content_type": "contentType",
@@ -215,7 +213,7 @@ class TestAsyncUploads:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncCadenya) -> None:
         async with async_client.uploads.with_streaming_response.create(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
                 "content_type": "contentType",
@@ -249,8 +247,8 @@ class TestAsyncUploads:
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncCadenya) -> None:
         upload = await async_client.uploads.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="upload_01HXKD2E5NQM3T9AYWCFZ05DNK",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(Upload, upload, path=["response"])
 
@@ -258,8 +256,8 @@ class TestAsyncUploads:
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncCadenya) -> None:
         response = await async_client.uploads.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="upload_01HXKD2E5NQM3T9AYWCFZ05DNK",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -271,8 +269,8 @@ class TestAsyncUploads:
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncCadenya) -> None:
         async with async_client.uploads.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
+            id="upload_01HXKD2E5NQM3T9AYWCFZ05DNK",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -287,12 +285,12 @@ class TestAsyncUploads:
     async def test_path_params_retrieve(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.uploads.with_raw_response.retrieve(
-                id="id",
+                id="upload_01HXKD2E5NQM3T9AYWCFZ05DNK",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.uploads.with_raw_response.retrieve(
                 id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )

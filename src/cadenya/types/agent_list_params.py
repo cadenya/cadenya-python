@@ -10,8 +10,7 @@ __all__ = ["AgentListParams"]
 
 
 class AgentListParams(TypedDict, total=False):
-    bundle_key: Annotated[str, PropertyInfo(alias="bundleKey")]
-    """Filter by bundle_key — return only resources owned by this bundle."""
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     cursor: str
     """Pagination cursor from previous response"""
@@ -20,6 +19,13 @@ class AgentListParams(TypedDict, total=False):
     """When true, the `info` field on each returned agent is populated.
 
     Requests with this flag count more against your rate limit.
+    """
+
+    labels: str
+    """Filters by metadata labels.
+
+    Comma-separated key=value pairs, e.g. "env=prod,team=ai". A resource matches
+    only if every pair matches exactly (AND semantics).
     """
 
     limit: int
@@ -34,8 +40,8 @@ class AgentListParams(TypedDict, total=False):
     sort_order: Annotated[str, PropertyInfo(alias="sortOrder")]
     """Sort order for results (asc or desc by creation time)"""
 
-    status: Literal["AGENT_STATUS_UNSPECIFIED", "AGENT_STATUS_DRAFT", "AGENT_STATUS_PUBLISHED", "AGENT_STATUS_ARCHIVED"]
-    """Filter by agent publication status"""
+    state: Literal["STATE_UNSPECIFIED", "STATE_DRAFT", "STATE_PUBLISHED", "STATE_ARCHIVED"]
+    """Filter by agent lifecycle state"""
 
     variation_selection_mode: Annotated[
         Literal[

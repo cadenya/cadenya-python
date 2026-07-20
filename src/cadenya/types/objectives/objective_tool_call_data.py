@@ -1,12 +1,13 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from pydantic import Field as FieldInfo
 
 from ..profile import Profile
 from ..._models import BaseModel
 from ..callable_tool import CallableTool
+from .resolved_secret import ResolvedSecret
 
 __all__ = ["ObjectiveToolCallData"]
 
@@ -26,8 +27,8 @@ class ObjectiveToolCallData(BaseModel):
     memo: Optional[str] = None
     """A memo supplied by the reviewer when denying the tool call"""
 
-    result: Optional[str] = None
-    """The result content returned by the tool after execution"""
+    resolved_secrets: Optional[List[ResolvedSecret]] = FieldInfo(alias="resolvedSecrets", default=None)
+    """List of resolved secrets used by the tool call"""
 
     status_changed_by: Optional[Profile] = FieldInfo(alias="statusChangedBy", default=None)
     """

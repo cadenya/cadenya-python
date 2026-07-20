@@ -22,8 +22,8 @@ class TestTools:
     @parametrize
     def test_method_list(self, client: Cadenya) -> None:
         tool = client.objectives.tools.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(SyncCursorPagination[ObjectiveTool], tool, path=["response"])
 
@@ -31,8 +31,8 @@ class TestTools:
     @parametrize
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         tool = client.objectives.tools.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             limit=0,
         )
@@ -42,8 +42,8 @@ class TestTools:
     @parametrize
     def test_raw_response_list(self, client: Cadenya) -> None:
         response = client.objectives.tools.with_raw_response.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -55,8 +55,8 @@ class TestTools:
     @parametrize
     def test_streaming_response_list(self, client: Cadenya) -> None:
         with client.objectives.tools.with_streaming_response.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -71,14 +71,14 @@ class TestTools:
     def test_path_params_list(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.objectives.tools.with_raw_response.list(
-                objective_id="objectiveId",
+                objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
             client.objectives.tools.with_raw_response.list(
                 objective_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
 
@@ -91,8 +91,8 @@ class TestAsyncTools:
     @parametrize
     async def test_method_list(self, async_client: AsyncCadenya) -> None:
         tool = await async_client.objectives.tools.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AsyncCursorPagination[ObjectiveTool], tool, path=["response"])
 
@@ -100,8 +100,8 @@ class TestAsyncTools:
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         tool = await async_client.objectives.tools.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             limit=0,
         )
@@ -111,8 +111,8 @@ class TestAsyncTools:
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncCadenya) -> None:
         response = await async_client.objectives.tools.with_raw_response.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -124,8 +124,8 @@ class TestAsyncTools:
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncCadenya) -> None:
         async with async_client.objectives.tools.with_streaming_response.list(
-            objective_id="objectiveId",
-            workspace_id="workspaceId",
+            objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -140,12 +140,12 @@ class TestAsyncTools:
     async def test_path_params_list(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.objectives.tools.with_raw_response.list(
-                objective_id="objectiveId",
+                objective_id="obj_01HXKD2E5NQM3T9AYWCFQAZGFV",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `objective_id` but received ''"):
             await async_client.objectives.tools.with_raw_response.list(
                 objective_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )

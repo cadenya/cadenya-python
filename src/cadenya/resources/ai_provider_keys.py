@@ -36,7 +36,7 @@ class AIProviderKeysResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AIProviderKeysResourceWithRawResponse(self)
 
@@ -45,14 +45,14 @@ class AIProviderKeysResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AIProviderKeysResourceWithStreamingResponse(self)
 
     def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: AIProviderKeySpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -78,6 +78,8 @@ class AIProviderKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._post(
@@ -99,7 +101,7 @@ class AIProviderKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -119,6 +121,8 @@ class AIProviderKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -135,7 +139,7 @@ class AIProviderKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: AIProviderKeySpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -164,6 +168,8 @@ class AIProviderKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -186,12 +192,14 @@ class AIProviderKeysResource(SyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
+        promotional: bool | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -210,9 +218,17 @@ class AIProviderKeysResource(SyncAPIResource):
           include_info: When true, populate each item's info (model counts), at the cost of extra
               lookups.
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           prefix: Filter expression (query param: prefix)
+
+          promotional: When true, return only promotional keys (provided by Cadenya, e.g. for
+              onboarding). Defaults to returning all keys, customer-provided and promotional
+              alike.
 
           query: Free-form search query
 
@@ -226,6 +242,8 @@ class AIProviderKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -240,8 +258,10 @@ class AIProviderKeysResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
+                        "promotional": promotional,
                         "query": query,
                         "sort_order": sort_order,
                     },
@@ -255,7 +275,7 @@ class AIProviderKeysResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -275,6 +295,8 @@ class AIProviderKeysResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -296,7 +318,7 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncAIProviderKeysResourceWithRawResponse(self)
 
@@ -305,14 +327,14 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncAIProviderKeysResourceWithStreamingResponse(self)
 
     async def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: AIProviderKeySpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -338,6 +360,8 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return await self._post(
@@ -359,7 +383,7 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -379,6 +403,8 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -395,7 +421,7 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: AIProviderKeySpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -424,6 +450,8 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -446,12 +474,14 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
+        promotional: bool | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -470,9 +500,17 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
           include_info: When true, populate each item's info (model counts), at the cost of extra
               lookups.
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           prefix: Filter expression (query param: prefix)
+
+          promotional: When true, return only promotional keys (provided by Cadenya, e.g. for
+              onboarding). Defaults to returning all keys, customer-provided and promotional
+              alike.
 
           query: Free-form search query
 
@@ -486,6 +524,8 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -500,8 +540,10 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
+                        "promotional": promotional,
                         "query": query,
                         "sort_order": sort_order,
                     },
@@ -515,7 +557,7 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -535,6 +577,8 @@ class AsyncAIProviderKeysResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:

@@ -23,14 +23,14 @@ class CreateResourceMetadata(TypedDict, total=False):
     Tool")
     """
 
-    bundle_key: Annotated[str, PropertyInfo(alias="bundleKey")]
-    """Optional bundle ownership key. See ResourceMetadata.bundle_key."""
-
     external_id: Annotated[str, PropertyInfo(alias="externalId")]
     """External ID for the resource (e.g., a workflow ID from an external system)"""
 
     labels: Dict[str, str]
-    """
-    Arbitrary key-value pairs for categorization and filtering Examples:
+    """Key-value pairs for categorization and filtering.
+
+    Values are 0-63 alphanumeric characters with "-", "\\__", or "." allowed between;
+    keys follow the same shape and additionally accept an optional DNS-subdomain
+    prefix (e.g. "cadenya.com/") of at most 253 characters. Examples:
     {"environment": "production", "team": "platform", "version": "v2"}
     """

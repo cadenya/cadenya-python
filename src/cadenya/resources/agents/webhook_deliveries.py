@@ -33,7 +33,7 @@ class WebhookDeliveriesResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return WebhookDeliveriesResourceWithRawResponse(self)
 
@@ -42,7 +42,7 @@ class WebhookDeliveriesResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return WebhookDeliveriesResourceWithStreamingResponse(self)
 
@@ -50,7 +50,7 @@ class WebhookDeliveriesResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         event_type: Literal[
             "OBJECTIVE_EVENT_TYPE_UNSPECIFIED",
@@ -69,8 +69,11 @@ class WebhookDeliveriesResource(SyncAPIResource):
             "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED",
             "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED",
             "OBJECTIVE_EVENT_TYPE_FINALIZED",
+            "OBJECTIVE_EVENT_TYPE_NOTICE",
+            "OBJECTIVE_EVENT_TYPE_TIMED_OUT",
         ]
         | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         objective_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -88,6 +91,10 @@ class WebhookDeliveriesResource(SyncAPIResource):
 
           event_type: Optional filter by event type
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           objective_id: Optional filter by objective ID
@@ -100,6 +107,8 @@ class WebhookDeliveriesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -120,6 +129,7 @@ class WebhookDeliveriesResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "event_type": event_type,
+                        "labels": labels,
                         "limit": limit,
                         "objective_id": objective_id,
                     },
@@ -139,7 +149,7 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncWebhookDeliveriesResourceWithRawResponse(self)
 
@@ -148,7 +158,7 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncWebhookDeliveriesResourceWithStreamingResponse(self)
 
@@ -156,7 +166,7 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         event_type: Literal[
             "OBJECTIVE_EVENT_TYPE_UNSPECIFIED",
@@ -175,8 +185,11 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
             "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED",
             "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED",
             "OBJECTIVE_EVENT_TYPE_FINALIZED",
+            "OBJECTIVE_EVENT_TYPE_NOTICE",
+            "OBJECTIVE_EVENT_TYPE_TIMED_OUT",
         ]
         | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         objective_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -194,6 +207,10 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
 
           event_type: Optional filter by event type
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           objective_id: Optional filter by objective ID
@@ -206,6 +223,8 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -226,6 +245,7 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "event_type": event_type,
+                        "labels": labels,
                         "limit": limit,
                         "objective_id": objective_id,
                     },

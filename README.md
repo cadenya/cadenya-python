@@ -16,8 +16,8 @@ The REST API documentation can be found on [docs.cadenya.com](https://docs.caden
 ## Installation
 
 ```sh
-# install from this staging repo
-pip install git+ssh://git@github.com/stainless-sdks/cadenya-python.git
+# install from the production repo
+pip install git+ssh://git@github.com/cadenya/cadenya-python.git
 ```
 
 > [!NOTE]
@@ -35,8 +35,13 @@ client = Cadenya(
     api_key=os.environ.get("CADENYA_API_KEY"),  # This is the default and can be omitted
 )
 
-account = client.account.retrieve()
-print(account.info)
+objective = client.objectives.create(
+    workspace_id="workspace_01HXKD2E5NQXAMPLE0000000",
+    agent_id="agent_01HXKD2E5NQXAMPLE0000000",
+    system_prompt_data={"customer_name": "Ada"},
+    first_user_message="Summarize the open support tickets from yesterday.",
+)
+print(objective.config_snapshot)
 ```
 
 While you can provide an `api_key` keyword argument,
@@ -59,8 +64,13 @@ client = AsyncCadenya(
 
 
 async def main() -> None:
-    account = await client.account.retrieve()
-    print(account.info)
+    objective = await client.objectives.create(
+        workspace_id="workspace_01HXKD2E5NQXAMPLE0000000",
+        agent_id="agent_01HXKD2E5NQXAMPLE0000000",
+        system_prompt_data={"customer_name": "Ada"},
+        first_user_message="Summarize the open support tickets from yesterday.",
+    )
+    print(objective.config_snapshot)
 
 
 asyncio.run(main())
@@ -75,8 +85,8 @@ By default, the async client uses `httpx` for HTTP requests. However, for improv
 You can enable this by installing `aiohttp`:
 
 ```sh
-# install from this staging repo
-pip install 'cadenya[aiohttp] @ git+ssh://git@github.com/stainless-sdks/cadenya-python.git'
+# install from the production repo
+pip install 'cadenya[aiohttp] @ git+ssh://git@github.com/cadenya/cadenya-python.git'
 ```
 
 Then you can enable it by instantiating the client with `http_client=DefaultAioHttpClient()`:
@@ -93,11 +103,48 @@ async def main() -> None:
         api_key=os.environ.get("CADENYA_API_KEY"),  # This is the default and can be omitted
         http_client=DefaultAioHttpClient(),
     ) as client:
-        account = await client.account.retrieve()
-        print(account.info)
+        objective = await client.objectives.create(
+            workspace_id="workspace_01HXKD2E5NQXAMPLE0000000",
+            agent_id="agent_01HXKD2E5NQXAMPLE0000000",
+            system_prompt_data={"customer_name": "Ada"},
+            first_user_message="Summarize the open support tickets from yesterday.",
+        )
+        print(objective.config_snapshot)
 
 
 asyncio.run(main())
+```
+
+## Streaming responses
+
+We provide support for streaming responses using Server Side Events (SSE).
+
+```python
+from cadenya import Cadenya
+
+client = Cadenya()
+
+stream = client.objectives.stream_events(
+    objective_id="obj_01HXKD2E5NQXAMPLE0000000",
+    workspace_id="workspace_01HXKD2E5NQXAMPLE0000000",
+)
+for objective_event in stream:
+    print(objective_event.data)
+```
+
+The async client uses the exact same interface.
+
+```python
+from cadenya import AsyncCadenya
+
+client = AsyncCadenya()
+
+stream = await client.objectives.stream_events(
+    objective_id="obj_01HXKD2E5NQXAMPLE0000000",
+    workspace_id="workspace_01HXKD2E5NQXAMPLE0000000",
+)
+async for objective_event in stream:
+    print(objective_event.data)
 ```
 
 ## Using types
@@ -123,7 +170,7 @@ client = Cadenya()
 all_ai_provider_keys = []
 # Automatically fetches more pages as needed.
 for ai_provider_key in client.ai_provider_keys.list(
-    workspace_id="workspaceId",
+    workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
 ):
     # Do something with ai_provider_key here
     all_ai_provider_keys.append(ai_provider_key)
@@ -143,7 +190,7 @@ async def main() -> None:
     all_ai_provider_keys = []
     # Iterate through items across all pages, issuing requests as needed.
     async for ai_provider_key in client.ai_provider_keys.list(
-        workspace_id="workspaceId",
+        workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
     ):
         all_ai_provider_keys.append(ai_provider_key)
     print(all_ai_provider_keys)
@@ -156,7 +203,7 @@ Alternatively, you can use the `.has_next_page()`, `.next_page_info()`, or `.get
 
 ```python
 first_page = await client.ai_provider_keys.list(
-    workspace_id="workspaceId",
+    workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
 )
 if first_page.has_next_page():
     print(f"will fetch next page using these details: {first_page.next_page_info()}")
@@ -170,7 +217,7 @@ Or just work directly with the returned data:
 
 ```python
 first_page = await client.ai_provider_keys.list(
-    workspace_id="workspaceId",
+    workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
 )
 
 print(f"next page cursor: {first_page.pagination.next_cursor}")  # => "next page cursor: ..."
@@ -189,12 +236,13 @@ from cadenya import Cadenya
 
 client = Cadenya()
 
-ai_provider_key = client.ai_provider_keys.create(
-    workspace_id="workspaceId",
-    metadata={"name": "name"},
-    spec={},
+objective = client.objectives.create(
+    workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+    agent_id="agent_01HXKD2E5NQM3T9AYWCFMGWT9Y",
+    system_prompt_data={"foo": "bar"},
+    episodic_memory={"key": "key"},
 )
-print(ai_provider_key.metadata)
+print(objective.episodic_memory)
 ```
 
 ## Handling errors
@@ -240,7 +288,7 @@ Error codes are as follows:
 
 ### Retries
 
-Certain errors are automatically retried 2 times by default, with a short exponential backoff.
+Certain errors are automatically retried 0 times by default, with a short exponential backoff.
 Connection errors (for example, due to a network connectivity problem), 408 Request Timeout, 409 Conflict,
 429 Rate Limit, and >=500 Internal errors are all retried by default.
 
@@ -327,9 +375,9 @@ account = response.parse()  # get the object that `account.retrieve()` would hav
 print(account.info)
 ```
 
-These methods return an [`APIResponse`](https://github.com/stainless-sdks/cadenya-python/tree/main/src/cadenya/_response.py) object.
+These methods return an [`APIResponse`](https://github.com/cadenya/cadenya-python/tree/main/src/cadenya/_response.py) object.
 
-The async client returns an [`AsyncAPIResponse`](https://github.com/stainless-sdks/cadenya-python/tree/main/src/cadenya/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
+The async client returns an [`AsyncAPIResponse`](https://github.com/cadenya/cadenya-python/tree/main/src/cadenya/_response.py) with the same structure, the only difference being `await`able methods for reading the response content.
 
 #### `.with_streaming_response`
 
@@ -433,7 +481,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/cadenya-python/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/cadenya/cadenya-python/issues) with questions, bugs, or suggestions.
 
 ### Determining the installed version
 

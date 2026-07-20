@@ -22,14 +22,17 @@ class TestTools:
     @parametrize
     def test_method_create(self, client: Cadenya) -> None:
         tool = client.tool_sets.tools.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
-                "config": {},
+                "config": {
+                    "http": {"request_method": "HTTP_METHOD_UNSPECIFIED"},
+                    "type": "http",
+                },
                 "description": "description",
                 "parameters": {"foo": "bar"},
-                "status": "TOOL_STATUS_UNSPECIFIED",
+                "requires_approval": True,
             },
         )
         assert_matches_type(Tool, tool, path=["response"])
@@ -38,11 +41,10 @@ class TestTools:
     @parametrize
     def test_method_create_with_all_params(self, client: Cadenya) -> None:
         tool = client.tool_sets.tools.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -55,23 +57,13 @@ class TestTools:
                         "query": "query",
                         "request_body_content_type": "requestBodyContentType",
                         "request_body_template": "requestBodyTemplate",
-                        "tool_name": "toolName",
                     },
-                    "mcp": {
-                        "tool_description": "toolDescription",
-                        "tool_name": "toolName",
-                        "tool_title": "toolTitle",
-                    },
-                    "openapi": {
-                        "method": "method",
-                        "operation_id": "operationId",
-                        "path": "path",
-                    },
+                    "type": "http",
                 },
                 "description": "description",
                 "parameters": {"foo": "bar"},
-                "status": "TOOL_STATUS_UNSPECIFIED",
                 "requires_approval": True,
+                "llm_tool_name": "llmToolName",
             },
         )
         assert_matches_type(Tool, tool, path=["response"])
@@ -80,14 +72,17 @@ class TestTools:
     @parametrize
     def test_raw_response_create(self, client: Cadenya) -> None:
         response = client.tool_sets.tools.with_raw_response.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
-                "config": {},
+                "config": {
+                    "http": {"request_method": "HTTP_METHOD_UNSPECIFIED"},
+                    "type": "http",
+                },
                 "description": "description",
                 "parameters": {"foo": "bar"},
-                "status": "TOOL_STATUS_UNSPECIFIED",
+                "requires_approval": True,
             },
         )
 
@@ -100,14 +95,17 @@ class TestTools:
     @parametrize
     def test_streaming_response_create(self, client: Cadenya) -> None:
         with client.tool_sets.tools.with_streaming_response.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
-                "config": {},
+                "config": {
+                    "http": {"request_method": "HTTP_METHOD_UNSPECIFIED"},
+                    "type": "http",
+                },
                 "description": "description",
                 "parameters": {"foo": "bar"},
-                "status": "TOOL_STATUS_UNSPECIFIED",
+                "requires_approval": True,
             },
         ) as response:
             assert not response.is_closed
@@ -123,27 +121,33 @@ class TestTools:
     def test_path_params_create(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.tools.with_raw_response.create(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
                 metadata={"name": "name"},
                 spec={
-                    "config": {},
+                    "config": {
+                        "http": {"request_method": "HTTP_METHOD_UNSPECIFIED"},
+                        "type": "http",
+                    },
                     "description": "description",
                     "parameters": {"foo": "bar"},
-                    "status": "TOOL_STATUS_UNSPECIFIED",
+                    "requires_approval": True,
                 },
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.tools.with_raw_response.create(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
                 metadata={"name": "name"},
                 spec={
-                    "config": {},
+                    "config": {
+                        "http": {"request_method": "HTTP_METHOD_UNSPECIFIED"},
+                        "type": "http",
+                    },
                     "description": "description",
                     "parameters": {"foo": "bar"},
-                    "status": "TOOL_STATUS_UNSPECIFIED",
+                    "requires_approval": True,
                 },
             )
 
@@ -151,9 +155,9 @@ class TestTools:
     @parametrize
     def test_method_retrieve(self, client: Cadenya) -> None:
         tool = client.tool_sets.tools.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(Tool, tool, path=["response"])
 
@@ -161,9 +165,9 @@ class TestTools:
     @parametrize
     def test_raw_response_retrieve(self, client: Cadenya) -> None:
         response = client.tool_sets.tools.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -175,9 +179,9 @@ class TestTools:
     @parametrize
     def test_streaming_response_retrieve(self, client: Cadenya) -> None:
         with client.tool_sets.tools.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -192,32 +196,32 @@ class TestTools:
     def test_path_params_retrieve(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.tools.with_raw_response.retrieve(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.tools.with_raw_response.retrieve(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.tools.with_raw_response.retrieve(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_update(self, client: Cadenya) -> None:
         tool = client.tool_sets.tools.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(Tool, tool, path=["response"])
 
@@ -225,12 +229,11 @@ class TestTools:
     @parametrize
     def test_method_update_with_all_params(self, client: Cadenya) -> None:
         tool = client.tool_sets.tools.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -243,23 +246,13 @@ class TestTools:
                         "query": "query",
                         "request_body_content_type": "requestBodyContentType",
                         "request_body_template": "requestBodyTemplate",
-                        "tool_name": "toolName",
                     },
-                    "mcp": {
-                        "tool_description": "toolDescription",
-                        "tool_name": "toolName",
-                        "tool_title": "toolTitle",
-                    },
-                    "openapi": {
-                        "method": "method",
-                        "operation_id": "operationId",
-                        "path": "path",
-                    },
+                    "type": "http",
                 },
                 "description": "description",
                 "parameters": {"foo": "bar"},
-                "status": "TOOL_STATUS_UNSPECIFIED",
                 "requires_approval": True,
+                "llm_tool_name": "llmToolName",
             },
             update_mask="updateMask",
         )
@@ -269,9 +262,9 @@ class TestTools:
     @parametrize
     def test_raw_response_update(self, client: Cadenya) -> None:
         response = client.tool_sets.tools.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -283,9 +276,9 @@ class TestTools:
     @parametrize
     def test_streaming_response_update(self, client: Cadenya) -> None:
         with client.tool_sets.tools.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -300,31 +293,31 @@ class TestTools:
     def test_path_params_update(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.tools.with_raw_response.update(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.tools.with_raw_response.update(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.tools.with_raw_response.update(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_list(self, client: Cadenya) -> None:
         tool = client.tool_sets.tools.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(SyncCursorPagination[Tool], tool, path=["response"])
 
@@ -332,18 +325,18 @@ class TestTools:
     @parametrize
     def test_method_list_with_all_params(self, client: Cadenya) -> None:
         tool = client.tool_sets.tools.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
-            bundle_key="bundleKey",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             names=["string"],
             prefix="prefix",
             query="query",
             requires_approval=True,
             sort_order="sortOrder",
-            statuses=["TOOL_STATUS_UNSPECIFIED"],
+            states=["STATE_UNSPECIFIED"],
         )
         assert_matches_type(SyncCursorPagination[Tool], tool, path=["response"])
 
@@ -351,8 +344,8 @@ class TestTools:
     @parametrize
     def test_raw_response_list(self, client: Cadenya) -> None:
         response = client.tool_sets.tools.with_raw_response.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -364,8 +357,8 @@ class TestTools:
     @parametrize
     def test_streaming_response_list(self, client: Cadenya) -> None:
         with client.tool_sets.tools.with_streaming_response.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -380,23 +373,23 @@ class TestTools:
     def test_path_params_list(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.tools.with_raw_response.list(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.tools.with_raw_response.list(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_delete(self, client: Cadenya) -> None:
         tool = client.tool_sets.tools.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert tool is None
 
@@ -404,9 +397,9 @@ class TestTools:
     @parametrize
     def test_raw_response_delete(self, client: Cadenya) -> None:
         response = client.tool_sets.tools.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -418,9 +411,9 @@ class TestTools:
     @parametrize
     def test_streaming_response_delete(self, client: Cadenya) -> None:
         with client.tool_sets.tools.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -435,23 +428,151 @@ class TestTools:
     def test_path_params_delete(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.tool_sets.tools.with_raw_response.delete(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             client.tool_sets.tools.with_raw_response.delete(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             client.tool_sets.tools.with_raw_response.delete(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_omit(self, client: Cadenya) -> None:
+        tool = client.tool_sets.tools.omit(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        )
+        assert_matches_type(Tool, tool, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_omit(self, client: Cadenya) -> None:
+        response = client.tool_sets.tools.with_raw_response.omit(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        tool = response.parse()
+        assert_matches_type(Tool, tool, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_omit(self, client: Cadenya) -> None:
+        with client.tool_sets.tools.with_streaming_response.omit(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            tool = response.parse()
+            assert_matches_type(Tool, tool, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_omit(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.tool_sets.tools.with_raw_response.omit(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
+            client.tool_sets.tools.with_raw_response.omit(
+                tool_set_id="",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.tool_sets.tools.with_raw_response.omit(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_method_restore(self, client: Cadenya) -> None:
+        tool = client.tool_sets.tools.restore(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        )
+        assert_matches_type(Tool, tool, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_raw_response_restore(self, client: Cadenya) -> None:
+        response = client.tool_sets.tools.with_raw_response.restore(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        tool = response.parse()
+        assert_matches_type(Tool, tool, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_streaming_response_restore(self, client: Cadenya) -> None:
+        with client.tool_sets.tools.with_streaming_response.restore(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            tool = response.parse()
+            assert_matches_type(Tool, tool, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    def test_path_params_restore(self, client: Cadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            client.tool_sets.tools.with_raw_response.restore(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
+            client.tool_sets.tools.with_raw_response.restore(
+                tool_set_id="",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            client.tool_sets.tools.with_raw_response.restore(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
 
@@ -464,14 +585,17 @@ class TestAsyncTools:
     @parametrize
     async def test_method_create(self, async_client: AsyncCadenya) -> None:
         tool = await async_client.tool_sets.tools.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
-                "config": {},
+                "config": {
+                    "http": {"request_method": "HTTP_METHOD_UNSPECIFIED"},
+                    "type": "http",
+                },
                 "description": "description",
                 "parameters": {"foo": "bar"},
-                "status": "TOOL_STATUS_UNSPECIFIED",
+                "requires_approval": True,
             },
         )
         assert_matches_type(Tool, tool, path=["response"])
@@ -480,11 +604,10 @@ class TestAsyncTools:
     @parametrize
     async def test_method_create_with_all_params(self, async_client: AsyncCadenya) -> None:
         tool = await async_client.tool_sets.tools.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -497,23 +620,13 @@ class TestAsyncTools:
                         "query": "query",
                         "request_body_content_type": "requestBodyContentType",
                         "request_body_template": "requestBodyTemplate",
-                        "tool_name": "toolName",
                     },
-                    "mcp": {
-                        "tool_description": "toolDescription",
-                        "tool_name": "toolName",
-                        "tool_title": "toolTitle",
-                    },
-                    "openapi": {
-                        "method": "method",
-                        "operation_id": "operationId",
-                        "path": "path",
-                    },
+                    "type": "http",
                 },
                 "description": "description",
                 "parameters": {"foo": "bar"},
-                "status": "TOOL_STATUS_UNSPECIFIED",
                 "requires_approval": True,
+                "llm_tool_name": "llmToolName",
             },
         )
         assert_matches_type(Tool, tool, path=["response"])
@@ -522,14 +635,17 @@ class TestAsyncTools:
     @parametrize
     async def test_raw_response_create(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.tools.with_raw_response.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
-                "config": {},
+                "config": {
+                    "http": {"request_method": "HTTP_METHOD_UNSPECIFIED"},
+                    "type": "http",
+                },
                 "description": "description",
                 "parameters": {"foo": "bar"},
-                "status": "TOOL_STATUS_UNSPECIFIED",
+                "requires_approval": True,
             },
         )
 
@@ -542,14 +658,17 @@ class TestAsyncTools:
     @parametrize
     async def test_streaming_response_create(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.tools.with_streaming_response.create(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={"name": "name"},
             spec={
-                "config": {},
+                "config": {
+                    "http": {"request_method": "HTTP_METHOD_UNSPECIFIED"},
+                    "type": "http",
+                },
                 "description": "description",
                 "parameters": {"foo": "bar"},
-                "status": "TOOL_STATUS_UNSPECIFIED",
+                "requires_approval": True,
             },
         ) as response:
             assert not response.is_closed
@@ -565,27 +684,33 @@ class TestAsyncTools:
     async def test_path_params_create(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.create(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
                 metadata={"name": "name"},
                 spec={
-                    "config": {},
+                    "config": {
+                        "http": {"request_method": "HTTP_METHOD_UNSPECIFIED"},
+                        "type": "http",
+                    },
                     "description": "description",
                     "parameters": {"foo": "bar"},
-                    "status": "TOOL_STATUS_UNSPECIFIED",
+                    "requires_approval": True,
                 },
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.create(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
                 metadata={"name": "name"},
                 spec={
-                    "config": {},
+                    "config": {
+                        "http": {"request_method": "HTTP_METHOD_UNSPECIFIED"},
+                        "type": "http",
+                    },
                     "description": "description",
                     "parameters": {"foo": "bar"},
-                    "status": "TOOL_STATUS_UNSPECIFIED",
+                    "requires_approval": True,
                 },
             )
 
@@ -593,9 +718,9 @@ class TestAsyncTools:
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncCadenya) -> None:
         tool = await async_client.tool_sets.tools.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(Tool, tool, path=["response"])
 
@@ -603,9 +728,9 @@ class TestAsyncTools:
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.tools.with_raw_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -617,9 +742,9 @@ class TestAsyncTools:
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.tools.with_streaming_response.retrieve(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -634,32 +759,32 @@ class TestAsyncTools:
     async def test_path_params_retrieve(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.retrieve(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.retrieve(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.retrieve(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_update(self, async_client: AsyncCadenya) -> None:
         tool = await async_client.tool_sets.tools.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(Tool, tool, path=["response"])
 
@@ -667,12 +792,11 @@ class TestAsyncTools:
     @parametrize
     async def test_method_update_with_all_params(self, async_client: AsyncCadenya) -> None:
         tool = await async_client.tool_sets.tools.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
-                "bundle_key": "bundleKey",
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
@@ -685,23 +809,13 @@ class TestAsyncTools:
                         "query": "query",
                         "request_body_content_type": "requestBodyContentType",
                         "request_body_template": "requestBodyTemplate",
-                        "tool_name": "toolName",
                     },
-                    "mcp": {
-                        "tool_description": "toolDescription",
-                        "tool_name": "toolName",
-                        "tool_title": "toolTitle",
-                    },
-                    "openapi": {
-                        "method": "method",
-                        "operation_id": "operationId",
-                        "path": "path",
-                    },
+                    "type": "http",
                 },
                 "description": "description",
                 "parameters": {"foo": "bar"},
-                "status": "TOOL_STATUS_UNSPECIFIED",
                 "requires_approval": True,
+                "llm_tool_name": "llmToolName",
             },
             update_mask="updateMask",
         )
@@ -711,9 +825,9 @@ class TestAsyncTools:
     @parametrize
     async def test_raw_response_update(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.tools.with_raw_response.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -725,9 +839,9 @@ class TestAsyncTools:
     @parametrize
     async def test_streaming_response_update(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.tools.with_streaming_response.update(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -742,31 +856,31 @@ class TestAsyncTools:
     async def test_path_params_update(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.update(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.update(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.update(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_list(self, async_client: AsyncCadenya) -> None:
         tool = await async_client.tool_sets.tools.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(AsyncCursorPagination[Tool], tool, path=["response"])
 
@@ -774,18 +888,18 @@ class TestAsyncTools:
     @parametrize
     async def test_method_list_with_all_params(self, async_client: AsyncCadenya) -> None:
         tool = await async_client.tool_sets.tools.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
-            bundle_key="bundleKey",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             names=["string"],
             prefix="prefix",
             query="query",
             requires_approval=True,
             sort_order="sortOrder",
-            statuses=["TOOL_STATUS_UNSPECIFIED"],
+            states=["STATE_UNSPECIFIED"],
         )
         assert_matches_type(AsyncCursorPagination[Tool], tool, path=["response"])
 
@@ -793,8 +907,8 @@ class TestAsyncTools:
     @parametrize
     async def test_raw_response_list(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.tools.with_raw_response.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -806,8 +920,8 @@ class TestAsyncTools:
     @parametrize
     async def test_streaming_response_list(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.tools.with_streaming_response.list(
-            tool_set_id="toolSetId",
-            workspace_id="workspaceId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -822,23 +936,23 @@ class TestAsyncTools:
     async def test_path_params_list(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.list(
-                tool_set_id="toolSetId",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 workspace_id="",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.list(
                 tool_set_id="",
-                workspace_id="workspaceId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_delete(self, async_client: AsyncCadenya) -> None:
         tool = await async_client.tool_sets.tools.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert tool is None
 
@@ -846,9 +960,9 @@ class TestAsyncTools:
     @parametrize
     async def test_raw_response_delete(self, async_client: AsyncCadenya) -> None:
         response = await async_client.tool_sets.tools.with_raw_response.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -860,9 +974,9 @@ class TestAsyncTools:
     @parametrize
     async def test_streaming_response_delete(self, async_client: AsyncCadenya) -> None:
         async with async_client.tool_sets.tools.with_streaming_response.delete(
-            id="id",
-            workspace_id="workspaceId",
-            tool_set_id="toolSetId",
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -877,21 +991,149 @@ class TestAsyncTools:
     async def test_path_params_delete(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.delete(
-                id="id",
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
                 workspace_id="",
-                tool_set_id="toolSetId",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.delete(
-                id="id",
-                workspace_id="workspaceId",
                 tool_set_id="",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )
 
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
             await async_client.tool_sets.tools.with_raw_response.delete(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
                 id="",
-                workspace_id="workspaceId",
-                tool_set_id="toolSetId",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_omit(self, async_client: AsyncCadenya) -> None:
+        tool = await async_client.tool_sets.tools.omit(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        )
+        assert_matches_type(Tool, tool, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_omit(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.tool_sets.tools.with_raw_response.omit(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        tool = await response.parse()
+        assert_matches_type(Tool, tool, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_omit(self, async_client: AsyncCadenya) -> None:
+        async with async_client.tool_sets.tools.with_streaming_response.omit(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            tool = await response.parse()
+            assert_matches_type(Tool, tool, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_omit(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.tool_sets.tools.with_raw_response.omit(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
+            await async_client.tool_sets.tools.with_raw_response.omit(
+                tool_set_id="",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.tool_sets.tools.with_raw_response.omit(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            )
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_method_restore(self, async_client: AsyncCadenya) -> None:
+        tool = await async_client.tool_sets.tools.restore(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        )
+        assert_matches_type(Tool, tool, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_raw_response_restore(self, async_client: AsyncCadenya) -> None:
+        response = await async_client.tool_sets.tools.with_raw_response.restore(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        )
+
+        assert response.is_closed is True
+        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+        tool = await response.parse()
+        assert_matches_type(Tool, tool, path=["response"])
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_streaming_response_restore(self, async_client: AsyncCadenya) -> None:
+        async with async_client.tool_sets.tools.with_streaming_response.restore(
+            tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+            id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+        ) as response:
+            assert not response.is_closed
+            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
+
+            tool = await response.parse()
+            assert_matches_type(Tool, tool, path=["response"])
+
+        assert cast(Any, response.is_closed) is True
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    @parametrize
+    async def test_path_params_restore(self, async_client: AsyncCadenya) -> None:
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
+            await async_client.tool_sets.tools.with_raw_response.restore(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `tool_set_id` but received ''"):
+            await async_client.tool_sets.tools.with_raw_response.restore(
+                tool_set_id="",
+                id="tool_01HXKD2E5NQM3T9AYWCFWVYY9K",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
+            )
+
+        with pytest.raises(ValueError, match=r"Expected a non-empty value for `id` but received ''"):
+            await async_client.tool_sets.tools.with_raw_response.restore(
+                tool_set_id="toolset_01HXKD2E5NQM3T9AYWCFNRMN74",
+                id="",
+                workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             )

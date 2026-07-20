@@ -1,7 +1,6 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import Dict, Optional
-from typing_extensions import Literal
 
 from pydantic import Field as FieldInfo
 
@@ -22,7 +21,19 @@ class ToolSpec(BaseModel):
     description: str
 
     parameters: Dict[str, object]
+    """The tool's JSON Schema, as handed to the LLM.
 
-    status: Literal["TOOL_STATUS_UNSPECIFIED", "TOOL_STATUS_AVAILABLE", "TOOL_STATUS_OMITTED", "TOOL_STATUS_ARCHIVED"]
+    Required, but may be the empty object `{}` for a tool that takes no arguments.
+    Requiring it rather than defaulting it means a misspelled field name
+    (`inputSchema`, say) is a 400 instead of a silently parameterless tool.
+    """
 
-    requires_approval: Optional[bool] = FieldInfo(alias="requiresApproval", default=None)
+    requires_approval: bool = FieldInfo(alias="requiresApproval")
+
+    llm_tool_name: Optional[str] = FieldInfo(alias="llmToolName", default=None)
+    """
+    The name provided to the LLM, which may differ from the metadata.name on the
+    tool. LLMs have specific length and format requirements, and tool set sources
+    may not comply with them, so Cadenya does its best to format names into a usable
+    format.
+    """

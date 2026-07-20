@@ -25,9 +25,12 @@ from .schedule_interval_param import ScheduleIntervalParam as ScheduleIntervalPa
 from .variation_create_params import VariationCreateParams as VariationCreateParams
 from .variation_update_params import VariationUpdateParams as VariationUpdateParams
 from .agent_schedule_spec_param import AgentScheduleSpecParam as AgentScheduleSpecParam
+from .variation_assignment_tool import VariationAssignmentTool as VariationAssignmentTool
 from .agent_variation_spec_param import AgentVariationSpecParam as AgentVariationSpecParam
+from .variation_assignment_agent import VariationAssignmentAgent as VariationAssignmentAgent
 from .agent_schedule_spec_schedule import AgentScheduleSpecSchedule as AgentScheduleSpecSchedule
 from .webhook_delivery_list_params import WebhookDeliveryListParams as WebhookDeliveryListParams
+from .variation_assignment_tool_set import VariationAssignmentToolSet as VariationAssignmentToolSet
 from .variation_add_assignment_params import VariationAddAssignmentParams as VariationAddAssignmentParams
 from .agent_variation_spec_constraints import AgentVariationSpecConstraints as AgentVariationSpecConstraints
 from .agent_variation_spec_model_config import AgentVariationSpecModelConfig as AgentVariationSpecModelConfig
@@ -62,6 +65,15 @@ from .compaction_config_tool_result_clearing_strategy import (
 from .agent_variation_spec_progressive_discovery_param import (
     AgentVariationSpecProgressiveDiscoveryParam as AgentVariationSpecProgressiveDiscoveryParam,
 )
+from .add_agent_variation_assignment_request_tool_id_param import (
+    AddAgentVariationAssignmentRequestToolIDParam as AddAgentVariationAssignmentRequestToolIDParam,
+)
 from .compaction_config_tool_result_clearing_strategy_param import (
     CompactionConfigToolResultClearingStrategyParam as CompactionConfigToolResultClearingStrategyParam,
+)
+from .add_agent_variation_assignment_request_tool_set_id_param import (
+    AddAgentVariationAssignmentRequestToolSetIDParam as AddAgentVariationAssignmentRequestToolSetIDParam,
+)
+from .add_agent_variation_assignment_request_sub_agent_id_param import (
+    AddAgentVariationAssignmentRequestSubAgentIDParam as AddAgentVariationAssignmentRequestSubAgentIDParam,
 )

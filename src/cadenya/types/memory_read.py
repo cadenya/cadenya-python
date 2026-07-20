@@ -12,7 +12,7 @@ __all__ = ["MemoryRead"]
 class MemoryRead(BaseModel):
     """
     MemoryRead is emitted each time the agent resolves a key against the
-     memory stack and loads an entry. Lookups that miss (key not found in
+     memory cascade and loads an entry. Lookups that miss (key not found in
      any layer) do not emit this event.
     """
 

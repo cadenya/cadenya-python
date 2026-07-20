@@ -48,6 +48,14 @@ from .api_keys import (
     APIKeysResourceWithStreamingResponse,
     AsyncAPIKeysResourceWithStreamingResponse,
 )
+from .profiles import (
+    ProfilesResource,
+    AsyncProfilesResource,
+    ProfilesResourceWithRawResponse,
+    AsyncProfilesResourceWithRawResponse,
+    ProfilesResourceWithStreamingResponse,
+    AsyncProfilesResourceWithStreamingResponse,
+)
 from .webhooks import WebhooksResource, AsyncWebhooksResource
 from .tool_sets import (
     ToolSetsResource,
@@ -81,6 +89,14 @@ from .memory_layers import (
     MemoryLayersResourceWithStreamingResponse,
     AsyncMemoryLayersResourceWithStreamingResponse,
 )
+from .global_api_key import (
+    GlobalAPIKeyResource,
+    AsyncGlobalAPIKeyResource,
+    GlobalAPIKeyResourceWithRawResponse,
+    AsyncGlobalAPIKeyResourceWithRawResponse,
+    GlobalAPIKeyResourceWithStreamingResponse,
+    AsyncGlobalAPIKeyResourceWithStreamingResponse,
+)
 from .workspace_admin import (
     WorkspaceAdminResource,
     AsyncWorkspaceAdminResource,
@@ -105,14 +121,6 @@ from .workspace_secrets import (
     WorkspaceSecretsResourceWithStreamingResponse,
     AsyncWorkspaceSecretsResourceWithStreamingResponse,
 )
-from .bulk_workspace_resources import (
-    BulkWorkspaceResourcesResource,
-    AsyncBulkWorkspaceResourcesResource,
-    BulkWorkspaceResourcesResourceWithRawResponse,
-    AsyncBulkWorkspaceResourcesResourceWithRawResponse,
-    BulkWorkspaceResourcesResourceWithStreamingResponse,
-    AsyncBulkWorkspaceResourcesResourceWithStreamingResponse,
-)
 
 __all__ = [
     "AIProviderKeysResource",
@@ -127,6 +135,12 @@ __all__ = [
     "AsyncAccountResourceWithRawResponse",
     "AccountResourceWithStreamingResponse",
     "AsyncAccountResourceWithStreamingResponse",
+    "ProfilesResource",
+    "AsyncProfilesResource",
+    "ProfilesResourceWithRawResponse",
+    "AsyncProfilesResourceWithRawResponse",
+    "ProfilesResourceWithStreamingResponse",
+    "AsyncProfilesResourceWithStreamingResponse",
     "AgentsResource",
     "AsyncAgentsResource",
     "AgentsResourceWithRawResponse",
@@ -175,6 +189,12 @@ __all__ = [
     "AsyncAPIKeysResourceWithRawResponse",
     "APIKeysResourceWithStreamingResponse",
     "AsyncAPIKeysResourceWithStreamingResponse",
+    "GlobalAPIKeyResource",
+    "AsyncGlobalAPIKeyResource",
+    "GlobalAPIKeyResourceWithRawResponse",
+    "AsyncGlobalAPIKeyResourceWithRawResponse",
+    "GlobalAPIKeyResourceWithStreamingResponse",
+    "AsyncGlobalAPIKeyResourceWithStreamingResponse",
     "WorkspaceSecretsResource",
     "AsyncWorkspaceSecretsResource",
     "WorkspaceSecretsResourceWithRawResponse",
@@ -195,10 +215,4 @@ __all__ = [
     "AsyncWorkspaceAdminResourceWithStreamingResponse",
     "WebhooksResource",
     "AsyncWebhooksResource",
-    "BulkWorkspaceResourcesResource",
-    "AsyncBulkWorkspaceResourcesResource",
-    "BulkWorkspaceResourcesResourceWithRawResponse",
-    "AsyncBulkWorkspaceResourcesResourceWithRawResponse",
-    "BulkWorkspaceResourcesResourceWithStreamingResponse",
-    "AsyncBulkWorkspaceResourcesResourceWithStreamingResponse",
 ]

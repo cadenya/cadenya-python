@@ -9,42 +9,55 @@ from .._utils import PropertyInfo
 from .memory_reference_param import MemoryReferenceParam
 from .shared_params.create_operation_metadata import CreateOperationMetadata
 
-__all__ = ["ObjectiveCreateParams", "Secret"]
+__all__ = ["ObjectiveCreateParams", "EpisodicMemory", "Secret"]
 
 
 class ObjectiveCreateParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     agent_id: Required[Annotated[str, PropertyInfo(alias="agentId")]]
 
-    data: Required[Dict[str, object]]
-    """Arbitrary data for the objective.
-
-    May be used in liquid templates for prompts configured on the agent variation
+    system_prompt_data: Required[Annotated[Dict[str, object], PropertyInfo(alias="systemPromptData")]]
+    """
+    Arbitrary data rendered into the selected variation's system_prompt_template
+    (liquid) to produce the objective's system prompt. If the agent has a
+    system_prompt_data_schema, this must satisfy it.
     """
 
-    initial_message: Annotated[str, PropertyInfo(alias="initialMessage")]
-    """Optional override for initial message sent to the agent.
+    episodic_memory: Annotated[EpisodicMemory, PropertyInfo(alias="episodicMemory")]
+    """Episodic is used to configure the episodic memory for the objective"""
 
-    This becomes the first user message in the LLM chat history. The agent variation
-    is used to set this if not present.
+    first_user_message: Annotated[str, PropertyInfo(alias="firstUserMessage")]
+    """Optional explicit first user message for the LLM chat history.
+
+    When not set, the selected variation's first_user_message_template is rendered
+    with first_user_message_data instead. If neither this field nor a
+    first_user_message_template is present, the request is rejected with
+    InvalidArgument.
     """
 
-    memory_stack: Annotated[Iterable[MemoryReferenceParam], PropertyInfo(alias="memoryStack")]
+    first_user_message_data: Annotated[Dict[str, object], PropertyInfo(alias="firstUserMessageData")]
     """
-    Memory layers/entries to push onto this objective's memory stack on top of the
-    baseline stack inherited from the selected variation.
+    Arbitrary data rendered into the selected variation's
+    first_user_message_template (liquid) to produce the first user message. Separate
+    from `system_prompt_data`, which renders the system prompt template.
+    """
 
-    Array order is push order: the first element sits lower in the objective's
-    contribution to the stack; the LAST element ends up on top of the effective
-    stack. Entries pinned via memory_entry_id behave as single-entry layers at their
-    position.
+    memory_cascade: Annotated[Iterable[MemoryReferenceParam], PropertyInfo(alias="memoryCascade")]
+    """
+    Memory layers/entries layered over the baseline cascade inherited from the
+    selected variation — element-level rules over inherited styles, in CSS terms.
+
+    Array order is resolution order: EARLIER elements are more specific and are
+    consulted first. Entries pinned via memory_entry_id behave as single-entry
+    layers at their position.
 
     System-managed layers (e.g., episodic) cannot be referenced here; they attach
-    themselves automatically based on episodic_key.
+    themselves automatically based on the episodic key.
 
-    Stack size cap: the TOTAL effective stack (variation's memory layers
-
-    - this field) must not exceed 10 entries. A request that would produce an
-      effective stack larger than 10 is rejected with InvalidArgument.
+    Size cap: the TOTAL effective cascade (this field + the variation's memory layer
+    assignments) must not exceed 10 entries. A request that would produce a larger
+    cascade is rejected with InvalidArgument.
     """
 
     metadata: CreateOperationMetadata
@@ -64,6 +77,17 @@ class ObjectiveCreateParams(TypedDict, total=False):
     """Optional explicit variation selection.
 
     Overrides the agent's variation_selection_mode.
+    """
+
+
+class EpisodicMemory(TypedDict, total=False):
+    """Episodic is used to configure the episodic memory for the objective"""
+
+    key: Required[str]
+    """The caller-supplied episodic key.
+
+    Objectives created with the same key (for the same agent) share one episodic
+    memory layer.
     """
 
 

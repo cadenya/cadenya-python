@@ -35,7 +35,7 @@ class FeedbackResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return FeedbackResourceWithRawResponse(self)
 
@@ -44,7 +44,7 @@ class FeedbackResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return FeedbackResourceWithStreamingResponse(self)
 
@@ -52,12 +52,13 @@ class FeedbackResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         agent_variation_id: str | Omit = omit,
         created_after: Union[str, datetime] | Omit = omit,
         created_before: Union[str, datetime] | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         query: str | Omit = omit,
         sentiment: Literal[
@@ -89,6 +90,10 @@ class FeedbackResource(SyncAPIResource):
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return.
 
           query: Free-text search applied to the feedback comment. Case-insensitive substring
@@ -104,6 +109,8 @@ class FeedbackResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -125,6 +132,7 @@ class FeedbackResource(SyncAPIResource):
                         "created_before": created_before,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "query": query,
                         "sentiment": sentiment,
@@ -145,7 +153,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncFeedbackResourceWithRawResponse(self)
 
@@ -154,7 +162,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncFeedbackResourceWithStreamingResponse(self)
 
@@ -162,12 +170,13 @@ class AsyncFeedbackResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         agent_variation_id: str | Omit = omit,
         created_after: Union[str, datetime] | Omit = omit,
         created_before: Union[str, datetime] | Omit = omit,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         query: str | Omit = omit,
         sentiment: Literal[
@@ -199,6 +208,10 @@ class AsyncFeedbackResource(AsyncAPIResource):
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return.
 
           query: Free-text search applied to the feedback comment. Case-insensitive substring
@@ -214,6 +227,8 @@ class AsyncFeedbackResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -235,6 +250,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
                         "created_before": created_before,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "query": query,
                         "sentiment": sentiment,

@@ -2,20 +2,45 @@
 
 from __future__ import annotations
 
-from typing_extensions import Required, Annotated, TypedDict
+from typing import Union
+from typing_extensions import Literal, Required, Annotated, TypeAlias, TypedDict
 
 from ..._utils import PropertyInfo
 
-__all__ = ["VariationAddAssignmentParams"]
+__all__ = [
+    "VariationAddAssignmentParams",
+    "AddAgentVariationAssignmentRequestToolID",
+    "AddAgentVariationAssignmentRequestToolSetID",
+    "AddAgentVariationAssignmentRequestSubAgentID",
+]
 
 
-class VariationAddAssignmentParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
+class AddAgentVariationAssignmentRequestToolID(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
-    agent_id: Required[Annotated[str, PropertyInfo(alias="agentId")]]
+    tool_id: Required[Annotated[str, PropertyInfo(alias="toolId")]]
 
-    sub_agent_id: Annotated[str, PropertyInfo(alias="subAgentId")]
+    type: Required[Literal["toolId"]]
 
-    tool_id: Annotated[str, PropertyInfo(alias="toolId")]
 
-    tool_set_id: Annotated[str, PropertyInfo(alias="toolSetId")]
+class AddAgentVariationAssignmentRequestToolSetID(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
+    tool_set_id: Required[Annotated[str, PropertyInfo(alias="toolSetId")]]
+
+    type: Required[Literal["toolSetId"]]
+
+
+class AddAgentVariationAssignmentRequestSubAgentID(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
+    sub_agent_id: Required[Annotated[str, PropertyInfo(alias="subAgentId")]]
+
+    type: Required[Literal["subAgentId"]]
+
+
+VariationAddAssignmentParams: TypeAlias = Union[
+    AddAgentVariationAssignmentRequestToolID,
+    AddAgentVariationAssignmentRequestToolSetID,
+    AddAgentVariationAssignmentRequestSubAgentID,
+]

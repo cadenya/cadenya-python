@@ -13,12 +13,6 @@ __all__ = ["AgentScheduleSpecParam"]
 class AgentScheduleSpecParam(TypedDict, total=False):
     """AgentScheduleSpec is the user-provided configuration for a schedule."""
 
-    initial_message: Required[Annotated[str, PropertyInfo(alias="initialMessage")]]
-    """The initial message passed to CreateObjective on each fire.
-
-    Becomes the first user message in the objective's chat history.
-    """
-
     schedule: Required[AgentScheduleSpecScheduleParam]
     """Schedule defines WHEN the schedule fires.
 
@@ -26,10 +20,18 @@ class AgentScheduleSpecParam(TypedDict, total=False):
     interval rules (duration), OR'd together. At least one rule is required.
     """
 
-    data: object
-    """Optional input data passed to the objective.
+    first_user_message: Annotated[str, PropertyInfo(alias="firstUserMessage")]
+    """
+    Optional explicit first user message passed to CreateObjective on each fire.
+    Becomes the first user message in the objective's chat history. When unset, the
+    fired objective defers to the selected variation's first_user_message_template.
+    """
 
-    If the agent has an input_data_schema, this must satisfy it.
+    first_user_message_data: Annotated[object, PropertyInfo(alias="firstUserMessageData")]
+    """
+    Optional data rendered into the variation's first_user_message_template when
+    each fired objective is created. Separate from `system_prompt_data`, which
+    renders the system prompt template.
     """
 
     overlap_policy: Annotated[
@@ -38,13 +40,12 @@ class AgentScheduleSpecParam(TypedDict, total=False):
     ]
     """What to do when the previous run is still in flight. Defaults to SKIP."""
 
-    status: Literal[
-        "AGENT_SCHEDULE_STATUS_UNSPECIFIED",
-        "AGENT_SCHEDULE_STATUS_ACTIVE",
-        "AGENT_SCHEDULE_STATUS_PAUSED",
-        "AGENT_SCHEDULE_STATUS_ARCHIVED",
-    ]
-    """Lifecycle. Defaults to ACTIVE on create when unspecified."""
+    system_prompt_data: Annotated[object, PropertyInfo(alias="systemPromptData")]
+    """
+    Optional data rendered into the variation's system_prompt_template when each
+    fired objective is created. If the agent has a system_prompt_data_schema, this
+    must satisfy it.
+    """
 
     variation_id: Annotated[str, PropertyInfo(alias="variationId")]
     """Optional explicit variation.

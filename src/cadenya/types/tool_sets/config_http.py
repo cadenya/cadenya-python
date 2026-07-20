@@ -25,10 +25,3 @@ class ConfigHTTP(BaseModel):
 
     request_body_template: Optional[str] = FieldInfo(alias="requestBodyTemplate", default=None)
     """These are only used when the request method is a POST, PUT, or PATCH"""
-
-    tool_name: Optional[str] = FieldInfo(alias="toolName", default=None)
-    """
-    The tool name (commonly an "operation id" in OpenAPI specs) to call on the HTTP
-    adapter. This is used to match the tool spec to the correct endpoint on the HTTP
-    adapter. it will be derived from the name of the tool if not provided.
-    """

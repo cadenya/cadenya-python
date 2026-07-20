@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing_extensions import Literal
+
 import httpx
 
 from .tools import (
@@ -17,6 +19,14 @@ from ...types import (
     tool_set_create_params,
     tool_set_update_params,
     tool_set_list_events_params,
+)
+from .secrets import (
+    SecretsResource,
+    AsyncSecretsResource,
+    SecretsResourceWithRawResponse,
+    AsyncSecretsResourceWithRawResponse,
+    SecretsResourceWithStreamingResponse,
+    AsyncSecretsResourceWithStreamingResponse,
 )
 from ..._types import Body, Omit, Query, Headers, NoneType, NotGiven, omit, not_given
 from ..._utils import path_template, maybe_transform, async_maybe_transform
@@ -63,12 +73,24 @@ class ToolSetsResource(SyncAPIResource):
         return ToolsResource(self._client)
 
     @cached_property
+    def secrets(self) -> SecretsResource:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return SecretsResource(self._client)
+
+    @cached_property
     def with_raw_response(self) -> ToolSetsResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return ToolSetsResourceWithRawResponse(self)
 
@@ -77,14 +99,14 @@ class ToolSetsResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return ToolSetsResourceWithStreamingResponse(self)
 
     def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: ToolSetSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -110,6 +132,8 @@ class ToolSetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._post(
@@ -131,7 +155,7 @@ class ToolSetsResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -151,6 +175,8 @@ class ToolSetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -167,7 +193,7 @@ class ToolSetsResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: ToolSetSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -194,11 +220,13 @@ class ToolSetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
-        return self._put(
+        return self._patch(
             path_template("/v1/workspaces/{workspace_id}/tool_sets/{id}", workspace_id=workspace_id, id=id),
             body=maybe_transform(
                 {
@@ -216,15 +244,16 @@ class ToolSetsResource(SyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
-        bundle_key: str | Omit = omit,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
+        state: Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_ARCHIVED"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -236,11 +265,13 @@ class ToolSetsResource(SyncAPIResource):
         Lists all tool sets in the workspace
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -250,6 +281,9 @@ class ToolSetsResource(SyncAPIResource):
 
           sort_order: Sort order for results (asc or desc by creation time)
 
+          state: Filter by tool set lifecycle state. Defaults to STATE_ACTIVE when unspecified;
+              pass STATE_ARCHIVED to list archived tool sets.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -258,6 +292,8 @@ class ToolSetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -270,13 +306,14 @@ class ToolSetsResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
                         "sort_order": sort_order,
+                        "state": state,
                     },
                     tool_set_list_params.ToolSetListParams,
                 ),
@@ -288,7 +325,7 @@ class ToolSetsResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -308,6 +345,8 @@ class ToolSetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -321,11 +360,54 @@ class ToolSetsResource(SyncAPIResource):
             cast_to=NoneType,
         )
 
+    def archive(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ToolSet:
+        """Transitions a tool set to STATE_ARCHIVED.
+
+        Syncing stops, the tool set is hidden
+        from list results, its tools are no longer offered to objectives, and new
+        variation assignments are rejected. Existing assignments are retained, and
+        history is preserved — unlike delete, archiving works while the tool set is
+        still assigned to agent variations.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/tool_sets/{id}:archive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ToolSet,
+        )
+
     def get_openapi_spec(
         self,
         tool_set_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -346,6 +428,8 @@ class ToolSetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -366,9 +450,10 @@ class ToolSetsResource(SyncAPIResource):
         self,
         tool_set_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -386,6 +471,10 @@ class ToolSetsResource(SyncAPIResource):
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           sort_order: Sort order for results (asc or desc by creation time)
@@ -398,6 +487,8 @@ class ToolSetsResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -418,6 +509,7 @@ class ToolSetsResource(SyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "sort_order": sort_order,
                     },
@@ -425,6 +517,47 @@ class ToolSetsResource(SyncAPIResource):
                 ),
             ),
             model=ToolSetEvent,
+        )
+
+    def unarchive(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ToolSet:
+        """Transitions an archived tool set back to STATE_ACTIVE.
+
+        Managed tool sets resume
+        syncing on their next cycle and their tools become available to objectives
+        again.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template("/v1/workspaces/{workspace_id}/tool_sets/{id}:unarchive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ToolSet,
         )
 
 
@@ -451,12 +584,24 @@ class AsyncToolSetsResource(AsyncAPIResource):
         return AsyncToolsResource(self._client)
 
     @cached_property
+    def secrets(self) -> AsyncSecretsResource:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return AsyncSecretsResource(self._client)
+
+    @cached_property
     def with_raw_response(self) -> AsyncToolSetsResourceWithRawResponse:
         """
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncToolSetsResourceWithRawResponse(self)
 
@@ -465,14 +610,14 @@ class AsyncToolSetsResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncToolSetsResourceWithStreamingResponse(self)
 
     async def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: ToolSetSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -498,6 +643,8 @@ class AsyncToolSetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return await self._post(
@@ -519,7 +666,7 @@ class AsyncToolSetsResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -539,6 +686,8 @@ class AsyncToolSetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -555,7 +704,7 @@ class AsyncToolSetsResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: ToolSetSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -582,11 +731,13 @@ class AsyncToolSetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
             raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
-        return await self._put(
+        return await self._patch(
             path_template("/v1/workspaces/{workspace_id}/tool_sets/{id}", workspace_id=workspace_id, id=id),
             body=await async_maybe_transform(
                 {
@@ -604,15 +755,16 @@ class AsyncToolSetsResource(AsyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
-        bundle_key: str | Omit = omit,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
         sort_order: str | Omit = omit,
+        state: Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_ARCHIVED"] | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -624,11 +776,13 @@ class AsyncToolSetsResource(AsyncAPIResource):
         Lists all tool sets in the workspace
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -638,6 +792,9 @@ class AsyncToolSetsResource(AsyncAPIResource):
 
           sort_order: Sort order for results (asc or desc by creation time)
 
+          state: Filter by tool set lifecycle state. Defaults to STATE_ACTIVE when unspecified;
+              pass STATE_ARCHIVED to list archived tool sets.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -646,6 +803,8 @@ class AsyncToolSetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -658,13 +817,14 @@ class AsyncToolSetsResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
                         "sort_order": sort_order,
+                        "state": state,
                     },
                     tool_set_list_params.ToolSetListParams,
                 ),
@@ -676,7 +836,7 @@ class AsyncToolSetsResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -696,6 +856,8 @@ class AsyncToolSetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -709,11 +871,54 @@ class AsyncToolSetsResource(AsyncAPIResource):
             cast_to=NoneType,
         )
 
+    async def archive(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ToolSet:
+        """Transitions a tool set to STATE_ARCHIVED.
+
+        Syncing stops, the tool set is hidden
+        from list results, its tools are no longer offered to objectives, and new
+        variation assignments are rejected. Existing assignments are retained, and
+        history is preserved — unlike delete, archiving works while the tool set is
+        still assigned to agent variations.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/tool_sets/{id}:archive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ToolSet,
+        )
+
     async def get_openapi_spec(
         self,
         tool_set_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -734,6 +939,8 @@ class AsyncToolSetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -754,9 +961,10 @@ class AsyncToolSetsResource(AsyncAPIResource):
         self,
         tool_set_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         sort_order: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -774,6 +982,10 @@ class AsyncToolSetsResource(AsyncAPIResource):
 
           include_info: When set to true you may use more of your alloted API rate-limit
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           sort_order: Sort order for results (asc or desc by creation time)
@@ -786,6 +998,8 @@ class AsyncToolSetsResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not tool_set_id:
@@ -806,6 +1020,7 @@ class AsyncToolSetsResource(AsyncAPIResource):
                     {
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "sort_order": sort_order,
                     },
@@ -813,6 +1028,47 @@ class AsyncToolSetsResource(AsyncAPIResource):
                 ),
             ),
             model=ToolSetEvent,
+        )
+
+    async def unarchive(
+        self,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> ToolSet:
+        """Transitions an archived tool set back to STATE_ACTIVE.
+
+        Managed tool sets resume
+        syncing on their next cycle and their tools become available to objectives
+        again.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template("/v1/workspaces/{workspace_id}/tool_sets/{id}:unarchive", workspace_id=workspace_id, id=id),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=ToolSet,
         )
 
 
@@ -835,11 +1091,17 @@ class ToolSetsResourceWithRawResponse:
         self.delete = to_raw_response_wrapper(
             tool_sets.delete,
         )
+        self.archive = to_raw_response_wrapper(
+            tool_sets.archive,
+        )
         self.get_openapi_spec = to_raw_response_wrapper(
             tool_sets.get_openapi_spec,
         )
         self.list_events = to_raw_response_wrapper(
             tool_sets.list_events,
+        )
+        self.unarchive = to_raw_response_wrapper(
+            tool_sets.unarchive,
         )
 
     @cached_property
@@ -853,6 +1115,18 @@ class ToolSetsResourceWithRawResponse:
          (profile) actors cannot.
         """
         return ToolsResourceWithRawResponse(self._tool_sets.tools)
+
+    @cached_property
+    def secrets(self) -> SecretsResourceWithRawResponse:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return SecretsResourceWithRawResponse(self._tool_sets.secrets)
 
 
 class AsyncToolSetsResourceWithRawResponse:
@@ -874,11 +1148,17 @@ class AsyncToolSetsResourceWithRawResponse:
         self.delete = async_to_raw_response_wrapper(
             tool_sets.delete,
         )
+        self.archive = async_to_raw_response_wrapper(
+            tool_sets.archive,
+        )
         self.get_openapi_spec = async_to_raw_response_wrapper(
             tool_sets.get_openapi_spec,
         )
         self.list_events = async_to_raw_response_wrapper(
             tool_sets.list_events,
+        )
+        self.unarchive = async_to_raw_response_wrapper(
+            tool_sets.unarchive,
         )
 
     @cached_property
@@ -892,6 +1172,18 @@ class AsyncToolSetsResourceWithRawResponse:
          (profile) actors cannot.
         """
         return AsyncToolsResourceWithRawResponse(self._tool_sets.tools)
+
+    @cached_property
+    def secrets(self) -> AsyncSecretsResourceWithRawResponse:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return AsyncSecretsResourceWithRawResponse(self._tool_sets.secrets)
 
 
 class ToolSetsResourceWithStreamingResponse:
@@ -913,11 +1205,17 @@ class ToolSetsResourceWithStreamingResponse:
         self.delete = to_streamed_response_wrapper(
             tool_sets.delete,
         )
+        self.archive = to_streamed_response_wrapper(
+            tool_sets.archive,
+        )
         self.get_openapi_spec = to_streamed_response_wrapper(
             tool_sets.get_openapi_spec,
         )
         self.list_events = to_streamed_response_wrapper(
             tool_sets.list_events,
+        )
+        self.unarchive = to_streamed_response_wrapper(
+            tool_sets.unarchive,
         )
 
     @cached_property
@@ -931,6 +1229,18 @@ class ToolSetsResourceWithStreamingResponse:
          (profile) actors cannot.
         """
         return ToolsResourceWithStreamingResponse(self._tool_sets.tools)
+
+    @cached_property
+    def secrets(self) -> SecretsResourceWithStreamingResponse:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return SecretsResourceWithStreamingResponse(self._tool_sets.secrets)
 
 
 class AsyncToolSetsResourceWithStreamingResponse:
@@ -952,11 +1262,17 @@ class AsyncToolSetsResourceWithStreamingResponse:
         self.delete = async_to_streamed_response_wrapper(
             tool_sets.delete,
         )
+        self.archive = async_to_streamed_response_wrapper(
+            tool_sets.archive,
+        )
         self.get_openapi_spec = async_to_streamed_response_wrapper(
             tool_sets.get_openapi_spec,
         )
         self.list_events = async_to_streamed_response_wrapper(
             tool_sets.list_events,
+        )
+        self.unarchive = async_to_streamed_response_wrapper(
+            tool_sets.unarchive,
         )
 
     @cached_property
@@ -970,3 +1286,15 @@ class AsyncToolSetsResourceWithStreamingResponse:
          (profile) actors cannot.
         """
         return AsyncToolsResourceWithStreamingResponse(self._tool_sets.tools)
+
+    @cached_property
+    def secrets(self) -> AsyncSecretsResourceWithStreamingResponse:
+        """Manage tool sets and the tools they contain.
+
+        Tool sets group related tools,
+         and tools define specific capabilities available to agents.
+
+         When a tool set is managed, only API key actors can modify its tools; human
+         (profile) actors cannot.
+        """
+        return AsyncSecretsResourceWithStreamingResponse(self._tool_sets.secrets)

@@ -23,6 +23,7 @@ from cadenya import Cadenya, AsyncCadenya, APIResponseValidationError
 from cadenya._types import Omit
 from cadenya._utils import asyncify
 from cadenya._models import BaseModel, FinalRequestOptions
+from cadenya._streaming import Stream, AsyncStream
 from cadenya._exceptions import CadenyaError, APIStatusError, APITimeoutError, APIResponseValidationError
 from cadenya._base_client import (
     DEFAULT_TIMEOUT,
@@ -144,7 +145,7 @@ class TestCadenya:
         # options that have a default are overridden correctly
         copied = client.copy(max_retries=7)
         assert copied.max_retries == 7
-        assert client.max_retries == 2
+        assert client.max_retries == 0
 
         copied2 = copied.copy(max_retries=6)
         assert copied2.max_retries == 6
@@ -450,6 +451,18 @@ class TestCadenya:
             )
         )
         assert request.url.raw_path == b"/files/a%2Fb?beta=true&limit=10"
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    def test_workspace_id_client_params(self, client: Cadenya) -> None:
+        # Test with base client (no custom params)
+        with pytest.raises(ValueError, match="Missing workspace_id argument;"):
+            client.ai_provider_keys.create(metadata={"name": "name"}, spec={})
+
+        client = Cadenya(
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, workspace_id="My Workspace ID"
+        )
+        with client as c2:
+            c2.ai_provider_keys.create(metadata={"name": "name"}, spec={})
 
     def test_request_extra_json(self, client: Cadenya) -> None:
         request = client._build_request(
@@ -821,6 +834,17 @@ class TestCadenya:
             Cadenya(base_url=base_url, api_key=api_key, _strict_response_validation=True, max_retries=cast(Any, None))
 
     @pytest.mark.respx(base_url=base_url)
+    def test_default_stream_cls(self, respx_mock: MockRouter, client: Cadenya) -> None:
+        class Model(BaseModel):
+            name: str
+
+        respx_mock.post("/foo").mock(return_value=httpx.Response(200, json={"foo": "bar"}))
+
+        stream = client.post("/foo", cast_to=Model, stream=True, stream_cls=Stream[Model])
+        assert isinstance(stream, Stream)
+        stream.response.close()
+
+    @pytest.mark.respx(base_url=base_url)
     def test_received_text_for_expected_json(self, respx_mock: MockRouter) -> None:
         class Model(BaseModel):
             name: str
@@ -1055,7 +1079,7 @@ class TestAsyncCadenya:
         # options that have a default are overridden correctly
         copied = async_client.copy(max_retries=7)
         assert copied.max_retries == 7
-        assert async_client.max_retries == 2
+        assert async_client.max_retries == 0
 
         copied2 = copied.copy(max_retries=6)
         assert copied2.max_retries == 6
@@ -1365,6 +1389,18 @@ class TestAsyncCadenya:
             )
         )
         assert request.url.raw_path == b"/files/a%2Fb?beta=true&limit=10"
+
+    @pytest.mark.skip(reason="Mock server tests are disabled")
+    async def test_workspace_id_client_params(self, async_client: AsyncCadenya) -> None:
+        # Test with base client (no custom params)
+        with pytest.raises(ValueError, match="Missing workspace_id argument;"):
+            await async_client.ai_provider_keys.create(metadata={"name": "name"}, spec={})
+
+        client = AsyncCadenya(
+            base_url=base_url, api_key=api_key, _strict_response_validation=True, workspace_id="My Workspace ID"
+        )
+        async with client as c2:
+            await c2.ai_provider_keys.create(metadata={"name": "name"}, spec={})
 
     def test_request_extra_json(self, client: Cadenya) -> None:
         request = client._build_request(
@@ -1749,6 +1785,17 @@ class TestAsyncCadenya:
             AsyncCadenya(
                 base_url=base_url, api_key=api_key, _strict_response_validation=True, max_retries=cast(Any, None)
             )
+
+    @pytest.mark.respx(base_url=base_url)
+    async def test_default_stream_cls(self, respx_mock: MockRouter, async_client: AsyncCadenya) -> None:
+        class Model(BaseModel):
+            name: str
+
+        respx_mock.post("/foo").mock(return_value=httpx.Response(200, json={"foo": "bar"}))
+
+        stream = await async_client.post("/foo", cast_to=Model, stream=True, stream_cls=AsyncStream[Model])
+        assert isinstance(stream, AsyncStream)
+        await stream.response.aclose()
 
     @pytest.mark.respx(base_url=base_url)
     async def test_received_text_for_expected_json(self, respx_mock: MockRouter) -> None:

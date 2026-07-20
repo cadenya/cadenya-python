@@ -13,11 +13,6 @@ __all__ = ["AgentSpecParam"]
 class AgentSpecParam(TypedDict, total=False):
     """Agent specification (user-provided configuration)"""
 
-    status: Required[
-        Literal["AGENT_STATUS_UNSPECIFIED", "AGENT_STATUS_DRAFT", "AGENT_STATUS_PUBLISHED", "AGENT_STATUS_ARCHIVED"]
-    ]
-    """Status of the agent"""
-
     variation_selection_mode: Required[
         Annotated[
             Literal[
@@ -36,13 +31,20 @@ class AgentSpecParam(TypedDict, total=False):
     description: str
     """Description of the agent's purpose"""
 
-    input_data_schema: Annotated[Dict[str, object], PropertyInfo(alias="inputDataSchema")]
-    """InputDataSchema is used for enforcing a data input when objectives are created.
+    enable_episodic_memory: Annotated[bool, PropertyInfo(alias="enableEpisodicMemory")]
+    """
+    Enable episodic memory for objectives created for this agent. When true,
+    objective creation requires an episodic_memory key and the system finds or
+    creates a memory layer for that (agent, key) pair, letting the agent store and
+    retrieve memories across objectives that share the key. Memory is agent-level so
+    all variations of the agent share the same layers.
+    """
 
-    This is valuable when using liquid formatting in agent variation prompts. Input
-    data schema is also valuable when using an agent as a sub-agent, as the schema
-    is used as the tool's input parameter schema. If omitted, the sub-agent schema
-    will be loaded with a simple "prompt" free text string as its schema.
+    episodic_memory_ttl: Annotated[int, PropertyInfo(alias="episodicMemoryTtl")]
+    """
+    How long episodic memories should be retained. Each new objective slides the
+    layer's expiry forward by this duration, and stored entries expire this long
+    after they are written. If not set, episodic memories are retained indefinitely.
     """
 
     output_definition: Annotated[Dict[str, object], PropertyInfo(alias="outputDefinition")]
@@ -51,6 +53,16 @@ class AgentSpecParam(TypedDict, total=False):
     Cadenya will append a tool to that will be called by the LLM in use by the
     variant to extract information in the format provided here. Use this option when
     you want structured data to be created by your objectives.
+    """
+
+    system_prompt_data_schema: Annotated[Dict[str, object], PropertyInfo(alias="systemPromptDataSchema")]
+    """
+    SystemPromptDataSchema enforces the shape of system_prompt_data when objectives
+    are created. This is valuable when using liquid formatting in agent variation
+    system prompt templates. The schema is also used when the agent is attached as a
+    sub-agent, as it becomes the tool's input parameter schema. If omitted, the
+    sub-agent schema will be loaded with a simple "prompt" free text string as its
+    schema.
     """
 
     webhook_events_url: Annotated[str, PropertyInfo(alias="webhookEventsUrl")]

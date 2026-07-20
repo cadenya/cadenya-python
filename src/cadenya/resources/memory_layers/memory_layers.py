@@ -43,7 +43,7 @@ class MemoryLayersResource(SyncAPIResource):
     """Manage memory layers and their entries.
 
     Layers are named containers that can
-     be composed into an objective's memory stack; entries are the keyed values
+     be composed into an objective's memory cascade; entries are the keyed values
      within a layer. System-managed layers (e.g., episodic layers created by the
      runtime) cannot be mutated through this API.
     """
@@ -53,7 +53,7 @@ class MemoryLayersResource(SyncAPIResource):
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -65,7 +65,7 @@ class MemoryLayersResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return MemoryLayersResourceWithRawResponse(self)
 
@@ -74,14 +74,14 @@ class MemoryLayersResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return MemoryLayersResourceWithStreamingResponse(self)
 
     def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: MemoryLayerSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -107,6 +107,8 @@ class MemoryLayersResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._post(
@@ -128,7 +130,7 @@ class MemoryLayersResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -148,6 +150,8 @@ class MemoryLayersResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -164,7 +168,7 @@ class MemoryLayersResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: MemoryLayerSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -191,6 +195,8 @@ class MemoryLayersResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -213,11 +219,13 @@ class MemoryLayersResource(SyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
-        bundle_key: str | Omit = omit,
+        workspace_id: str | None = None,
+        agent_id: str | Omit = omit,
         cursor: str | Omit = omit,
+        episodic_key_prefix: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -235,11 +243,19 @@ class MemoryLayersResource(SyncAPIResource):
         Lists all memory layers in the workspace
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
+          agent_id: Filter to episodic layers belonging to this agent.
 
           cursor: Pagination cursor from previous response
 
+          episodic_key_prefix: Filter to episodic layers whose episodic key starts with this prefix (e.g.
+              "customer/" matches "customer/42" and "customer/43"). Useful for namespaced
+              keys, similar to a redis key scan.
+
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -259,6 +275,8 @@ class MemoryLayersResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -271,9 +289,11 @@ class MemoryLayersResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
+                        "agent_id": agent_id,
                         "cursor": cursor,
+                        "episodic_key_prefix": episodic_key_prefix,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
@@ -290,7 +310,7 @@ class MemoryLayersResource(SyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -310,6 +330,8 @@ class MemoryLayersResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -328,7 +350,7 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
     """Manage memory layers and their entries.
 
     Layers are named containers that can
-     be composed into an objective's memory stack; entries are the keyed values
+     be composed into an objective's memory cascade; entries are the keyed values
      within a layer. System-managed layers (e.g., episodic layers created by the
      runtime) cannot be mutated through this API.
     """
@@ -338,7 +360,7 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -350,7 +372,7 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncMemoryLayersResourceWithRawResponse(self)
 
@@ -359,14 +381,14 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncMemoryLayersResourceWithStreamingResponse(self)
 
     async def create(
         self,
-        workspace_id: str,
         *,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: MemoryLayerSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -392,6 +414,8 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return await self._post(
@@ -413,7 +437,7 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -433,6 +457,8 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -449,7 +475,7 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: MemoryLayerSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -476,6 +502,8 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -498,11 +526,13 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
 
     def list(
         self,
-        workspace_id: str,
         *,
-        bundle_key: str | Omit = omit,
+        workspace_id: str | None = None,
+        agent_id: str | Omit = omit,
         cursor: str | Omit = omit,
+        episodic_key_prefix: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -520,11 +550,19 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
         Lists all memory layers in the workspace
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
+          agent_id: Filter to episodic layers belonging to this agent.
 
           cursor: Pagination cursor from previous response
 
+          episodic_key_prefix: Filter to episodic layers whose episodic key starts with this prefix (e.g.
+              "customer/" matches "customer/42" and "customer/43"). Useful for namespaced
+              keys, similar to a redis key scan.
+
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -544,6 +582,8 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         return self._get_api_list(
@@ -556,9 +596,11 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
+                        "agent_id": agent_id,
                         "cursor": cursor,
+                        "episodic_key_prefix": episodic_key_prefix,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
@@ -575,7 +617,7 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
         self,
         id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -595,6 +637,8 @@ class AsyncMemoryLayersResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not id:
@@ -634,7 +678,7 @@ class MemoryLayersResourceWithRawResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -666,7 +710,7 @@ class AsyncMemoryLayersResourceWithRawResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -698,7 +742,7 @@ class MemoryLayersResourceWithStreamingResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """
@@ -730,7 +774,7 @@ class AsyncMemoryLayersResourceWithStreamingResponse:
         """Manage memory layers and their entries.
 
         Layers are named containers that can
-         be composed into an objective's memory stack; entries are the keyed values
+         be composed into an objective's memory cascade; entries are the keyed values
          within a layer. System-managed layers (e.g., episodic layers created by the
          runtime) cannot be mutated through this API.
         """

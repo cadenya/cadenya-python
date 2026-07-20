@@ -10,6 +10,8 @@ __all__ = ["AIProviderKeyListParams"]
 
 
 class AIProviderKeyListParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     cursor: str
     """Pagination cursor from previous response"""
 
@@ -19,11 +21,25 @@ class AIProviderKeyListParams(TypedDict, total=False):
     lookups.
     """
 
+    labels: str
+    """Filters by metadata labels.
+
+    Comma-separated key=value pairs, e.g. "env=prod,team=ai". A resource matches
+    only if every pair matches exactly (AND semantics).
+    """
+
     limit: int
     """Maximum number of results to return"""
 
     prefix: str
     """Filter expression (query param: prefix)"""
+
+    promotional: bool
+    """When true, return only promotional keys (provided by Cadenya, e.g.
+
+    for onboarding). Defaults to returning all keys, customer-provided and
+    promotional alike.
+    """
 
     query: str
     """Free-form search query"""

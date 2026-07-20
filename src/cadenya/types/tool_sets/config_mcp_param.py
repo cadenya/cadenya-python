@@ -2,16 +2,19 @@
 
 from __future__ import annotations
 
-from typing_extensions import Annotated, TypedDict
+from typing_extensions import TypedDict
 
-from ..._utils import PropertyInfo
+from .mcp_annotations_param import MCPAnnotationsParam
 
-__all__ = ["ConfigMcpParam"]
+__all__ = ["ConfigMCPParam"]
 
 
-class ConfigMcpParam(TypedDict, total=False):
-    tool_description: Annotated[str, PropertyInfo(alias="toolDescription")]
-
-    tool_name: Annotated[str, PropertyInfo(alias="toolName")]
-
-    tool_title: Annotated[str, PropertyInfo(alias="toolTitle")]
+class ConfigMCPParam(TypedDict, total=False):
+    annotations: MCPAnnotationsParam
+    """
+    Behavior hints synced from the MCP server's tool definition (ToolAnnotations in
+    the MCP specification). All hints are advisory: servers are not required to send
+    them, and clients should not rely on them for security decisions. Absent hints
+    keep the MCP spec defaults (destructiveHint and openWorldHint default to true;
+    readOnlyHint and idempotentHint default to false).
+    """

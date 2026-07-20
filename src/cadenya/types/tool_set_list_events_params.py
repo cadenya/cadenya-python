@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Required, Annotated, TypedDict
+from typing_extensions import Annotated, TypedDict
 
 from .._utils import PropertyInfo
 
@@ -10,13 +10,20 @@ __all__ = ["ToolSetListEventsParams"]
 
 
 class ToolSetListEventsParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     cursor: str
     """Pagination cursor from previous response"""
 
     include_info: Annotated[bool, PropertyInfo(alias="includeInfo")]
     """When set to true you may use more of your alloted API rate-limit"""
+
+    labels: str
+    """Filters by metadata labels.
+
+    Comma-separated key=value pairs, e.g. "env=prod,team=ai". A resource matches
+    only if every pair matches exactly (AND semantics).
+    """
 
     limit: int
     """Maximum number of results to return"""

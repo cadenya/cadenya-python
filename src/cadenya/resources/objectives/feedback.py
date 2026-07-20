@@ -31,7 +31,7 @@ class FeedbackResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return FeedbackResourceWithRawResponse(self)
 
@@ -40,7 +40,7 @@ class FeedbackResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return FeedbackResourceWithStreamingResponse(self)
 
@@ -48,7 +48,7 @@ class FeedbackResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         data: ObjectiveFeedbackDataParam,
         metadata: CreateOperationMetadata,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -76,6 +76,8 @@ class FeedbackResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -103,8 +105,9 @@ class FeedbackResource(SyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -119,6 +122,10 @@ class FeedbackResource(SyncAPIResource):
         Args:
           cursor: Pagination cursor from previous response
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           extra_headers: Send extra headers
@@ -129,6 +136,8 @@ class FeedbackResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -148,6 +157,7 @@ class FeedbackResource(SyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "labels": labels,
                         "limit": limit,
                     },
                     feedback_list_params.FeedbackListParams,
@@ -164,7 +174,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncFeedbackResourceWithRawResponse(self)
 
@@ -173,7 +183,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncFeedbackResourceWithStreamingResponse(self)
 
@@ -181,7 +191,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         data: ObjectiveFeedbackDataParam,
         metadata: CreateOperationMetadata,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -209,6 +219,8 @@ class AsyncFeedbackResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -236,8 +248,9 @@ class AsyncFeedbackResource(AsyncAPIResource):
         self,
         objective_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -252,6 +265,10 @@ class AsyncFeedbackResource(AsyncAPIResource):
         Args:
           cursor: Pagination cursor from previous response
 
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
+
           limit: Maximum number of results to return
 
           extra_headers: Send extra headers
@@ -262,6 +279,8 @@ class AsyncFeedbackResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not objective_id:
@@ -281,6 +300,7 @@ class AsyncFeedbackResource(AsyncAPIResource):
                 query=maybe_transform(
                     {
                         "cursor": cursor,
+                        "labels": labels,
                         "limit": limit,
                     },
                     feedback_list_params.FeedbackListParams,

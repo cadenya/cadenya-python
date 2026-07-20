@@ -23,11 +23,20 @@ class Info(BaseModel):
     enabled_model_count: Optional[int] = FieldInfo(alias="enabledModelCount", default=None)
     """Number of enabled models provisioned on this key."""
 
+    is_promotional: Optional[bool] = FieldInfo(alias="isPromotional", default=None)
+    """
+    Cadenya includes promotional keys (one for onboarding, and potentially more in
+    the future). These are not added or maintained by account administrators.
+    """
+
 
 class AIProviderKey(BaseModel):
     """
-    AIProviderKey is a customer-provided (BYOK) credential for an AI provider,
-     scoped to a workspace. The secret value is never returned in responses.
+    AIProviderKey is a credential for an AI provider, scoped to a workspace.
+     Most keys are customer-provided (BYOK); Cadenya also provisions promotional
+     keys (see AIProviderKeyInfo.is_promotional), which cannot be modified or
+     deleted by account administrators. The secret value is never returned in
+     responses.
     """
 
     metadata: ResourceMetadata

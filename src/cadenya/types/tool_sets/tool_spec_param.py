@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from typing import Dict
-from typing_extensions import Literal, Required, Annotated, TypedDict
+from typing_extensions import Required, Annotated, TypedDict
 
 from ..._utils import PropertyInfo
 from .tool_spec_config_param import ToolSpecConfigParam
@@ -22,9 +22,19 @@ class ToolSpecParam(TypedDict, total=False):
     description: Required[str]
 
     parameters: Required[Dict[str, object]]
+    """The tool's JSON Schema, as handed to the LLM.
 
-    status: Required[
-        Literal["TOOL_STATUS_UNSPECIFIED", "TOOL_STATUS_AVAILABLE", "TOOL_STATUS_OMITTED", "TOOL_STATUS_ARCHIVED"]
-    ]
+    Required, but may be the empty object `{}` for a tool that takes no arguments.
+    Requiring it rather than defaulting it means a misspelled field name
+    (`inputSchema`, say) is a 400 instead of a silently parameterless tool.
+    """
 
-    requires_approval: Annotated[bool, PropertyInfo(alias="requiresApproval")]
+    requires_approval: Required[Annotated[bool, PropertyInfo(alias="requiresApproval")]]
+
+    llm_tool_name: Annotated[str, PropertyInfo(alias="llmToolName")]
+    """
+    The name provided to the LLM, which may differ from the metadata.name on the
+    tool. LLMs have specific length and format requirements, and tool set sources
+    may not comply with them, so Cadenya does its best to format names into a usable
+    format.
+    """

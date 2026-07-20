@@ -74,7 +74,7 @@ class TestWorkspaceAdmin:
     @parametrize
     def test_method_retrieve(self, client: Cadenya) -> None:
         workspace_admin = client.workspace_admin.retrieve(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(Workspace, workspace_admin, path=["response"])
 
@@ -82,7 +82,7 @@ class TestWorkspaceAdmin:
     @parametrize
     def test_raw_response_retrieve(self, client: Cadenya) -> None:
         response = client.workspace_admin.with_raw_response.retrieve(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -94,7 +94,7 @@ class TestWorkspaceAdmin:
     @parametrize
     def test_streaming_response_retrieve(self, client: Cadenya) -> None:
         with client.workspace_admin.with_streaming_response.retrieve(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -109,14 +109,14 @@ class TestWorkspaceAdmin:
     def test_path_params_retrieve(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.workspace_admin.with_raw_response.retrieve(
-                "",
+                workspace_id="",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     def test_method_update(self, client: Cadenya) -> None:
         workspace_admin = client.workspace_admin.update(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(Workspace, workspace_admin, path=["response"])
 
@@ -124,7 +124,7 @@ class TestWorkspaceAdmin:
     @parametrize
     def test_method_update_with_all_params(self, client: Cadenya) -> None:
         workspace_admin = client.workspace_admin.update(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -139,7 +139,7 @@ class TestWorkspaceAdmin:
     @parametrize
     def test_raw_response_update(self, client: Cadenya) -> None:
         response = client.workspace_admin.with_raw_response.update(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -151,7 +151,7 @@ class TestWorkspaceAdmin:
     @parametrize
     def test_streaming_response_update(self, client: Cadenya) -> None:
         with client.workspace_admin.with_streaming_response.update(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -181,6 +181,7 @@ class TestWorkspaceAdmin:
         workspace_admin = client.workspace_admin.list(
             cursor="cursor",
             include_archived=True,
+            labels="labels",
             limit=0,
         )
         assert_matches_type(SyncCursorPagination[Workspace], workspace_admin, path=["response"])
@@ -211,7 +212,7 @@ class TestWorkspaceAdmin:
     @parametrize
     def test_method_archive(self, client: Cadenya) -> None:
         workspace_admin = client.workspace_admin.archive(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert workspace_admin is None
 
@@ -219,7 +220,7 @@ class TestWorkspaceAdmin:
     @parametrize
     def test_raw_response_archive(self, client: Cadenya) -> None:
         response = client.workspace_admin.with_raw_response.archive(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -231,7 +232,7 @@ class TestWorkspaceAdmin:
     @parametrize
     def test_streaming_response_archive(self, client: Cadenya) -> None:
         with client.workspace_admin.with_streaming_response.archive(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -246,7 +247,7 @@ class TestWorkspaceAdmin:
     def test_path_params_archive(self, client: Cadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             client.workspace_admin.with_raw_response.archive(
-                "",
+                workspace_id="",
             )
 
 
@@ -309,7 +310,7 @@ class TestAsyncWorkspaceAdmin:
     @parametrize
     async def test_method_retrieve(self, async_client: AsyncCadenya) -> None:
         workspace_admin = await async_client.workspace_admin.retrieve(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(Workspace, workspace_admin, path=["response"])
 
@@ -317,7 +318,7 @@ class TestAsyncWorkspaceAdmin:
     @parametrize
     async def test_raw_response_retrieve(self, async_client: AsyncCadenya) -> None:
         response = await async_client.workspace_admin.with_raw_response.retrieve(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -329,7 +330,7 @@ class TestAsyncWorkspaceAdmin:
     @parametrize
     async def test_streaming_response_retrieve(self, async_client: AsyncCadenya) -> None:
         async with async_client.workspace_admin.with_streaming_response.retrieve(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -344,14 +345,14 @@ class TestAsyncWorkspaceAdmin:
     async def test_path_params_retrieve(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.workspace_admin.with_raw_response.retrieve(
-                "",
+                workspace_id="",
             )
 
     @pytest.mark.skip(reason="Mock server tests are disabled")
     @parametrize
     async def test_method_update(self, async_client: AsyncCadenya) -> None:
         workspace_admin = await async_client.workspace_admin.update(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert_matches_type(Workspace, workspace_admin, path=["response"])
 
@@ -359,7 +360,7 @@ class TestAsyncWorkspaceAdmin:
     @parametrize
     async def test_method_update_with_all_params(self, async_client: AsyncCadenya) -> None:
         workspace_admin = await async_client.workspace_admin.update(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
             metadata={
                 "name": "name",
                 "external_id": "externalId",
@@ -374,7 +375,7 @@ class TestAsyncWorkspaceAdmin:
     @parametrize
     async def test_raw_response_update(self, async_client: AsyncCadenya) -> None:
         response = await async_client.workspace_admin.with_raw_response.update(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -386,7 +387,7 @@ class TestAsyncWorkspaceAdmin:
     @parametrize
     async def test_streaming_response_update(self, async_client: AsyncCadenya) -> None:
         async with async_client.workspace_admin.with_streaming_response.update(
-            workspace_id="workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -416,6 +417,7 @@ class TestAsyncWorkspaceAdmin:
         workspace_admin = await async_client.workspace_admin.list(
             cursor="cursor",
             include_archived=True,
+            labels="labels",
             limit=0,
         )
         assert_matches_type(AsyncCursorPagination[Workspace], workspace_admin, path=["response"])
@@ -446,7 +448,7 @@ class TestAsyncWorkspaceAdmin:
     @parametrize
     async def test_method_archive(self, async_client: AsyncCadenya) -> None:
         workspace_admin = await async_client.workspace_admin.archive(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
         assert workspace_admin is None
 
@@ -454,7 +456,7 @@ class TestAsyncWorkspaceAdmin:
     @parametrize
     async def test_raw_response_archive(self, async_client: AsyncCadenya) -> None:
         response = await async_client.workspace_admin.with_raw_response.archive(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         )
 
         assert response.is_closed is True
@@ -466,7 +468,7 @@ class TestAsyncWorkspaceAdmin:
     @parametrize
     async def test_streaming_response_archive(self, async_client: AsyncCadenya) -> None:
         async with async_client.workspace_admin.with_streaming_response.archive(
-            "workspaceId",
+            workspace_id="workspace_01HXKD2E5NQM3T9AYWCF133E3Q",
         ) as response:
             assert not response.is_closed
             assert response.http_request.headers.get("X-Stainless-Lang") == "python"
@@ -481,5 +483,5 @@ class TestAsyncWorkspaceAdmin:
     async def test_path_params_archive(self, async_client: AsyncCadenya) -> None:
         with pytest.raises(ValueError, match=r"Expected a non-empty value for `workspace_id` but received ''"):
             await async_client.workspace_admin.with_raw_response.archive(
-                "",
+                workspace_id="",
             )

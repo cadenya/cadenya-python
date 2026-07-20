@@ -30,6 +30,7 @@ class TestWorkspaces:
         workspace = client.workspaces.list(
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             sort_order="sortOrder",
         )
@@ -57,34 +58,6 @@ class TestWorkspaces:
 
         assert cast(Any, response.is_closed) is True
 
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    def test_method_get(self, client: Cadenya) -> None:
-        workspace = client.workspaces.get()
-        assert_matches_type(Workspace, workspace, path=["response"])
-
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    def test_raw_response_get(self, client: Cadenya) -> None:
-        response = client.workspaces.with_raw_response.get()
-
-        assert response.is_closed is True
-        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
-        workspace = response.parse()
-        assert_matches_type(Workspace, workspace, path=["response"])
-
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    def test_streaming_response_get(self, client: Cadenya) -> None:
-        with client.workspaces.with_streaming_response.get() as response:
-            assert not response.is_closed
-            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
-
-            workspace = response.parse()
-            assert_matches_type(Workspace, workspace, path=["response"])
-
-        assert cast(Any, response.is_closed) is True
-
 
 class TestAsyncWorkspaces:
     parametrize = pytest.mark.parametrize(
@@ -103,6 +76,7 @@ class TestAsyncWorkspaces:
         workspace = await async_client.workspaces.list(
             cursor="cursor",
             include_info=True,
+            labels="labels",
             limit=0,
             sort_order="sortOrder",
         )
@@ -127,33 +101,5 @@ class TestAsyncWorkspaces:
 
             workspace = await response.parse()
             assert_matches_type(AsyncCursorPagination[Workspace], workspace, path=["response"])
-
-        assert cast(Any, response.is_closed) is True
-
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    async def test_method_get(self, async_client: AsyncCadenya) -> None:
-        workspace = await async_client.workspaces.get()
-        assert_matches_type(Workspace, workspace, path=["response"])
-
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    async def test_raw_response_get(self, async_client: AsyncCadenya) -> None:
-        response = await async_client.workspaces.with_raw_response.get()
-
-        assert response.is_closed is True
-        assert response.http_request.headers.get("X-Stainless-Lang") == "python"
-        workspace = await response.parse()
-        assert_matches_type(Workspace, workspace, path=["response"])
-
-    @pytest.mark.skip(reason="Mock server tests are disabled")
-    @parametrize
-    async def test_streaming_response_get(self, async_client: AsyncCadenya) -> None:
-        async with async_client.workspaces.with_streaming_response.get() as response:
-            assert not response.is_closed
-            assert response.http_request.headers.get("X-Stainless-Lang") == "python"
-
-            workspace = await response.parse()
-            assert_matches_type(Workspace, workspace, path=["response"])
 
         assert cast(Any, response.is_closed) is True

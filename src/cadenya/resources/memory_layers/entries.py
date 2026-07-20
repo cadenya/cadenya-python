@@ -35,7 +35,7 @@ class EntriesResource(SyncAPIResource):
     """Manage memory layers and their entries.
 
     Layers are named containers that can
-     be composed into an objective's memory stack; entries are the keyed values
+     be composed into an objective's memory cascade; entries are the keyed values
      within a layer. System-managed layers (e.g., episodic layers created by the
      runtime) cannot be mutated through this API.
     """
@@ -46,7 +46,7 @@ class EntriesResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return EntriesResourceWithRawResponse(self)
 
@@ -55,7 +55,7 @@ class EntriesResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return EntriesResourceWithStreamingResponse(self)
 
@@ -63,7 +63,7 @@ class EntriesResource(SyncAPIResource):
         self,
         memory_layer_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: MemoryEntryCreateSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -95,6 +95,8 @@ class EntriesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not memory_layer_id:
@@ -120,10 +122,10 @@ class EntriesResource(SyncAPIResource):
 
     def retrieve(
         self,
+        memory_layer_id: str,
         id: str,
         *,
-        workspace_id: str,
-        memory_layer_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -145,6 +147,8 @@ class EntriesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not memory_layer_id:
@@ -166,10 +170,10 @@ class EntriesResource(SyncAPIResource):
 
     def update(
         self,
+        memory_layer_id: str,
         id: str,
         *,
-        workspace_id: str,
-        memory_layer_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: MemoryEntryUpdateSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -203,6 +207,8 @@ class EntriesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not memory_layer_id:
@@ -234,10 +240,10 @@ class EntriesResource(SyncAPIResource):
         self,
         memory_layer_id: str,
         *,
-        workspace_id: str,
-        bundle_key: str | Omit = omit,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -253,11 +259,13 @@ class EntriesResource(SyncAPIResource):
         Lists all entries in a memory layer
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -276,6 +284,8 @@ class EntriesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not memory_layer_id:
@@ -294,9 +304,9 @@ class EntriesResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
@@ -310,10 +320,10 @@ class EntriesResource(SyncAPIResource):
 
     def delete(
         self,
+        memory_layer_id: str,
         id: str,
         *,
-        workspace_id: str,
-        memory_layer_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -333,6 +343,8 @@ class EntriesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not memory_layer_id:
@@ -358,7 +370,7 @@ class AsyncEntriesResource(AsyncAPIResource):
     """Manage memory layers and their entries.
 
     Layers are named containers that can
-     be composed into an objective's memory stack; entries are the keyed values
+     be composed into an objective's memory cascade; entries are the keyed values
      within a layer. System-managed layers (e.g., episodic layers created by the
      runtime) cannot be mutated through this API.
     """
@@ -369,7 +381,7 @@ class AsyncEntriesResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncEntriesResourceWithRawResponse(self)
 
@@ -378,7 +390,7 @@ class AsyncEntriesResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncEntriesResourceWithStreamingResponse(self)
 
@@ -386,7 +398,7 @@ class AsyncEntriesResource(AsyncAPIResource):
         self,
         memory_layer_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: MemoryEntryCreateSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -418,6 +430,8 @@ class AsyncEntriesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not memory_layer_id:
@@ -443,10 +457,10 @@ class AsyncEntriesResource(AsyncAPIResource):
 
     async def retrieve(
         self,
+        memory_layer_id: str,
         id: str,
         *,
-        workspace_id: str,
-        memory_layer_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -468,6 +482,8 @@ class AsyncEntriesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not memory_layer_id:
@@ -489,10 +505,10 @@ class AsyncEntriesResource(AsyncAPIResource):
 
     async def update(
         self,
+        memory_layer_id: str,
         id: str,
         *,
-        workspace_id: str,
-        memory_layer_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: MemoryEntryUpdateSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -526,6 +542,8 @@ class AsyncEntriesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not memory_layer_id:
@@ -557,10 +575,10 @@ class AsyncEntriesResource(AsyncAPIResource):
         self,
         memory_layer_id: str,
         *,
-        workspace_id: str,
-        bundle_key: str | Omit = omit,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -576,11 +594,13 @@ class AsyncEntriesResource(AsyncAPIResource):
         Lists all entries in a memory layer
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response
 
           include_info: When set to true you may use more of your alloted API rate-limit
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return
 
@@ -599,6 +619,8 @@ class AsyncEntriesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not memory_layer_id:
@@ -617,9 +639,9 @@ class AsyncEntriesResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
@@ -633,10 +655,10 @@ class AsyncEntriesResource(AsyncAPIResource):
 
     async def delete(
         self,
+        memory_layer_id: str,
         id: str,
         *,
-        workspace_id: str,
-        memory_layer_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -656,6 +678,8 @@ class AsyncEntriesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not memory_layer_id:

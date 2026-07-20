@@ -2,18 +2,19 @@
 
 from __future__ import annotations
 
-from typing_extensions import TypedDict
+from typing import Union
+from typing_extensions import TypeAlias
 
-from .tool_set_adapter_mcp_param import ToolSetAdapterMcpParam
-from .tool_set_adapter_http_param import ToolSetAdapterHTTPParam
-from .tool_set_adapter_openapi_param import ToolSetAdapterOpenAPIParam
+from .tool_set_adapter_mcp_variant_param import ToolSetAdapterMCPVariantParam
+from .tool_set_adapter_bare_variant_param import ToolSetAdapterBareVariantParam
+from .tool_set_adapter_http_variant_param import ToolSetAdapterHTTPVariantParam
+from .tool_set_adapter_openapi_variant_param import ToolSetAdapterOpenAPIVariantParam
 
 __all__ = ["ToolSetAdapterParam"]
 
-
-class ToolSetAdapterParam(TypedDict, total=False):
-    http: ToolSetAdapterHTTPParam
-
-    mcp: ToolSetAdapterMcpParam
-
-    openapi: ToolSetAdapterOpenAPIParam
+ToolSetAdapterParam: TypeAlias = Union[
+    ToolSetAdapterMCPVariantParam,
+    ToolSetAdapterHTTPVariantParam,
+    ToolSetAdapterOpenAPIVariantParam,
+    ToolSetAdapterBareVariantParam,
+]

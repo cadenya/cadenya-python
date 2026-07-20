@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Required, Annotated, TypedDict
+from typing_extensions import Annotated, TypedDict
 
 from ..._utils import PropertyInfo
 
@@ -10,9 +10,7 @@ __all__ = ["ToolCallDenyParams"]
 
 
 class ToolCallDenyParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
-
-    objective_id: Required[Annotated[str, PropertyInfo(alias="objectiveId")]]
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     memo: str
     """A memo to associate to the tool call denial.

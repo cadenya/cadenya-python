@@ -30,19 +30,14 @@ class AgentVariationSpec(BaseModel):
     Human-readable description of what this variation does or when it should be used
     """
 
-    enable_episodic_memory: Optional[bool] = FieldInfo(alias="enableEpisodicMemory", default=None)
+    first_user_message_template: Optional[str] = FieldInfo(alias="firstUserMessageTemplate", default=None)
     """
-    Enable episodic memory for objectives using this variation. When true, the
-    system automatically creates a document namespace for each objective using the
-    objective's episodic_key as the external_id, allowing the agent to store and
-    retrieve documents specific to that episode.
-    """
-
-    episodic_memory_ttl: Optional[int] = FieldInfo(alias="episodicMemoryTtl", default=None)
-    """
-    How long episodic memories should be retained. After this duration, episodic
-    document namespaces can be automatically cleaned up. If not set, episodic
-    memories are retained indefinitely.
+    Liquid template for the first user message of objectives using this variation.
+    Rendered with CreateObjectiveRequest.first_user_message_data into
+    Objective.first_user_message, the first user message in the LLM chat history.
+    CreateObjectiveRequest.first_user_message, when set, overrides the rendered
+    result. If neither this template nor first_user_message is present, objective
+    creation is rejected with InvalidArgument.
     """
 
     api_model_config: Optional[AgentVariationSpecModelConfig] = FieldInfo(alias="modelConfig", default=None)
@@ -59,13 +54,9 @@ class AgentVariationSpec(BaseModel):
     and can help select the best tools for the task.
     """
 
-    prompt: Optional[str] = None
-    """The system prompt for this variation"""
-
-    weight: Optional[int] = None
-    """Weight for weighted random selection (>= 0).
-
-    P(v) = v.weight / sum(all_weights). Only used when the agent's
-    variation_selection_mode is WEIGHTED. A weight of 0 means never auto-selected,
-    but can still be chosen explicitly via variation_id on CreateObjectiveRequest.
+    system_prompt_template: Optional[str] = FieldInfo(alias="systemPromptTemplate", default=None)
+    """
+    Liquid template for the system prompt of objectives using this variation.
+    Rendered with CreateObjectiveRequest.system_prompt_data into
+    Objective.system_prompt.
     """

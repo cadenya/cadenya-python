@@ -10,6 +10,8 @@ __all__ = ["ObjectiveListParams"]
 
 
 class ObjectiveListParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     agent_id: Annotated[str, PropertyInfo(alias="agentId")]
     """Agent ID for filtering"""
 
@@ -24,6 +26,13 @@ class ObjectiveListParams(TypedDict, total=False):
 
     include_info: Annotated[bool, PropertyInfo(alias="includeInfo")]
     """When set to true you may use more of your alloted API rate-limit"""
+
+    labels: str
+    """Filters by metadata labels.
+
+    Comma-separated key=value pairs, e.g. "env=prod,team=ai". A resource matches
+    only if every pair matches exactly (AND semantics).
+    """
 
     limit: int
     """Maximum number of results to return"""
@@ -44,5 +53,6 @@ class ObjectiveListParams(TypedDict, total=False):
         "STATE_FAILED",
         "STATE_CANCELLED",
         "STATE_FINALIZED",
+        "STATE_TIMED_OUT",
     ]
     """Filter by state"""

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Required, Annotated, TypedDict
+from typing_extensions import Annotated, TypedDict
 
 from ..._utils import PropertyInfo
 from .agent_variation_spec_param import AgentVariationSpecParam
@@ -12,9 +12,7 @@ __all__ = ["VariationUpdateParams"]
 
 
 class VariationUpdateParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
-
-    agent_id: Required[Annotated[str, PropertyInfo(alias="agentId")]]
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     metadata: UpdateResourceMetadata
     """

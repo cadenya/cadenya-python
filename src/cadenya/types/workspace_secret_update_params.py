@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing_extensions import Required, Annotated, TypedDict
+from typing_extensions import Annotated, TypedDict
 
 from .._utils import PropertyInfo
 from .workspace_secret_spec_param import WorkspaceSecretSpecParam
@@ -12,7 +12,7 @@ __all__ = ["WorkspaceSecretUpdateParams"]
 
 
 class WorkspaceSecretUpdateParams(TypedDict, total=False):
-    workspace_id: Required[Annotated[str, PropertyInfo(alias="workspaceId")]]
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     metadata: UpdateResourceMetadata
     """

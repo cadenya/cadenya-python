@@ -12,6 +12,8 @@ __all__ = ["APIKeyUpdateParams", "Metadata"]
 
 
 class APIKeyUpdateParams(TypedDict, total=False):
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
+
     metadata: Metadata
     """
     UpdateAccountResourceMetadata contains the user-provided fields for updating an
@@ -43,7 +45,10 @@ class Metadata(TypedDict, total=False):
     """External ID for the resource (e.g., a workflow ID from an external system)"""
 
     labels: Dict[str, str]
-    """
-    Arbitrary key-value pairs for categorization and filtering Examples:
+    """Key-value pairs for categorization and filtering.
+
+    Values are 0-63 alphanumeric characters with "-", "\\__", or "." allowed between;
+    keys follow the same shape and additionally accept an optional DNS-subdomain
+    prefix (e.g. "cadenya.com/") of at most 253 characters. Examples:
     {"environment": "production", "team": "platform", "version": "v2"}
     """

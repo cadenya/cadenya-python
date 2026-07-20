@@ -38,7 +38,7 @@ class SchedulesResource(SyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return SchedulesResourceWithRawResponse(self)
 
@@ -47,7 +47,7 @@ class SchedulesResource(SyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return SchedulesResourceWithStreamingResponse(self)
 
@@ -55,7 +55,7 @@ class SchedulesResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: AgentScheduleSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -83,6 +83,8 @@ class SchedulesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -108,10 +110,10 @@ class SchedulesResource(SyncAPIResource):
 
     def retrieve(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -131,6 +133,8 @@ class SchedulesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -152,10 +156,10 @@ class SchedulesResource(SyncAPIResource):
 
     def update(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: AgentScheduleSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -186,6 +190,8 @@ class SchedulesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -217,10 +223,10 @@ class SchedulesResource(SyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
-        bundle_key: str | Omit = omit,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -236,12 +242,14 @@ class SchedulesResource(SyncAPIResource):
         Lists all schedules for an agent
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response.
 
           include_info: When true, the `info` field on each returned schedule is populated. Requests
               with this flag count more against your rate limit.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return.
 
@@ -259,6 +267,8 @@ class SchedulesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -277,9 +287,9 @@ class SchedulesResource(SyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
@@ -293,10 +303,10 @@ class SchedulesResource(SyncAPIResource):
 
     def delete(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -316,6 +326,8 @@ class SchedulesResource(SyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -336,6 +348,149 @@ class SchedulesResource(SyncAPIResource):
             cast_to=NoneType,
         )
 
+    def archive(
+        self,
+        agent_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AgentSchedule:
+        """
+        Transitions a schedule to STATE_ARCHIVED and removes its underlying timer.
+        Archiving is terminal: archived schedules never fire and cannot be reactivated;
+        create a new schedule instead.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not agent_id:
+            raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template(
+                "/v1/workspaces/{workspace_id}/agents/{agent_id}/schedules/{id}:archive",
+                workspace_id=workspace_id,
+                agent_id=agent_id,
+                id=id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=AgentSchedule,
+        )
+
+    def pause(
+        self,
+        agent_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AgentSchedule:
+        """Transitions a schedule to STATE_PAUSED.
+
+        Paused schedules retain history but do
+        not fire.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not agent_id:
+            raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template(
+                "/v1/workspaces/{workspace_id}/agents/{agent_id}/schedules/{id}:pause",
+                workspace_id=workspace_id,
+                agent_id=agent_id,
+                id=id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=AgentSchedule,
+        )
+
+    def resume(
+        self,
+        agent_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AgentSchedule:
+        """
+        Transitions a paused schedule back to STATE_ACTIVE so it fires on its cadence
+        again. Archived schedules cannot be resumed.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not agent_id:
+            raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return self._post(
+            path_template(
+                "/v1/workspaces/{workspace_id}/agents/{agent_id}/schedules/{id}:resume",
+                workspace_id=workspace_id,
+                agent_id=agent_id,
+                id=id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=AgentSchedule,
+        )
+
 
 class AsyncSchedulesResource(AsyncAPIResource):
     """Manage recurring schedules attached to agents.
@@ -350,7 +505,7 @@ class AsyncSchedulesResource(AsyncAPIResource):
         This property can be used as a prefix for any HTTP method call to return
         the raw response object instead of the parsed content.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#accessing-raw-response-data-eg-headers
+        For more information, see https://www.github.com/cadenya/cadenya-python#accessing-raw-response-data-eg-headers
         """
         return AsyncSchedulesResourceWithRawResponse(self)
 
@@ -359,7 +514,7 @@ class AsyncSchedulesResource(AsyncAPIResource):
         """
         An alternative to `.with_raw_response` that doesn't eagerly read the response body.
 
-        For more information, see https://www.github.com/stainless-sdks/cadenya-python#with_streaming_response
+        For more information, see https://www.github.com/cadenya/cadenya-python#with_streaming_response
         """
         return AsyncSchedulesResourceWithStreamingResponse(self)
 
@@ -367,7 +522,7 @@ class AsyncSchedulesResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
+        workspace_id: str | None = None,
         metadata: CreateResourceMetadata,
         spec: AgentScheduleSpecParam,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
@@ -395,6 +550,8 @@ class AsyncSchedulesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -420,10 +577,10 @@ class AsyncSchedulesResource(AsyncAPIResource):
 
     async def retrieve(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -443,6 +600,8 @@ class AsyncSchedulesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -464,10 +623,10 @@ class AsyncSchedulesResource(AsyncAPIResource):
 
     async def update(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         metadata: UpdateResourceMetadata | Omit = omit,
         spec: AgentScheduleSpecParam | Omit = omit,
         update_mask: str | Omit = omit,
@@ -498,6 +657,8 @@ class AsyncSchedulesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -529,10 +690,10 @@ class AsyncSchedulesResource(AsyncAPIResource):
         self,
         agent_id: str,
         *,
-        workspace_id: str,
-        bundle_key: str | Omit = omit,
+        workspace_id: str | None = None,
         cursor: str | Omit = omit,
         include_info: bool | Omit = omit,
+        labels: str | Omit = omit,
         limit: int | Omit = omit,
         prefix: str | Omit = omit,
         query: str | Omit = omit,
@@ -548,12 +709,14 @@ class AsyncSchedulesResource(AsyncAPIResource):
         Lists all schedules for an agent
 
         Args:
-          bundle_key: Filter by bundle_key — return only resources owned by this bundle.
-
           cursor: Pagination cursor from previous response.
 
           include_info: When true, the `info` field on each returned schedule is populated. Requests
               with this flag count more against your rate limit.
+
+          labels: Filters by metadata labels. Comma-separated key=value pairs, e.g.
+              "env=prod,team=ai". A resource matches only if every pair matches exactly (AND
+              semantics).
 
           limit: Maximum number of results to return.
 
@@ -571,6 +734,8 @@ class AsyncSchedulesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -589,9 +754,9 @@ class AsyncSchedulesResource(AsyncAPIResource):
                 timeout=timeout,
                 query=maybe_transform(
                     {
-                        "bundle_key": bundle_key,
                         "cursor": cursor,
                         "include_info": include_info,
+                        "labels": labels,
                         "limit": limit,
                         "prefix": prefix,
                         "query": query,
@@ -605,10 +770,10 @@ class AsyncSchedulesResource(AsyncAPIResource):
 
     async def delete(
         self,
+        agent_id: str,
         id: str,
         *,
-        workspace_id: str,
-        agent_id: str,
+        workspace_id: str | None = None,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -628,6 +793,8 @@ class AsyncSchedulesResource(AsyncAPIResource):
 
           timeout: Override the client-level default timeout for this request, in seconds
         """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
         if not workspace_id:
             raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
         if not agent_id:
@@ -646,6 +813,149 @@ class AsyncSchedulesResource(AsyncAPIResource):
                 extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
             ),
             cast_to=NoneType,
+        )
+
+    async def archive(
+        self,
+        agent_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AgentSchedule:
+        """
+        Transitions a schedule to STATE_ARCHIVED and removes its underlying timer.
+        Archiving is terminal: archived schedules never fire and cannot be reactivated;
+        create a new schedule instead.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not agent_id:
+            raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template(
+                "/v1/workspaces/{workspace_id}/agents/{agent_id}/schedules/{id}:archive",
+                workspace_id=workspace_id,
+                agent_id=agent_id,
+                id=id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=AgentSchedule,
+        )
+
+    async def pause(
+        self,
+        agent_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AgentSchedule:
+        """Transitions a schedule to STATE_PAUSED.
+
+        Paused schedules retain history but do
+        not fire.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not agent_id:
+            raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template(
+                "/v1/workspaces/{workspace_id}/agents/{agent_id}/schedules/{id}:pause",
+                workspace_id=workspace_id,
+                agent_id=agent_id,
+                id=id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=AgentSchedule,
+        )
+
+    async def resume(
+        self,
+        agent_id: str,
+        id: str,
+        *,
+        workspace_id: str | None = None,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AgentSchedule:
+        """
+        Transitions a paused schedule back to STATE_ACTIVE so it fires on its cadence
+        again. Archived schedules cannot be resumed.
+
+        Args:
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not agent_id:
+            raise ValueError(f"Expected a non-empty value for `agent_id` but received {agent_id!r}")
+        if not id:
+            raise ValueError(f"Expected a non-empty value for `id` but received {id!r}")
+        return await self._post(
+            path_template(
+                "/v1/workspaces/{workspace_id}/agents/{agent_id}/schedules/{id}:resume",
+                workspace_id=workspace_id,
+                agent_id=agent_id,
+                id=id,
+            ),
+            options=make_request_options(
+                extra_headers=extra_headers, extra_query=extra_query, extra_body=extra_body, timeout=timeout
+            ),
+            cast_to=AgentSchedule,
         )
 
 
@@ -668,6 +978,15 @@ class SchedulesResourceWithRawResponse:
         self.delete = to_raw_response_wrapper(
             schedules.delete,
         )
+        self.archive = to_raw_response_wrapper(
+            schedules.archive,
+        )
+        self.pause = to_raw_response_wrapper(
+            schedules.pause,
+        )
+        self.resume = to_raw_response_wrapper(
+            schedules.resume,
+        )
 
 
 class AsyncSchedulesResourceWithRawResponse:
@@ -688,6 +1007,15 @@ class AsyncSchedulesResourceWithRawResponse:
         )
         self.delete = async_to_raw_response_wrapper(
             schedules.delete,
+        )
+        self.archive = async_to_raw_response_wrapper(
+            schedules.archive,
+        )
+        self.pause = async_to_raw_response_wrapper(
+            schedules.pause,
+        )
+        self.resume = async_to_raw_response_wrapper(
+            schedules.resume,
         )
 
 
@@ -710,6 +1038,15 @@ class SchedulesResourceWithStreamingResponse:
         self.delete = to_streamed_response_wrapper(
             schedules.delete,
         )
+        self.archive = to_streamed_response_wrapper(
+            schedules.archive,
+        )
+        self.pause = to_streamed_response_wrapper(
+            schedules.pause,
+        )
+        self.resume = to_streamed_response_wrapper(
+            schedules.resume,
+        )
 
 
 class AsyncSchedulesResourceWithStreamingResponse:
@@ -730,4 +1067,13 @@ class AsyncSchedulesResourceWithStreamingResponse:
         )
         self.delete = async_to_streamed_response_wrapper(
             schedules.delete,
+        )
+        self.archive = async_to_streamed_response_wrapper(
+            schedules.archive,
+        )
+        self.pause = async_to_streamed_response_wrapper(
+            schedules.pause,
+        )
+        self.resume = async_to_streamed_response_wrapper(
+            schedules.resume,
         )

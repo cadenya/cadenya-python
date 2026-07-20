@@ -10,14 +10,20 @@ __all__ = ["WorkspaceSecretListParams"]
 
 
 class WorkspaceSecretListParams(TypedDict, total=False):
-    bundle_key: Annotated[str, PropertyInfo(alias="bundleKey")]
-    """Filter by bundle_key — return only resources owned by this bundle."""
+    workspace_id: Annotated[str, PropertyInfo(alias="workspaceId")]
 
     cursor: str
     """Pagination cursor from previous response"""
 
     include_info: Annotated[bool, PropertyInfo(alias="includeInfo")]
     """When set to true you may use more of your alloted API rate-limit"""
+
+    labels: str
+    """Filters by metadata labels.
+
+    Comma-separated key=value pairs, e.g. "env=prod,team=ai". A resource matches
+    only if every pair matches exactly (AND semantics).
+    """
 
     limit: int
     """Maximum number of results to return"""
