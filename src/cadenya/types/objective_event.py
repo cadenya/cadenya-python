@@ -23,4 +23,12 @@ class ObjectiveEvent(BaseModel):
 
     context_window_id: Optional[str] = FieldInfo(alias="contextWindowId", default=None)
 
+    duration: Optional[str] = None
+    """
+    Elapsed time of the work this event records, when it is known at write time
+    (e.g. assistant message generation, tool execution for result/error events).
+    Unset means the event is instantaneous or the duration is not measurable.
+    Serialized as a canonical duration string (e.g. "4.1s").
+    """
+
     info: Optional[ObjectiveEventInfo] = None
