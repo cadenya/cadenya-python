@@ -1,6 +1,7 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import Optional
+from datetime import datetime
 
 from pydantic import Field as FieldInfo
 
@@ -28,7 +29,15 @@ class ObjectiveEvent(BaseModel):
     Elapsed time of the work this event records, when it is known at write time
     (e.g. assistant message generation, tool execution for result/error events).
     Unset means the event is instantaneous or the duration is not measurable.
-    Serialized as a canonical duration string (e.g. "4.1s").
+    Serialized as a canonical duration string (e.g. "4.1s"). Always set together
+    with started_at.
     """
 
     info: Optional[ObjectiveEventInfo] = None
+
+    started_at: Optional[datetime] = FieldInfo(alias="startedAt", default=None)
+    """When the work this event records began.
+
+    Set together with duration, so the work interval is [started_at, started_at +
+    duration]. The event's created_at remains the time the event was persisted.
+    """
