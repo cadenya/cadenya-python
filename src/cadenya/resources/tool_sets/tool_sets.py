@@ -18,6 +18,7 @@ from ...types import (
     tool_set_list_params,
     tool_set_create_params,
     tool_set_update_params,
+    tool_set_list_usage_params,
     tool_set_list_events_params,
 )
 from .secrets import (
@@ -42,6 +43,7 @@ from ...pagination import SyncCursorPagination, AsyncCursorPagination
 from ..._base_client import AsyncPaginator, make_request_options
 from ...types.tool_set import ToolSet
 from ...types.tool_set_event import ToolSetEvent
+from ...types.tool_set_usage import ToolSetUsage
 from ...types.tool_set_spec_param import ToolSetSpecParam
 from ...types.tool_set_get_openapi_spec_response import ToolSetGetOpenAPISpecResponse
 from ...types.shared_params.create_resource_metadata import CreateResourceMetadata
@@ -517,6 +519,78 @@ class ToolSetsResource(SyncAPIResource):
                 ),
             ),
             model=ToolSetEvent,
+        )
+
+    def list_usage(
+        self,
+        tool_set_id: str,
+        *,
+        workspace_id: str | None = None,
+        cursor: str | Omit = omit,
+        limit: int | Omit = omit,
+        sort_order: str | Omit = omit,
+        tool_id: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> SyncCursorPagination[ToolSetUsage]:
+        """
+        Lists the agent variations (with their parent agent) that have the tool set
+        assigned. Pass tool_id to instead list variations with a direct assignment of
+        that individual tool; variations that receive the tool implicitly through a
+        whole-set assignment are not included in that filtered view.
+
+        Args:
+          cursor: Pagination cursor from previous response
+
+          limit: Maximum number of results to return
+
+          sort_order: Sort order for results (asc or desc by assignment creation time)
+
+          tool_id: When set, lists only variations with a direct assignment of this individual
+              tool. When unset, lists variations assigned the whole tool set. The tool must
+              belong to the tool set.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not tool_set_id:
+            raise ValueError(f"Expected a non-empty value for `tool_set_id` but received {tool_set_id!r}")
+        return self._get_api_list(
+            path_template(
+                "/v1/workspaces/{workspace_id}/tool_sets/{tool_set_id}/usage",
+                workspace_id=workspace_id,
+                tool_set_id=tool_set_id,
+            ),
+            page=SyncCursorPagination[ToolSetUsage],
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {
+                        "cursor": cursor,
+                        "limit": limit,
+                        "sort_order": sort_order,
+                        "tool_id": tool_id,
+                    },
+                    tool_set_list_usage_params.ToolSetListUsageParams,
+                ),
+            ),
+            model=ToolSetUsage,
         )
 
     def unarchive(
@@ -1030,6 +1104,78 @@ class AsyncToolSetsResource(AsyncAPIResource):
             model=ToolSetEvent,
         )
 
+    def list_usage(
+        self,
+        tool_set_id: str,
+        *,
+        workspace_id: str | None = None,
+        cursor: str | Omit = omit,
+        limit: int | Omit = omit,
+        sort_order: str | Omit = omit,
+        tool_id: str | Omit = omit,
+        # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
+        # The extra values given here take precedence over values defined on the client or passed to this method.
+        extra_headers: Headers | None = None,
+        extra_query: Query | None = None,
+        extra_body: Body | None = None,
+        timeout: float | httpx.Timeout | None | NotGiven = not_given,
+    ) -> AsyncPaginator[ToolSetUsage, AsyncCursorPagination[ToolSetUsage]]:
+        """
+        Lists the agent variations (with their parent agent) that have the tool set
+        assigned. Pass tool_id to instead list variations with a direct assignment of
+        that individual tool; variations that receive the tool implicitly through a
+        whole-set assignment are not included in that filtered view.
+
+        Args:
+          cursor: Pagination cursor from previous response
+
+          limit: Maximum number of results to return
+
+          sort_order: Sort order for results (asc or desc by assignment creation time)
+
+          tool_id: When set, lists only variations with a direct assignment of this individual
+              tool. When unset, lists variations assigned the whole tool set. The tool must
+              belong to the tool set.
+
+          extra_headers: Send extra headers
+
+          extra_query: Add additional query parameters to the request
+
+          extra_body: Add additional JSON properties to the request
+
+          timeout: Override the client-level default timeout for this request, in seconds
+        """
+        if workspace_id is None:
+            workspace_id = self._client._get_workspace_id_path_param()
+        if not workspace_id:
+            raise ValueError(f"Expected a non-empty value for `workspace_id` but received {workspace_id!r}")
+        if not tool_set_id:
+            raise ValueError(f"Expected a non-empty value for `tool_set_id` but received {tool_set_id!r}")
+        return self._get_api_list(
+            path_template(
+                "/v1/workspaces/{workspace_id}/tool_sets/{tool_set_id}/usage",
+                workspace_id=workspace_id,
+                tool_set_id=tool_set_id,
+            ),
+            page=AsyncCursorPagination[ToolSetUsage],
+            options=make_request_options(
+                extra_headers=extra_headers,
+                extra_query=extra_query,
+                extra_body=extra_body,
+                timeout=timeout,
+                query=maybe_transform(
+                    {
+                        "cursor": cursor,
+                        "limit": limit,
+                        "sort_order": sort_order,
+                        "tool_id": tool_id,
+                    },
+                    tool_set_list_usage_params.ToolSetListUsageParams,
+                ),
+            ),
+            model=ToolSetUsage,
+        )
+
     async def unarchive(
         self,
         id: str,
@@ -1100,6 +1246,9 @@ class ToolSetsResourceWithRawResponse:
         self.list_events = to_raw_response_wrapper(
             tool_sets.list_events,
         )
+        self.list_usage = to_raw_response_wrapper(
+            tool_sets.list_usage,
+        )
         self.unarchive = to_raw_response_wrapper(
             tool_sets.unarchive,
         )
@@ -1156,6 +1305,9 @@ class AsyncToolSetsResourceWithRawResponse:
         )
         self.list_events = async_to_raw_response_wrapper(
             tool_sets.list_events,
+        )
+        self.list_usage = async_to_raw_response_wrapper(
+            tool_sets.list_usage,
         )
         self.unarchive = async_to_raw_response_wrapper(
             tool_sets.unarchive,
@@ -1214,6 +1366,9 @@ class ToolSetsResourceWithStreamingResponse:
         self.list_events = to_streamed_response_wrapper(
             tool_sets.list_events,
         )
+        self.list_usage = to_streamed_response_wrapper(
+            tool_sets.list_usage,
+        )
         self.unarchive = to_streamed_response_wrapper(
             tool_sets.unarchive,
         )
@@ -1270,6 +1425,9 @@ class AsyncToolSetsResourceWithStreamingResponse:
         )
         self.list_events = async_to_streamed_response_wrapper(
             tool_sets.list_events,
+        )
+        self.list_usage = async_to_streamed_response_wrapper(
+            tool_sets.list_usage,
         )
         self.unarchive = async_to_streamed_response_wrapper(
             tool_sets.unarchive,
