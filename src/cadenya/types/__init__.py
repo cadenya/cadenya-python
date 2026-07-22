@@ -49,6 +49,7 @@ from .objective_info import ObjectiveInfo as ObjectiveInfo
 from .string_matcher import StringMatcher as StringMatcher
 from .sync_completed import SyncCompleted as SyncCompleted
 from .tool_set_event import ToolSetEvent as ToolSetEvent
+from .tool_set_usage import ToolSetUsage as ToolSetUsage
 from .workspace_spec import WorkspaceSpec as WorkspaceSpec
 from .ai_provider_key import AIProviderKey as AIProviderKey
 from .context_lengths import ContextLengths as ContextLengths
@@ -128,6 +129,7 @@ from .string_matcher_exact_param import StringMatcherExactParam as StringMatcher
 from .string_matcher_regex_param import StringMatcherRegexParam as StringMatcherRegexParam
 from .string_matcher_starts_with import StringMatcherStartsWith as StringMatcherStartsWith
 from .tool_set_adapter_mcp_param import ToolSetAdapterMCPParam as ToolSetAdapterMCPParam
+from .tool_set_list_usage_params import ToolSetListUsageParams as ToolSetListUsageParams
 from .ai_provider_key_list_params import AIProviderKeyListParams as AIProviderKeyListParams
 from .approval_requirement_filter import ApprovalRequirementFilter as ApprovalRequirementFilter
 from .objective_event_data_notice import ObjectiveEventDataNotice as ObjectiveEventDataNotice

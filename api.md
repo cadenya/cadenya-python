@@ -436,6 +436,7 @@ from cadenya.types import (
     ToolSetEventDataSyncStarted,
     ToolSetInfo,
     ToolSetSpec,
+    ToolSetUsage,
     ToolSetGetOpenAPISpecResponse,
 )
 ```
@@ -450,6 +451,7 @@ Methods:
 - <code title="post /v1/workspaces/{workspaceId}/tool_sets/{id}:archive">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">archive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/openapi_spec">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">get_openapi_spec</a>(tool_set_id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_set_get_openapi_spec_response.py">ToolSetGetOpenAPISpecResponse</a></code>
 - <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/events">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">list_events</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_set_list_events_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set_event.py">SyncCursorPagination[ToolSetEvent]</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/usage">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">list_usage</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_set_list_usage_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set_usage.py">SyncCursorPagination[ToolSetUsage]</a></code>
 - <code title="post /v1/workspaces/{workspaceId}/tool_sets/{id}:unarchive">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">unarchive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
 
 ## Tools
