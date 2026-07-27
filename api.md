@@ -595,3 +595,47 @@ Types:
 ```python
 from cadenya.types import UnsafeUnwrapWebhookEvent, UnwrapWebhookEvent
 ```
+
+# Widgets
+
+Types:
+
+```python
+from cadenya.types import Widget, WidgetInfo, WidgetSpec
+```
+
+Methods:
+
+- <code title="post /v1/workspaces/{workspaceId}/widgets">client.widgets.<a href="./src/cadenya/resources/widgets.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/widget_create_params.py">params</a>) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/widgets/{id}">client.widgets.<a href="./src/cadenya/resources/widgets.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
+- <code title="patch /v1/workspaces/{workspaceId}/widgets/{id}">client.widgets.<a href="./src/cadenya/resources/widgets.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/widget_update_params.py">params</a>) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/widgets">client.widgets.<a href="./src/cadenya/resources/widgets.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/widget_list_params.py">params</a>) -> <a href="./src/cadenya/types/widget.py">SyncCursorPagination[Widget]</a></code>
+- <code title="delete /v1/workspaces/{workspaceId}/widgets/{id}">client.widgets.<a href="./src/cadenya/resources/widgets.py">delete</a>(id, \*, workspace_id) -> None</code>
+- <code title="post /v1/workspaces/{workspaceId}/widgets/{id}:archive">client.widgets.<a href="./src/cadenya/resources/widgets.py">archive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/widgets/{id}:unarchive">client.widgets.<a href="./src/cadenya/resources/widgets.py">unarchive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
+
+# WidgetSessions
+
+Types:
+
+```python
+from cadenya.types import (
+    SubjectAssertion,
+    SubjectReference,
+    TenantAssertion,
+    TenantReference,
+    WidgetSession,
+    WidgetSessionInfo,
+    WidgetSessionSpec,
+    WidgetSessionDeleteTenantResponse,
+)
+```
+
+Methods:
+
+- <code title="post /v1/workspaces/{workspaceId}/widget_sessions">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/widget_session_create_params.py">params</a>) -> <a href="./src/cadenya/types/widget_session.py">WidgetSession</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/widget_sessions/{id}">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget_session.py">WidgetSession</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/widget_sessions">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/widget_session_list_params.py">params</a>) -> <a href="./src/cadenya/types/widget_session.py">SyncCursorPagination[WidgetSession]</a></code>
+- <code title="delete /v1/workspaces/{workspaceId}/widget_sessions/{id}">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">delete</a>(id, \*, workspace_id) -> None</code>
+- <code title="delete /v1/workspaces/{workspaceId}/widget_sessions">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">delete_tenant</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/widget_session_delete_tenant_params.py">params</a>) -> <a href="./src/cadenya/types/widget_session_delete_tenant_response.py">WidgetSessionDeleteTenantResponse</a></code>
+- <code title="post /v1/workspaces/{workspaceId}/widget_sessions/{id}:revoke">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">revoke</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget_session.py">WidgetSession</a></code>

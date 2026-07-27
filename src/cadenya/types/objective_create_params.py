@@ -7,6 +7,8 @@ from typing_extensions import Required, Annotated, TypedDict
 
 from .._utils import PropertyInfo
 from .memory_reference_param import MemoryReferenceParam
+from .tenant_assertion_param import TenantAssertionParam
+from .subject_assertion_param import SubjectAssertionParam
 from .shared_params.create_operation_metadata import CreateOperationMetadata
 
 __all__ = ["ObjectiveCreateParams", "EpisodicMemory", "Secret"]
@@ -67,10 +69,35 @@ class ObjectiveCreateParams(TypedDict, total=False):
     profile_id) are excluded since they are set by the server.
     """
 
+    pinned_parameters: Annotated[Dict[str, str], PropertyInfo(alias="pinnedParameters")]
+    """Parameters forced onto this objective's tool calls.
+
+    A pinned parameter is an overlay on a tool's JSON schema: the parameter is
+    removed from what the LLM sees, and its value is always overwritten server-side
+    with the pinned value — the model cannot choose a different value for it.
+    """
+
     secrets: Iterable[Secret]
     """
     Secrets that can be used in the headers for tool calls using the secret
     interpolation format.
+    """
+
+    subject: SubjectAssertionParam
+    """
+    SubjectAssertion identifies a person within a tenant in the customer's own
+    namespace — typically their user id. Asserting a subject upserts the subject
+    record under the asserted tenant and associates the created resource with it. A
+    subject assertion is only valid alongside a tenant assertion: subject
+    identifiers are scoped to their tenant.
+    """
+
+    tenant: TenantAssertionParam
+    """
+    TenantAssertion identifies a tenant in the customer's own namespace — their org,
+    company, or team identifier for an end user. Asserting a tenant upserts the
+    tenant record in the workspace (keyed on `id` as the tenant's external_id) and
+    associates the created resource with it.
     """
 
     variation_id: Annotated[str, PropertyInfo(alias="variationId")]
