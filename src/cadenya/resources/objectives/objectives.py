@@ -295,6 +295,8 @@ class ObjectivesResource(SyncAPIResource):
         | Omit = omit,
         subject_id: str | Omit = omit,
         tenant_id: str | Omit = omit,
+        widget_id: str | Omit = omit,
+        widget_session_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -334,6 +336,11 @@ class ObjectivesResource(SyncAPIResource):
           tenant_id: Filter to objectives associated with a tenant. Accepts the canonical `tenant_…`
               form or the `external_id:<value>` form.
 
+          widget_id: Filter to objectives whose conversation ran through a widget. Accepts the
+              canonical `wgt_…` form or the `external_id:<value>` form.
+
+          widget_session_id: Filter to objectives created by a specific widget session.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -368,6 +375,8 @@ class ObjectivesResource(SyncAPIResource):
                         "state": state,
                         "subject_id": subject_id,
                         "tenant_id": tenant_id,
+                        "widget_id": widget_id,
+                        "widget_session_id": widget_session_id,
                     },
                     objective_list_params.ObjectiveListParams,
                 ),
@@ -992,6 +1001,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
         | Omit = omit,
         subject_id: str | Omit = omit,
         tenant_id: str | Omit = omit,
+        widget_id: str | Omit = omit,
+        widget_session_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -1031,6 +1042,11 @@ class AsyncObjectivesResource(AsyncAPIResource):
           tenant_id: Filter to objectives associated with a tenant. Accepts the canonical `tenant_…`
               form or the `external_id:<value>` form.
 
+          widget_id: Filter to objectives whose conversation ran through a widget. Accepts the
+              canonical `wgt_…` form or the `external_id:<value>` form.
+
+          widget_session_id: Filter to objectives created by a specific widget session.
+
           extra_headers: Send extra headers
 
           extra_query: Add additional query parameters to the request
@@ -1065,6 +1081,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
                         "state": state,
                         "subject_id": subject_id,
                         "tenant_id": tenant_id,
+                        "widget_id": widget_id,
+                        "widget_session_id": widget_session_id,
                     },
                     objective_list_params.ObjectiveListParams,
                 ),

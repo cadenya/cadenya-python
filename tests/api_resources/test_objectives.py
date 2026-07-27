@@ -190,6 +190,8 @@ class TestObjectives:
             state="STATE_UNSPECIFIED",
             subject_id="subjectId",
             tenant_id="tenantId",
+            widget_id="widgetId",
+            widget_session_id="widgetSessionId",
         )
         assert_matches_type(SyncCursorPagination[Objective], objective, path=["response"])
 
@@ -831,6 +833,8 @@ class TestAsyncObjectives:
             state="STATE_UNSPECIFIED",
             subject_id="subjectId",
             tenant_id="tenantId",
+            widget_id="widgetId",
+            widget_session_id="widgetSessionId",
         )
         assert_matches_type(AsyncCursorPagination[Objective], objective, path=["response"])
 

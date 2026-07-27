@@ -70,3 +70,12 @@ class ObjectiveListParams(TypedDict, total=False):
 
     Accepts the canonical `tenant_…` form or the `external_id:<value>` form.
     """
+
+    widget_id: Annotated[str, PropertyInfo(alias="widgetId")]
+    """Filter to objectives whose conversation ran through a widget.
+
+    Accepts the canonical `wgt_…` form or the `external_id:<value>` form.
+    """
+
+    widget_session_id: Annotated[str, PropertyInfo(alias="widgetSessionId")]
+    """Filter to objectives created by a specific widget session."""

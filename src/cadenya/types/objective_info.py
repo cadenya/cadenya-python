@@ -9,6 +9,7 @@ from .._models import BaseModel
 from .memory_reference import MemoryReference
 from .tenant_reference import TenantReference
 from .subject_reference import SubjectReference
+from .shared.bare_metadata import BareMetadata
 from .shared.resource_metadata import ResourceMetadata
 
 __all__ = ["ObjectiveInfo"]
@@ -86,4 +87,14 @@ class ObjectiveInfo(BaseModel):
     """
     TenantReference is the read-only echo of a resource's tenant association,
     carrying both Cadenya's canonical id and the customer's own key.
+    """
+
+    widget: Optional[BareMetadata] = None
+    """
+    BareMetadata contains the minimal metadata for a resource: the ID and an
+    optional human-readable name. These are used for reference fields where the full
+    metadata (account scoping, timestamps, labels, external IDs) is not needed —
+    e.g., the tool references inside an agent variation spec or the tools assigned
+    to an objective. Both fields are server-populated; clients provide IDs through
+    sibling fields rather than by constructing a BareMetadata themselves.
     """
