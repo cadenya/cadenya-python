@@ -15,6 +15,7 @@ from .shared import (
     CreateOperationMetadata as CreateOperationMetadata,
 )
 from .upload import Upload as Upload
+from .widget import Widget as Widget
 from .account import Account as Account
 from .api_key import APIKey as APIKey
 from .profile import Profile as Profile
@@ -33,6 +34,8 @@ from .tool_filter import ToolFilter as ToolFilter
 from .tool_result import ToolResult as ToolResult
 from .upload_info import UploadInfo as UploadInfo
 from .upload_spec import UploadSpec as UploadSpec
+from .widget_info import WidgetInfo as WidgetInfo
+from .widget_spec import WidgetSpec as WidgetSpec
 from .account_info import AccountInfo as AccountInfo
 from .account_spec import AccountSpec as AccountSpec
 from .api_key_info import APIKeyInfo as APIKeyInfo
@@ -50,6 +53,7 @@ from .string_matcher import StringMatcher as StringMatcher
 from .sync_completed import SyncCompleted as SyncCompleted
 from .tool_set_event import ToolSetEvent as ToolSetEvent
 from .tool_set_usage import ToolSetUsage as ToolSetUsage
+from .widget_session import WidgetSession as WidgetSession
 from .workspace_spec import WorkspaceSpec as WorkspaceSpec
 from .ai_provider_key import AIProviderKey as AIProviderKey
 from .context_lengths import ContextLengths as ContextLengths
@@ -59,6 +63,8 @@ from .agent_spec_param import AgentSpecParam as AgentSpecParam
 from .attribute_filter import AttributeFilter as AttributeFilter
 from .memory_reference import MemoryReference as MemoryReference
 from .objective_secret import ObjectiveSecret as ObjectiveSecret
+from .tenant_assertion import TenantAssertion as TenantAssertion
+from .tenant_reference import TenantReference as TenantReference
 from .tool_set_adapter import ToolSetAdapter as ToolSetAdapter
 from .workspace_member import WorkspaceMember as WorkspaceMember
 from .workspace_secret import WorkspaceSecret as WorkspaceSecret
@@ -70,10 +76,14 @@ from .model_list_params import ModelListParams as ModelListParams
 from .model_swap_params import ModelSwapParams as ModelSwapParams
 from .sub_agent_spawned import SubAgentSpawned as SubAgentSpawned
 from .sub_agent_updated import SubAgentUpdated as SubAgentUpdated
+from .subject_assertion import SubjectAssertion as SubjectAssertion
+from .subject_reference import SubjectReference as SubjectReference
 from .tool_filter_param import ToolFilterParam as ToolFilterParam
 from .upload_spec_param import UploadSpecParam as UploadSpecParam
+from .widget_spec_param import WidgetSpecParam as WidgetSpecParam
 from .api_key_spec_param import APIKeySpecParam as APIKeySpecParam
 from .callable_tool_tool import CallableToolTool as CallableToolTool
+from .widget_list_params import WidgetListParams as WidgetListParams
 from .agent_create_params import AgentCreateParams as AgentCreateParams
 from .agent_update_params import AgentUpdateParams as AgentUpdateParams
 from .api_key_list_params import APIKeyListParams as APIKeyListParams
@@ -81,6 +91,8 @@ from .assistant_tool_call import AssistantToolCall as AssistantToolCall
 from .callable_tool_agent import CallableToolAgent as CallableToolAgent
 from .tool_set_event_data import ToolSetEventData as ToolSetEventData
 from .tool_set_spec_param import ToolSetSpecParam as ToolSetSpecParam
+from .widget_session_info import WidgetSessionInfo as WidgetSessionInfo
+from .widget_session_spec import WidgetSessionSpec as WidgetSessionSpec
 from .ai_provider_key_spec import AIProviderKeySpec as AIProviderKeySpec
 from .objective_event_data import ObjectiveEventData as ObjectiveEventData
 from .objective_event_info import ObjectiveEventInfo as ObjectiveEventInfo
@@ -91,6 +103,8 @@ from .tool_set_adapter_mcp import ToolSetAdapterMCP as ToolSetAdapterMCP
 from .tool_set_list_params import ToolSetListParams as ToolSetListParams
 from .unwrap_webhook_event import UnwrapWebhookEvent as UnwrapWebhookEvent
 from .upload_create_params import UploadCreateParams as UploadCreateParams
+from .widget_create_params import WidgetCreateParams as WidgetCreateParams
+from .widget_update_params import WidgetUpdateParams as WidgetUpdateParams
 from .workspace_spec_param import WorkspaceSpecParam as WorkspaceSpecParam
 from .api_key_create_params import APIKeyCreateParams as APIKeyCreateParams
 from .api_key_update_params import APIKeyUpdateParams as APIKeyUpdateParams
@@ -103,6 +117,7 @@ from .workspace_secret_info import WorkspaceSecretInfo as WorkspaceSecretInfo
 from .workspace_secret_spec import WorkspaceSecretSpec as WorkspaceSecretSpec
 from .attribute_filter_param import AttributeFilterParam as AttributeFilterParam
 from .memory_reference_param import MemoryReferenceParam as MemoryReferenceParam
+from .tenant_assertion_param import TenantAssertionParam as TenantAssertionParam
 from .tool_set_adapter_param import ToolSetAdapterParam as ToolSetAdapterParam
 from .tool_set_create_params import ToolSetCreateParams as ToolSetCreateParams
 from .tool_set_update_params import ToolSetUpdateParams as ToolSetUpdateParams
@@ -110,6 +125,7 @@ from .memory_layer_spec_param import MemoryLayerSpecParam as MemoryLayerSpecPara
 from .objective_cancel_params import ObjectiveCancelParams as ObjectiveCancelParams
 from .objective_create_params import ObjectiveCreateParams as ObjectiveCreateParams
 from .string_matcher_contains import StringMatcherContains as StringMatcherContains
+from .subject_assertion_param import SubjectAssertionParam as SubjectAssertionParam
 from .tool_approval_requested import ToolApprovalRequested as ToolApprovalRequested
 from .context_window_compacted import ContextWindowCompacted as ContextWindowCompacted
 from .memory_layer_list_params import MemoryLayerListParams as MemoryLayerListParams
@@ -120,6 +136,7 @@ from .tool_set_adapter_openapi import ToolSetAdapterOpenAPI as ToolSetAdapterOpe
 from .ai_provider_config_openai import AIProviderConfigOpenAI as AIProviderConfigOpenAI
 from .objective_config_snapshot import ObjectiveConfigSnapshot as ObjectiveConfigSnapshot
 from .objective_continue_params import ObjectiveContinueParams as ObjectiveContinueParams
+from .widget_session_spec_param import WidgetSessionSpecParam as WidgetSessionSpecParam
 from .ai_provider_key_spec_param import AIProviderKeySpecParam as AIProviderKeySpecParam
 from .memory_layer_create_params import MemoryLayerCreateParams as MemoryLayerCreateParams
 from .memory_layer_update_params import MemoryLayerUpdateParams as MemoryLayerUpdateParams
@@ -130,6 +147,7 @@ from .string_matcher_regex_param import StringMatcherRegexParam as StringMatcher
 from .string_matcher_starts_with import StringMatcherStartsWith as StringMatcherStartsWith
 from .tool_set_adapter_mcp_param import ToolSetAdapterMCPParam as ToolSetAdapterMCPParam
 from .tool_set_list_usage_params import ToolSetListUsageParams as ToolSetListUsageParams
+from .widget_session_list_params import WidgetSessionListParams as WidgetSessionListParams
 from .ai_provider_key_list_params import AIProviderKeyListParams as AIProviderKeyListParams
 from .approval_requirement_filter import ApprovalRequirementFilter as ApprovalRequirementFilter
 from .objective_event_data_notice import ObjectiveEventDataNotice as ObjectiveEventDataNotice
@@ -142,6 +160,7 @@ from .workspace_secret_spec_param import WorkspaceSecretSpecParam as WorkspaceSe
 from .objective_list_events_params import ObjectiveListEventsParams as ObjectiveListEventsParams
 from .tool_set_adapter_mcp_variant import ToolSetAdapterMCPVariant as ToolSetAdapterMCPVariant
 from .tool_set_adapter_openapi_url import ToolSetAdapterOpenAPIURL as ToolSetAdapterOpenAPIURL
+from .widget_session_create_params import WidgetSessionCreateParams as WidgetSessionCreateParams
 from .workspace_secret_list_params import WorkspaceSecretListParams as WorkspaceSecretListParams
 from .ai_provider_config_openrouter import AIProviderConfigOpenrouter as AIProviderConfigOpenrouter
 from .ai_provider_key_create_params import AIProviderKeyCreateParams as AIProviderKeyCreateParams
@@ -187,11 +206,15 @@ from .callable_tool_cadenya_provided_tool import CallableToolCadenyaProvidedTool
 from .rotate_webhook_signing_key_response import RotateWebhookSigningKeyResponse as RotateWebhookSigningKeyResponse
 from .tool_set_adapter_bare_variant_param import ToolSetAdapterBareVariantParam as ToolSetAdapterBareVariantParam
 from .tool_set_adapter_http_variant_param import ToolSetAdapterHTTPVariantParam as ToolSetAdapterHTTPVariantParam
+from .widget_session_delete_tenant_params import WidgetSessionDeleteTenantParams as WidgetSessionDeleteTenantParams
 from .ai_provider_config_openai_compatible import AIProviderConfigOpenAICompatible as AIProviderConfigOpenAICompatible
 from .ai_provider_credential_api_key_param import AIProviderCredentialAPIKeyParam as AIProviderCredentialAPIKeyParam
 from .ai_provider_credential_headers_param import AIProviderCredentialHeadersParam as AIProviderCredentialHeadersParam
 from .objective_list_context_windows_params import (
     ObjectiveListContextWindowsParams as ObjectiveListContextWindowsParams,
+)
+from .widget_session_delete_tenant_response import (
+    WidgetSessionDeleteTenantResponse as WidgetSessionDeleteTenantResponse,
 )
 from .approval_requirement_filter_only_param import (
     ApprovalRequirementFilterOnlyParam as ApprovalRequirementFilterOnlyParam,

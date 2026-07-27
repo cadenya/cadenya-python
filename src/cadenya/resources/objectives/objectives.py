@@ -64,6 +64,8 @@ from ..._base_client import AsyncPaginator, make_request_options
 from ...types.objective import Objective
 from ...types.objective_event import ObjectiveEvent
 from ...types.memory_reference_param import MemoryReferenceParam
+from ...types.tenant_assertion_param import TenantAssertionParam
+from ...types.subject_assertion_param import SubjectAssertionParam
 from ...types.objective_context_window import ObjectiveContextWindow
 from ...types.objective_compact_response import ObjectiveCompactResponse
 from ...types.objective_retrieve_diagnostics_response import ObjectiveRetrieveDiagnosticsResponse
@@ -120,7 +122,10 @@ class ObjectivesResource(SyncAPIResource):
         first_user_message_data: Dict[str, object] | Omit = omit,
         memory_cascade: Iterable[MemoryReferenceParam] | Omit = omit,
         metadata: CreateOperationMetadata | Omit = omit,
+        pinned_parameters: Dict[str, str] | Omit = omit,
         secrets: Iterable[objective_create_params.Secret] | Omit = omit,
+        subject: SubjectAssertionParam | Omit = omit,
+        tenant: TenantAssertionParam | Omit = omit,
         variation_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -167,8 +172,24 @@ class ObjectivesResource(SyncAPIResource):
               operation. Read-only fields (id, account_id, workspace_id, created_at,
               profile_id) are excluded since they are set by the server.
 
+          pinned_parameters: Parameters forced onto this objective's tool calls. A pinned parameter is an
+              overlay on a tool's JSON schema: the parameter is removed from what the LLM
+              sees, and its value is always overwritten server-side with the pinned value —
+              the model cannot choose a different value for it.
+
           secrets: Secrets that can be used in the headers for tool calls using the secret
               interpolation format.
+
+          subject: SubjectAssertion identifies a person within a tenant in the customer's own
+              namespace — typically their user id. Asserting a subject upserts the subject
+              record under the asserted tenant and associates the created resource with it. A
+              subject assertion is only valid alongside a tenant assertion: subject
+              identifiers are scoped to their tenant.
+
+          tenant: TenantAssertion identifies a tenant in the customer's own namespace — their org,
+              company, or team identifier for an end user. Asserting a tenant upserts the
+              tenant record in the workspace (keyed on `id` as the tenant's external_id) and
+              associates the created resource with it.
 
           variation_id: Optional explicit variation selection. Overrides the agent's
               variation_selection_mode.
@@ -196,7 +217,10 @@ class ObjectivesResource(SyncAPIResource):
                     "first_user_message_data": first_user_message_data,
                     "memory_cascade": memory_cascade,
                     "metadata": metadata,
+                    "pinned_parameters": pinned_parameters,
                     "secrets": secrets,
+                    "subject": subject,
+                    "tenant": tenant,
                     "variation_id": variation_id,
                 },
                 objective_create_params.ObjectiveCreateParams,
@@ -269,6 +293,8 @@ class ObjectivesResource(SyncAPIResource):
             "STATE_TIMED_OUT",
         ]
         | Omit = omit,
+        subject_id: str | Omit = omit,
+        tenant_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -300,6 +326,13 @@ class ObjectivesResource(SyncAPIResource):
           sort_order: Sort order for results (asc or desc by creation time)
 
           state: Filter by state
+
+          subject_id: Filter to objectives associated with a subject. Accepts the canonical `subj_…`
+              form or the `external_id:<value>` form; the external_id form is scoped within a
+              tenant and requires `tenant_id` to also be set.
+
+          tenant_id: Filter to objectives associated with a tenant. Accepts the canonical `tenant_…`
+              form or the `external_id:<value>` form.
 
           extra_headers: Send extra headers
 
@@ -333,6 +366,8 @@ class ObjectivesResource(SyncAPIResource):
                         "profile_id": profile_id,
                         "sort_order": sort_order,
                         "state": state,
+                        "subject_id": subject_id,
+                        "tenant_id": tenant_id,
                     },
                     objective_list_params.ObjectiveListParams,
                 ),
@@ -784,7 +819,10 @@ class AsyncObjectivesResource(AsyncAPIResource):
         first_user_message_data: Dict[str, object] | Omit = omit,
         memory_cascade: Iterable[MemoryReferenceParam] | Omit = omit,
         metadata: CreateOperationMetadata | Omit = omit,
+        pinned_parameters: Dict[str, str] | Omit = omit,
         secrets: Iterable[objective_create_params.Secret] | Omit = omit,
+        subject: SubjectAssertionParam | Omit = omit,
+        tenant: TenantAssertionParam | Omit = omit,
         variation_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
@@ -831,8 +869,24 @@ class AsyncObjectivesResource(AsyncAPIResource):
               operation. Read-only fields (id, account_id, workspace_id, created_at,
               profile_id) are excluded since they are set by the server.
 
+          pinned_parameters: Parameters forced onto this objective's tool calls. A pinned parameter is an
+              overlay on a tool's JSON schema: the parameter is removed from what the LLM
+              sees, and its value is always overwritten server-side with the pinned value —
+              the model cannot choose a different value for it.
+
           secrets: Secrets that can be used in the headers for tool calls using the secret
               interpolation format.
+
+          subject: SubjectAssertion identifies a person within a tenant in the customer's own
+              namespace — typically their user id. Asserting a subject upserts the subject
+              record under the asserted tenant and associates the created resource with it. A
+              subject assertion is only valid alongside a tenant assertion: subject
+              identifiers are scoped to their tenant.
+
+          tenant: TenantAssertion identifies a tenant in the customer's own namespace — their org,
+              company, or team identifier for an end user. Asserting a tenant upserts the
+              tenant record in the workspace (keyed on `id` as the tenant's external_id) and
+              associates the created resource with it.
 
           variation_id: Optional explicit variation selection. Overrides the agent's
               variation_selection_mode.
@@ -860,7 +914,10 @@ class AsyncObjectivesResource(AsyncAPIResource):
                     "first_user_message_data": first_user_message_data,
                     "memory_cascade": memory_cascade,
                     "metadata": metadata,
+                    "pinned_parameters": pinned_parameters,
                     "secrets": secrets,
+                    "subject": subject,
+                    "tenant": tenant,
                     "variation_id": variation_id,
                 },
                 objective_create_params.ObjectiveCreateParams,
@@ -933,6 +990,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
             "STATE_TIMED_OUT",
         ]
         | Omit = omit,
+        subject_id: str | Omit = omit,
+        tenant_id: str | Omit = omit,
         # Use the following arguments if you need to pass additional parameters to the API that aren't available via kwargs.
         # The extra values given here take precedence over values defined on the client or passed to this method.
         extra_headers: Headers | None = None,
@@ -964,6 +1023,13 @@ class AsyncObjectivesResource(AsyncAPIResource):
           sort_order: Sort order for results (asc or desc by creation time)
 
           state: Filter by state
+
+          subject_id: Filter to objectives associated with a subject. Accepts the canonical `subj_…`
+              form or the `external_id:<value>` form; the external_id form is scoped within a
+              tenant and requires `tenant_id` to also be set.
+
+          tenant_id: Filter to objectives associated with a tenant. Accepts the canonical `tenant_…`
+              form or the `external_id:<value>` form.
 
           extra_headers: Send extra headers
 
@@ -997,6 +1063,8 @@ class AsyncObjectivesResource(AsyncAPIResource):
                         "profile_id": profile_id,
                         "sort_order": sort_order,
                         "state": state,
+                        "subject_id": subject_id,
+                        "tenant_id": tenant_id,
                     },
                     objective_list_params.ObjectiveListParams,
                 ),
