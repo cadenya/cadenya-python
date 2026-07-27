@@ -54,12 +54,21 @@ class TestObjectives:
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
+            pinned_parameters={"foo": "string"},
             secrets=[
                 {
                     "name": "name",
                     "value": "value",
                 }
             ],
+            subject={
+                "id": "customer-user-42",
+                "name": "Jane Doe",
+            },
+            tenant={
+                "id": "acme-corp",
+                "name": "Acme Corp",
+            },
             variation_id="agentvar_01HXKD2E5NQM3T9AYWCF32BSPP",
         )
         assert_matches_type(Objective, objective, path=["response"])
@@ -179,6 +188,8 @@ class TestObjectives:
             profile_id="profile_01HXKD2E5NQM3T9AYWCFS0AP08",
             sort_order="sortOrder",
             state="STATE_UNSPECIFIED",
+            subject_id="subjectId",
+            tenant_id="tenantId",
         )
         assert_matches_type(SyncCursorPagination[Objective], objective, path=["response"])
 
@@ -684,12 +695,21 @@ class TestAsyncObjectives:
                 "external_id": "externalId",
                 "labels": {"foo": "string"},
             },
+            pinned_parameters={"foo": "string"},
             secrets=[
                 {
                     "name": "name",
                     "value": "value",
                 }
             ],
+            subject={
+                "id": "customer-user-42",
+                "name": "Jane Doe",
+            },
+            tenant={
+                "id": "acme-corp",
+                "name": "Acme Corp",
+            },
             variation_id="agentvar_01HXKD2E5NQM3T9AYWCF32BSPP",
         )
         assert_matches_type(Objective, objective, path=["response"])
@@ -809,6 +829,8 @@ class TestAsyncObjectives:
             profile_id="profile_01HXKD2E5NQM3T9AYWCFS0AP08",
             sort_order="sortOrder",
             state="STATE_UNSPECIFIED",
+            subject_id="subjectId",
+            tenant_id="tenantId",
         )
         assert_matches_type(AsyncCursorPagination[Objective], objective, path=["response"])
 

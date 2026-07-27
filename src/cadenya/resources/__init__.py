@@ -40,6 +40,14 @@ from .uploads import (
     UploadsResourceWithStreamingResponse,
     AsyncUploadsResourceWithStreamingResponse,
 )
+from .widgets import (
+    WidgetsResource,
+    AsyncWidgetsResource,
+    WidgetsResourceWithRawResponse,
+    AsyncWidgetsResourceWithRawResponse,
+    WidgetsResourceWithStreamingResponse,
+    AsyncWidgetsResourceWithStreamingResponse,
+)
 from .api_keys import (
     APIKeysResource,
     AsyncAPIKeysResource,
@@ -96,6 +104,14 @@ from .global_api_key import (
     AsyncGlobalAPIKeyResourceWithRawResponse,
     GlobalAPIKeyResourceWithStreamingResponse,
     AsyncGlobalAPIKeyResourceWithStreamingResponse,
+)
+from .widget_sessions import (
+    WidgetSessionsResource,
+    AsyncWidgetSessionsResource,
+    WidgetSessionsResourceWithRawResponse,
+    AsyncWidgetSessionsResourceWithRawResponse,
+    WidgetSessionsResourceWithStreamingResponse,
+    AsyncWidgetSessionsResourceWithStreamingResponse,
 )
 from .workspace_admin import (
     WorkspaceAdminResource,
@@ -215,4 +231,16 @@ __all__ = [
     "AsyncWorkspaceAdminResourceWithStreamingResponse",
     "WebhooksResource",
     "AsyncWebhooksResource",
+    "WidgetsResource",
+    "AsyncWidgetsResource",
+    "WidgetsResourceWithRawResponse",
+    "AsyncWidgetsResourceWithRawResponse",
+    "WidgetsResourceWithStreamingResponse",
+    "AsyncWidgetsResourceWithStreamingResponse",
+    "WidgetSessionsResource",
+    "AsyncWidgetSessionsResource",
+    "WidgetSessionsResourceWithRawResponse",
+    "AsyncWidgetSessionsResourceWithRawResponse",
+    "WidgetSessionsResourceWithStreamingResponse",
+    "AsyncWidgetSessionsResourceWithStreamingResponse",
 ]

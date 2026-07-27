@@ -1,12 +1,14 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-from typing import List
+from typing import List, Optional
 
 from pydantic import Field as FieldInfo
 
 from .profile import Profile
 from .._models import BaseModel
 from .memory_reference import MemoryReference
+from .tenant_reference import TenantReference
+from .subject_reference import SubjectReference
 from .shared.resource_metadata import ResourceMetadata
 
 __all__ = ["ObjectiveInfo"]
@@ -73,3 +75,15 @@ class ObjectiveInfo(BaseModel):
 
     total_tool_calls: int = FieldInfo(alias="totalToolCalls")
     """Total number of tool calls made during execution"""
+
+    subject: Optional[SubjectReference] = None
+    """
+    SubjectReference is the read-only echo of a resource's subject association,
+    carrying both Cadenya's canonical id and the customer's own key.
+    """
+
+    tenant: Optional[TenantReference] = None
+    """
+    TenantReference is the read-only echo of a resource's tenant association,
+    carrying both Cadenya's canonical id and the customer's own key.
+    """

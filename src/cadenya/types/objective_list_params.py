@@ -56,3 +56,17 @@ class ObjectiveListParams(TypedDict, total=False):
         "STATE_TIMED_OUT",
     ]
     """Filter by state"""
+
+    subject_id: Annotated[str, PropertyInfo(alias="subjectId")]
+    """Filter to objectives associated with a subject.
+
+    Accepts the canonical `subj_…` form or the `external_id:<value>` form; the
+    external_id form is scoped within a tenant and requires `tenant_id` to also be
+    set.
+    """
+
+    tenant_id: Annotated[str, PropertyInfo(alias="tenantId")]
+    """Filter to objectives associated with a tenant.
+
+    Accepts the canonical `tenant_…` form or the `external_id:<value>` form.
+    """

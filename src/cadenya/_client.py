@@ -41,6 +41,7 @@ if TYPE_CHECKING:
         search,
         account,
         uploads,
+        widgets,
         api_keys,
         profiles,
         tool_sets,
@@ -48,6 +49,7 @@ if TYPE_CHECKING:
         workspaces,
         memory_layers,
         global_api_key,
+        widget_sessions,
         workspace_admin,
         ai_provider_keys,
         workspace_secrets,
@@ -56,12 +58,14 @@ if TYPE_CHECKING:
     from .resources.search import SearchResource, AsyncSearchResource
     from .resources.account import AccountResource, AsyncAccountResource
     from .resources.uploads import UploadsResource, AsyncUploadsResource
+    from .resources.widgets import WidgetsResource, AsyncWidgetsResource
     from .resources.api_keys import APIKeysResource, AsyncAPIKeysResource
     from .resources.profiles import ProfilesResource, AsyncProfilesResource
     from .resources.webhooks import WebhooksResource, AsyncWebhooksResource
     from .resources.workspaces import WorkspacesResource, AsyncWorkspacesResource
     from .resources.agents.agents import AgentsResource, AsyncAgentsResource
     from .resources.global_api_key import GlobalAPIKeyResource, AsyncGlobalAPIKeyResource
+    from .resources.widget_sessions import WidgetSessionsResource, AsyncWidgetSessionsResource
     from .resources.ai_provider_keys import AIProviderKeysResource, AsyncAIProviderKeysResource
     from .resources.workspace_secrets import WorkspaceSecretsResource, AsyncWorkspaceSecretsResource
     from .resources.tool_sets.tool_sets import ToolSetsResource, AsyncToolSetsResource
@@ -315,6 +319,31 @@ class Cadenya(SyncAPIClient):
         from .resources.webhooks import WebhooksResource
 
         return WebhooksResource(self)
+
+    @cached_property
+    def widgets(self) -> WidgetsResource:
+        """Manage embeddable chat widgets.
+
+        A widget binds an agent to a globally
+         unique hostname with a per-widget origin allowlist; browsers reach it with
+         session tokens minted via WidgetSessionService.
+        """
+        from .resources.widgets import WidgetsResource
+
+        return WidgetsResource(self)
+
+    @cached_property
+    def widget_sessions(self) -> WidgetSessionsResource:
+        """Mint and manage widget sessions.
+
+        Session creation is server-to-server only:
+         the customer's backend authenticates its visitor, asserts tenant/subject
+         context, attaches any per-visitor secrets, and receives a short-lived
+         bearer token the browser uses against the widget host.
+        """
+        from .resources.widget_sessions import WidgetSessionsResource
+
+        return WidgetSessionsResource(self)
 
     @cached_property
     def with_raw_response(self) -> CadenyaWithRawResponse:
@@ -687,6 +716,31 @@ class AsyncCadenya(AsyncAPIClient):
         return AsyncWebhooksResource(self)
 
     @cached_property
+    def widgets(self) -> AsyncWidgetsResource:
+        """Manage embeddable chat widgets.
+
+        A widget binds an agent to a globally
+         unique hostname with a per-widget origin allowlist; browsers reach it with
+         session tokens minted via WidgetSessionService.
+        """
+        from .resources.widgets import AsyncWidgetsResource
+
+        return AsyncWidgetsResource(self)
+
+    @cached_property
+    def widget_sessions(self) -> AsyncWidgetSessionsResource:
+        """Mint and manage widget sessions.
+
+        Session creation is server-to-server only:
+         the customer's backend authenticates its visitor, asserts tenant/subject
+         context, attaches any per-visitor secrets, and receives a short-lived
+         bearer token the browser uses against the widget host.
+        """
+        from .resources.widget_sessions import AsyncWidgetSessionsResource
+
+        return AsyncWidgetSessionsResource(self)
+
+    @cached_property
     def with_raw_response(self) -> AsyncCadenyaWithRawResponse:
         return AsyncCadenyaWithRawResponse(self)
 
@@ -975,6 +1029,31 @@ class CadenyaWithRawResponse:
 
         return WorkspaceAdminResourceWithRawResponse(self._client.workspace_admin)
 
+    @cached_property
+    def widgets(self) -> widgets.WidgetsResourceWithRawResponse:
+        """Manage embeddable chat widgets.
+
+        A widget binds an agent to a globally
+         unique hostname with a per-widget origin allowlist; browsers reach it with
+         session tokens minted via WidgetSessionService.
+        """
+        from .resources.widgets import WidgetsResourceWithRawResponse
+
+        return WidgetsResourceWithRawResponse(self._client.widgets)
+
+    @cached_property
+    def widget_sessions(self) -> widget_sessions.WidgetSessionsResourceWithRawResponse:
+        """Mint and manage widget sessions.
+
+        Session creation is server-to-server only:
+         the customer's backend authenticates its visitor, asserts tenant/subject
+         context, attaches any per-visitor secrets, and receives a short-lived
+         bearer token the browser uses against the widget host.
+        """
+        from .resources.widget_sessions import WidgetSessionsResourceWithRawResponse
+
+        return WidgetSessionsResourceWithRawResponse(self._client.widget_sessions)
+
 
 class AsyncCadenyaWithRawResponse:
     _client: AsyncCadenya
@@ -1138,6 +1217,31 @@ class AsyncCadenyaWithRawResponse:
         from .resources.workspace_admin import AsyncWorkspaceAdminResourceWithRawResponse
 
         return AsyncWorkspaceAdminResourceWithRawResponse(self._client.workspace_admin)
+
+    @cached_property
+    def widgets(self) -> widgets.AsyncWidgetsResourceWithRawResponse:
+        """Manage embeddable chat widgets.
+
+        A widget binds an agent to a globally
+         unique hostname with a per-widget origin allowlist; browsers reach it with
+         session tokens minted via WidgetSessionService.
+        """
+        from .resources.widgets import AsyncWidgetsResourceWithRawResponse
+
+        return AsyncWidgetsResourceWithRawResponse(self._client.widgets)
+
+    @cached_property
+    def widget_sessions(self) -> widget_sessions.AsyncWidgetSessionsResourceWithRawResponse:
+        """Mint and manage widget sessions.
+
+        Session creation is server-to-server only:
+         the customer's backend authenticates its visitor, asserts tenant/subject
+         context, attaches any per-visitor secrets, and receives a short-lived
+         bearer token the browser uses against the widget host.
+        """
+        from .resources.widget_sessions import AsyncWidgetSessionsResourceWithRawResponse
+
+        return AsyncWidgetSessionsResourceWithRawResponse(self._client.widget_sessions)
 
 
 class CadenyaWithStreamedResponse:
@@ -1303,6 +1407,31 @@ class CadenyaWithStreamedResponse:
 
         return WorkspaceAdminResourceWithStreamingResponse(self._client.workspace_admin)
 
+    @cached_property
+    def widgets(self) -> widgets.WidgetsResourceWithStreamingResponse:
+        """Manage embeddable chat widgets.
+
+        A widget binds an agent to a globally
+         unique hostname with a per-widget origin allowlist; browsers reach it with
+         session tokens minted via WidgetSessionService.
+        """
+        from .resources.widgets import WidgetsResourceWithStreamingResponse
+
+        return WidgetsResourceWithStreamingResponse(self._client.widgets)
+
+    @cached_property
+    def widget_sessions(self) -> widget_sessions.WidgetSessionsResourceWithStreamingResponse:
+        """Mint and manage widget sessions.
+
+        Session creation is server-to-server only:
+         the customer's backend authenticates its visitor, asserts tenant/subject
+         context, attaches any per-visitor secrets, and receives a short-lived
+         bearer token the browser uses against the widget host.
+        """
+        from .resources.widget_sessions import WidgetSessionsResourceWithStreamingResponse
+
+        return WidgetSessionsResourceWithStreamingResponse(self._client.widget_sessions)
+
 
 class AsyncCadenyaWithStreamedResponse:
     _client: AsyncCadenya
@@ -1466,6 +1595,31 @@ class AsyncCadenyaWithStreamedResponse:
         from .resources.workspace_admin import AsyncWorkspaceAdminResourceWithStreamingResponse
 
         return AsyncWorkspaceAdminResourceWithStreamingResponse(self._client.workspace_admin)
+
+    @cached_property
+    def widgets(self) -> widgets.AsyncWidgetsResourceWithStreamingResponse:
+        """Manage embeddable chat widgets.
+
+        A widget binds an agent to a globally
+         unique hostname with a per-widget origin allowlist; browsers reach it with
+         session tokens minted via WidgetSessionService.
+        """
+        from .resources.widgets import AsyncWidgetsResourceWithStreamingResponse
+
+        return AsyncWidgetsResourceWithStreamingResponse(self._client.widgets)
+
+    @cached_property
+    def widget_sessions(self) -> widget_sessions.AsyncWidgetSessionsResourceWithStreamingResponse:
+        """Mint and manage widget sessions.
+
+        Session creation is server-to-server only:
+         the customer's backend authenticates its visitor, asserts tenant/subject
+         context, attaches any per-visitor secrets, and receives a short-lived
+         bearer token the browser uses against the widget host.
+        """
+        from .resources.widget_sessions import AsyncWidgetSessionsResourceWithStreamingResponse
+
+        return AsyncWidgetSessionsResourceWithStreamingResponse(self._client.widget_sessions)
 
 
 Client = Cadenya

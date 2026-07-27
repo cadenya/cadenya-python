@@ -114,6 +114,12 @@ class Objective(BaseModel):
     complete an objective
     """
 
+    pinned_parameters: Optional[Dict[str, str]] = FieldInfo(alias="pinnedParameters", default=None)
+    """Parameters forced onto this objective's tool calls, as provided at creation.
+
+    See CreateObjectiveRequest.pinned_parameters for semantics.
+    """
+
     secrets: Optional[List[ObjectiveSecret]] = None
     """
     Secrets that can be used in the headers for tool calls using the secret
