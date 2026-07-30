@@ -32,6 +32,14 @@ from .account import (
     AccountResourceWithStreamingResponse,
     AsyncAccountResourceWithStreamingResponse,
 )
+from .tenants import (
+    TenantsResource,
+    AsyncTenantsResource,
+    TenantsResourceWithRawResponse,
+    AsyncTenantsResourceWithRawResponse,
+    TenantsResourceWithStreamingResponse,
+    AsyncTenantsResourceWithStreamingResponse,
+)
 from .uploads import (
     UploadsResource,
     AsyncUploadsResource,
@@ -237,6 +245,12 @@ __all__ = [
     "AsyncWidgetsResourceWithRawResponse",
     "WidgetsResourceWithStreamingResponse",
     "AsyncWidgetsResourceWithStreamingResponse",
+    "TenantsResource",
+    "AsyncTenantsResource",
+    "TenantsResourceWithRawResponse",
+    "AsyncTenantsResourceWithRawResponse",
+    "TenantsResourceWithStreamingResponse",
+    "AsyncTenantsResourceWithStreamingResponse",
     "WidgetSessionsResource",
     "AsyncWidgetSessionsResource",
     "WidgetSessionsResourceWithRawResponse",
