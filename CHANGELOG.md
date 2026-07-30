@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0 (2026-07-30)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/cadenya/cadenya-python/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* **api:** api update ([7845296](https://github.com/cadenya/cadenya-python/commit/7845296c9f16d2ea7678d6db17268d6d5a11de39))
+
 ## 0.7.0 (2026-07-27)
 
 Full Changelog: [v0.6.0...v0.7.0](https://github.com/cadenya/cadenya-python/compare/v0.6.0...v0.7.0)
