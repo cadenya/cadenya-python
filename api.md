@@ -614,6 +614,26 @@ Methods:
 - <code title="post /v1/workspaces/{workspaceId}/widgets/{id}:archive">client.widgets.<a href="./src/cadenya/resources/widgets.py">archive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
 - <code title="post /v1/workspaces/{workspaceId}/widgets/{id}:unarchive">client.widgets.<a href="./src/cadenya/resources/widgets.py">unarchive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
 
+# Tenants
+
+Types:
+
+```python
+from cadenya.types import Subject, SubjectInfo, Tenant, TenantInfo
+```
+
+Methods:
+
+- <code title="get /v1/workspaces/{workspaceId}/tenants/{id}">client.tenants.<a href="./src/cadenya/resources/tenants/tenants.py">retrieve</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/tenant_retrieve_params.py">params</a>) -> <a href="./src/cadenya/types/tenant.py">Tenant</a></code>
+- <code title="get /v1/workspaces/{workspaceId}/tenants">client.tenants.<a href="./src/cadenya/resources/tenants/tenants.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/tenant_list_params.py">params</a>) -> <a href="./src/cadenya/types/tenant.py">SyncCursorPagination[Tenant]</a></code>
+- <code title="delete /v1/workspaces/{workspaceId}/tenants/{id}">client.tenants.<a href="./src/cadenya/resources/tenants/tenants.py">delete</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/tenant.py">Tenant</a></code>
+
+## Subjects
+
+Methods:
+
+- <code title="get /v1/workspaces/{workspaceId}/tenants/{tenantId}/subjects">client.tenants.subjects.<a href="./src/cadenya/resources/tenants/subjects.py">list</a>(tenant_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tenants/subject_list_params.py">params</a>) -> <a href="./src/cadenya/types/subject.py">SyncCursorPagination[Subject]</a></code>
+
 # WidgetSessions
 
 Types:

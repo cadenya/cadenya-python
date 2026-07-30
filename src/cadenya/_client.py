@@ -40,6 +40,7 @@ if TYPE_CHECKING:
         models,
         search,
         account,
+        tenants,
         uploads,
         widgets,
         api_keys,
@@ -65,6 +66,7 @@ if TYPE_CHECKING:
     from .resources.workspaces import WorkspacesResource, AsyncWorkspacesResource
     from .resources.agents.agents import AgentsResource, AsyncAgentsResource
     from .resources.global_api_key import GlobalAPIKeyResource, AsyncGlobalAPIKeyResource
+    from .resources.tenants.tenants import TenantsResource, AsyncTenantsResource
     from .resources.widget_sessions import WidgetSessionsResource, AsyncWidgetSessionsResource
     from .resources.ai_provider_keys import AIProviderKeysResource, AsyncAIProviderKeysResource
     from .resources.workspace_secrets import WorkspaceSecretsResource, AsyncWorkspaceSecretsResource
@@ -331,6 +333,19 @@ class Cadenya(SyncAPIClient):
         from .resources.widgets import WidgetsResource
 
         return WidgetsResource(self)
+
+    @cached_property
+    def tenants(self) -> TenantsResource:
+        """Read and erase tenants and the subjects under them.
+
+        Tenants and subjects are
+         created by assertion — on objective creation or widget session mint — never
+         directly, so this service has no create or update: it exists to enumerate what
+         assertions have produced, and to destroy it on request.
+        """
+        from .resources.tenants import TenantsResource
+
+        return TenantsResource(self)
 
     @cached_property
     def widget_sessions(self) -> WidgetSessionsResource:
@@ -728,6 +743,19 @@ class AsyncCadenya(AsyncAPIClient):
         return AsyncWidgetsResource(self)
 
     @cached_property
+    def tenants(self) -> AsyncTenantsResource:
+        """Read and erase tenants and the subjects under them.
+
+        Tenants and subjects are
+         created by assertion — on objective creation or widget session mint — never
+         directly, so this service has no create or update: it exists to enumerate what
+         assertions have produced, and to destroy it on request.
+        """
+        from .resources.tenants import AsyncTenantsResource
+
+        return AsyncTenantsResource(self)
+
+    @cached_property
     def widget_sessions(self) -> AsyncWidgetSessionsResource:
         """Mint and manage widget sessions.
 
@@ -1042,6 +1070,19 @@ class CadenyaWithRawResponse:
         return WidgetsResourceWithRawResponse(self._client.widgets)
 
     @cached_property
+    def tenants(self) -> tenants.TenantsResourceWithRawResponse:
+        """Read and erase tenants and the subjects under them.
+
+        Tenants and subjects are
+         created by assertion — on objective creation or widget session mint — never
+         directly, so this service has no create or update: it exists to enumerate what
+         assertions have produced, and to destroy it on request.
+        """
+        from .resources.tenants import TenantsResourceWithRawResponse
+
+        return TenantsResourceWithRawResponse(self._client.tenants)
+
+    @cached_property
     def widget_sessions(self) -> widget_sessions.WidgetSessionsResourceWithRawResponse:
         """Mint and manage widget sessions.
 
@@ -1229,6 +1270,19 @@ class AsyncCadenyaWithRawResponse:
         from .resources.widgets import AsyncWidgetsResourceWithRawResponse
 
         return AsyncWidgetsResourceWithRawResponse(self._client.widgets)
+
+    @cached_property
+    def tenants(self) -> tenants.AsyncTenantsResourceWithRawResponse:
+        """Read and erase tenants and the subjects under them.
+
+        Tenants and subjects are
+         created by assertion — on objective creation or widget session mint — never
+         directly, so this service has no create or update: it exists to enumerate what
+         assertions have produced, and to destroy it on request.
+        """
+        from .resources.tenants import AsyncTenantsResourceWithRawResponse
+
+        return AsyncTenantsResourceWithRawResponse(self._client.tenants)
 
     @cached_property
     def widget_sessions(self) -> widget_sessions.AsyncWidgetSessionsResourceWithRawResponse:
@@ -1420,6 +1474,19 @@ class CadenyaWithStreamedResponse:
         return WidgetsResourceWithStreamingResponse(self._client.widgets)
 
     @cached_property
+    def tenants(self) -> tenants.TenantsResourceWithStreamingResponse:
+        """Read and erase tenants and the subjects under them.
+
+        Tenants and subjects are
+         created by assertion — on objective creation or widget session mint — never
+         directly, so this service has no create or update: it exists to enumerate what
+         assertions have produced, and to destroy it on request.
+        """
+        from .resources.tenants import TenantsResourceWithStreamingResponse
+
+        return TenantsResourceWithStreamingResponse(self._client.tenants)
+
+    @cached_property
     def widget_sessions(self) -> widget_sessions.WidgetSessionsResourceWithStreamingResponse:
         """Mint and manage widget sessions.
 
@@ -1607,6 +1674,19 @@ class AsyncCadenyaWithStreamedResponse:
         from .resources.widgets import AsyncWidgetsResourceWithStreamingResponse
 
         return AsyncWidgetsResourceWithStreamingResponse(self._client.widgets)
+
+    @cached_property
+    def tenants(self) -> tenants.AsyncTenantsResourceWithStreamingResponse:
+        """Read and erase tenants and the subjects under them.
+
+        Tenants and subjects are
+         created by assertion — on objective creation or widget session mint — never
+         directly, so this service has no create or update: it exists to enumerate what
+         assertions have produced, and to destroy it on request.
+        """
+        from .resources.tenants import AsyncTenantsResourceWithStreamingResponse
+
+        return AsyncTenantsResourceWithStreamingResponse(self._client.tenants)
 
     @cached_property
     def widget_sessions(self) -> widget_sessions.AsyncWidgetSessionsResourceWithStreamingResponse:
