@@ -14,11 +14,13 @@ from .shared import (
     AccountResourceMetadata as AccountResourceMetadata,
     CreateOperationMetadata as CreateOperationMetadata,
 )
+from .tenant import Tenant as Tenant
 from .upload import Upload as Upload
 from .widget import Widget as Widget
 from .account import Account as Account
 from .api_key import APIKey as APIKey
 from .profile import Profile as Profile
+from .subject import Subject as Subject
 from .tool_set import ToolSet as ToolSet
 from .objective import Objective as Objective
 from .workspace import Workspace as Workspace
@@ -28,6 +30,7 @@ from .model_spec import ModelSpec as ModelSpec
 from .tool_error import ToolError as ToolError
 from .memory_read import MemoryRead as MemoryRead
 from .sync_failed import SyncFailed as SyncFailed
+from .tenant_info import TenantInfo as TenantInfo
 from .tool_called import ToolCalled as ToolCalled
 from .tool_denied import ToolDenied as ToolDenied
 from .tool_filter import ToolFilter as ToolFilter
@@ -42,6 +45,7 @@ from .api_key_info import APIKeyInfo as APIKeyInfo
 from .api_key_spec import APIKeySpec as APIKeySpec
 from .memory_layer import MemoryLayer as MemoryLayer
 from .profile_spec import ProfileSpec as ProfileSpec
+from .subject_info import SubjectInfo as SubjectInfo
 from .sync_started import SyncStarted as SyncStarted
 from .user_message import UserMessage as UserMessage
 from .callable_tool import CallableTool as CallableTool
@@ -83,6 +87,7 @@ from .upload_spec_param import UploadSpecParam as UploadSpecParam
 from .widget_spec_param import WidgetSpecParam as WidgetSpecParam
 from .api_key_spec_param import APIKeySpecParam as APIKeySpecParam
 from .callable_tool_tool import CallableToolTool as CallableToolTool
+from .tenant_list_params import TenantListParams as TenantListParams
 from .widget_list_params import WidgetListParams as WidgetListParams
 from .agent_create_params import AgentCreateParams as AgentCreateParams
 from .agent_update_params import AgentUpdateParams as AgentUpdateParams
@@ -118,6 +123,7 @@ from .workspace_secret_spec import WorkspaceSecretSpec as WorkspaceSecretSpec
 from .attribute_filter_param import AttributeFilterParam as AttributeFilterParam
 from .memory_reference_param import MemoryReferenceParam as MemoryReferenceParam
 from .tenant_assertion_param import TenantAssertionParam as TenantAssertionParam
+from .tenant_retrieve_params import TenantRetrieveParams as TenantRetrieveParams
 from .tool_set_adapter_param import ToolSetAdapterParam as ToolSetAdapterParam
 from .tool_set_create_params import ToolSetCreateParams as ToolSetCreateParams
 from .tool_set_update_params import ToolSetUpdateParams as ToolSetUpdateParams
