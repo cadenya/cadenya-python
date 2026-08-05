@@ -23,6 +23,7 @@ from .profile import Profile as Profile
 from .subject import Subject as Subject
 from .tool_set import ToolSet as ToolSet
 from .objective import Objective as Objective
+from .reasoning import Reasoning as Reasoning
 from .workspace import Workspace as Workspace
 from .agent_info import AgentInfo as AgentInfo
 from .agent_spec import AgentSpec as AgentSpec
@@ -181,6 +182,7 @@ from .ai_provider_credential_api_key import AIProviderCredentialAPIKey as AIProv
 from .ai_provider_credential_headers import AIProviderCredentialHeaders as AIProviderCredentialHeaders
 from .objective_event_data_cancelled import ObjectiveEventDataCancelled as ObjectiveEventDataCancelled
 from .objective_event_data_finalized import ObjectiveEventDataFinalized as ObjectiveEventDataFinalized
+from .objective_event_data_reasoning import ObjectiveEventDataReasoning as ObjectiveEventDataReasoning
 from .objective_event_data_timed_out import ObjectiveEventDataTimedOut as ObjectiveEventDataTimedOut
 from .string_matcher_ends_with_param import StringMatcherEndsWithParam as StringMatcherEndsWithParam
 from .tool_set_adapter_openapi_param import ToolSetAdapterOpenAPIParam as ToolSetAdapterOpenAPIParam
