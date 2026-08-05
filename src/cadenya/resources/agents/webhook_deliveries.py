@@ -71,6 +71,7 @@ class WebhookDeliveriesResource(SyncAPIResource):
             "OBJECTIVE_EVENT_TYPE_FINALIZED",
             "OBJECTIVE_EVENT_TYPE_NOTICE",
             "OBJECTIVE_EVENT_TYPE_TIMED_OUT",
+            "OBJECTIVE_EVENT_TYPE_REASONING",
         ]
         | Omit = omit,
         labels: str | Omit = omit,
@@ -187,6 +188,7 @@ class AsyncWebhookDeliveriesResource(AsyncAPIResource):
             "OBJECTIVE_EVENT_TYPE_FINALIZED",
             "OBJECTIVE_EVENT_TYPE_NOTICE",
             "OBJECTIVE_EVENT_TYPE_TIMED_OUT",
+            "OBJECTIVE_EVENT_TYPE_REASONING",
         ]
         | Omit = omit,
         labels: str | Omit = omit,

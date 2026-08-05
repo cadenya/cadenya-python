@@ -8,6 +8,7 @@ from .objective_event_data_error import ObjectiveEventDataError
 from .objective_event_data_notice import ObjectiveEventDataNotice
 from .objective_event_data_cancelled import ObjectiveEventDataCancelled
 from .objective_event_data_finalized import ObjectiveEventDataFinalized
+from .objective_event_data_reasoning import ObjectiveEventDataReasoning
 from .objective_event_data_timed_out import ObjectiveEventDataTimedOut
 from .objective_event_data_tool_error import ObjectiveEventDataToolError
 from .objective_event_data_memory_read import ObjectiveEventDataMemoryRead
@@ -43,6 +44,7 @@ ObjectiveEventData: TypeAlias = Annotated[
         ObjectiveEventDataFinalized,
         ObjectiveEventDataNotice,
         ObjectiveEventDataTimedOut,
+        ObjectiveEventDataReasoning,
     ],
     PropertyInfo(discriminator="type"),
 ]

@@ -1,6 +1,7 @@
 # File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
 from typing import Optional
+from typing_extensions import Literal
 
 from pydantic import Field as FieldInfo
 
@@ -27,3 +28,12 @@ class ModelSpec(BaseModel):
 
     output_price_per_million_tokens: Optional[str] = FieldInfo(alias="outputPricePerMillionTokens", default=None)
     """Cost per million output tokens in cents (e.g., 1500 = $15.00)"""
+
+    reasoning: Optional[
+        Literal["REASONING_UNSPECIFIED", "REASONING_NONE", "REASONING_ADAPTIVE", "REASONING_BUDGET"]
+    ] = None
+    """The model's reasoning capability.
+
+    Catalog data used to decide whether thinking is requested for objective
+    iterations on this model.
+    """
