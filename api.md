@@ -1,663 +1,779 @@
-# Shared Types
+# Cadenya Python SDK reference
+
+Keyword arguments are snake_case (nested request dicts too); see README.md for usage patterns.
+
+## client.accounts
+
+Retrieves the current account for the token accessing the API
 
 ```python
-from cadenya.types import (
-    AccountResourceMetadata,
-    BareMetadata,
-    CreateOperationMetadata,
-    CreateResourceMetadata,
-    OperationMetadata,
-    ResourceMetadata,
-    UpdateResourceMetadata,
-)
+client.accounts.retrieve() -> Account
 ```
-
-# AIProviderKeys
-
-Types:
+Rotates the challenge token for the account
 
 ```python
-from cadenya.types import (
-    AIProviderConfigOpenAI,
-    AIProviderConfigOpenAICompatible,
-    AIProviderConfigOpenrouter,
-    AIProviderCredentialAPIKey,
-    AIProviderCredentialHeaders,
-    AIProviderKey,
-    AIProviderKeySpec,
-)
+client.accounts.rotate_challenge_token() -> RotateChallengeTokenResponse
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/ai_provider_keys">client.ai_provider_keys.<a href="./src/cadenya/resources/ai_provider_keys.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/ai_provider_key_create_params.py">params</a>) -> <a href="./src/cadenya/types/ai_provider_key.py">AIProviderKey</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/ai_provider_keys/{id}">client.ai_provider_keys.<a href="./src/cadenya/resources/ai_provider_keys.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/ai_provider_key.py">AIProviderKey</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/ai_provider_keys/{id}">client.ai_provider_keys.<a href="./src/cadenya/resources/ai_provider_keys.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/ai_provider_key_update_params.py">params</a>) -> <a href="./src/cadenya/types/ai_provider_key.py">AIProviderKey</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/ai_provider_keys">client.ai_provider_keys.<a href="./src/cadenya/resources/ai_provider_keys.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/ai_provider_key_list_params.py">params</a>) -> <a href="./src/cadenya/types/ai_provider_key.py">SyncCursorPagination[AIProviderKey]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/ai_provider_keys/{id}">client.ai_provider_keys.<a href="./src/cadenya/resources/ai_provider_keys.py">delete</a>(id, \*, workspace_id) -> None</code>
-
-# Account
-
-Types:
+Rotates the webhook signing key for the account
 
 ```python
-from cadenya.types import (
-    Account,
-    AccountInfo,
-    AccountSpec,
-    Profile,
-    ProfileSpec,
-    RotateChallengeTokenResponse,
-    RotateWebhookSigningKeyResponse,
-)
+client.accounts.rotate_webhook_signing_key() -> RotateWebhookEventsHmacSecretResponse
 ```
 
-Methods:
+## client.api_keys
 
-- <code title="get /v1/account">client.account.<a href="./src/cadenya/resources/account.py">retrieve</a>() -> <a href="./src/cadenya/types/account.py">Account</a></code>
-- <code title="post /v1/account:rotateChallengeToken">client.account.<a href="./src/cadenya/resources/account.py">rotate_challenge_token</a>() -> <a href="./src/cadenya/types/rotate_challenge_token_response.py">RotateChallengeTokenResponse</a></code>
-- <code title="post /v1/account:rotateWebhookSigningKey">client.account.<a href="./src/cadenya/resources/account.py">rotate_webhook_signing_key</a>() -> <a href="./src/cadenya/types/rotate_webhook_signing_key_response.py">RotateWebhookSigningKeyResponse</a></code>
-
-# Profiles
-
-Methods:
-
-- <code title="get /v1/whoami">client.profiles.<a href="./src/cadenya/resources/profiles.py">whoami</a>() -> <a href="./src/cadenya/types/profile.py">Profile</a></code>
-
-# Agents
-
-Types:
+Get the global API key
 
 ```python
-from cadenya.types import Agent, AgentInfo, AgentSpec, Page
+client.api_keys.retrieve_global() -> APIKey
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/agents">client.agents.<a href="./src/cadenya/resources/agents/agents.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/agent_create_params.py">params</a>) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/agents/{id}">client.agents.<a href="./src/cadenya/resources/agents/agents.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/agents/{id}">client.agents.<a href="./src/cadenya/resources/agents/agents.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/agent_update_params.py">params</a>) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/agents">client.agents.<a href="./src/cadenya/resources/agents/agents.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/agent_list_params.py">params</a>) -> <a href="./src/cadenya/types/agent.py">SyncCursorPagination[Agent]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/agents/{id}">client.agents.<a href="./src/cadenya/resources/agents/agents.py">delete</a>(id, \*, workspace_id) -> None</code>
-- <code title="post /v1/workspaces/{workspaceId}/agents/{id}:archive">client.agents.<a href="./src/cadenya/resources/agents/agents.py">archive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/agents/{id}:publish">client.agents.<a href="./src/cadenya/resources/agents/agents.py">publish</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/agents/{id}:unarchive">client.agents.<a href="./src/cadenya/resources/agents/agents.py">unarchive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/agents/{id}:unpublish">client.agents.<a href="./src/cadenya/resources/agents/agents.py">unpublish</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/agent.py">Agent</a></code>
-
-## Feedback
-
-Methods:
-
-- <code title="get /v1/workspaces/{workspaceId}/agents/{agentId}/feedback">client.agents.feedback.<a href="./src/cadenya/resources/agents/feedback.py">list</a>(agent_id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/feedback_list_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_feedback.py">SyncCursorPagination[ObjectiveFeedback]</a></code>
-
-## WebhookDeliveries
-
-Types:
+Disable the global API key
 
 ```python
-from cadenya.types.agents import WebhookDelivery, WebhookDeliveryData
+client.api_keys.disable_global() -> APIKey
 ```
-
-Methods:
-
-- <code title="get /v1/workspaces/{workspaceId}/agents/{agentId}/webhook_deliveries">client.agents.webhook_deliveries.<a href="./src/cadenya/resources/agents/webhook_deliveries.py">list</a>(agent_id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/webhook_delivery_list_params.py">params</a>) -> <a href="./src/cadenya/types/agents/webhook_delivery.py">SyncCursorPagination[WebhookDelivery]</a></code>
-
-## Variations
-
-Types:
+Enable the global API key
 
 ```python
-from cadenya.types.agents import (
-    AddAgentVariationAssignmentRequestSubAgentID,
-    AddAgentVariationAssignmentRequestToolID,
-    AddAgentVariationAssignmentRequestToolSetID,
-    AgentVariation,
-    AgentVariationInfo,
-    AgentVariationSpec,
-    AgentVariationSpecCompactionConfig,
-    AgentVariationSpecConstraints,
-    AgentVariationSpecModelConfig,
-    AgentVariationSpecProgressiveDiscovery,
-    CompactionConfigSummarizationStrategy,
-    CompactionConfigToolResultClearingStrategy,
-    VariationAssignment,
-    VariationAssignmentAgent,
-    VariationAssignmentTool,
-    VariationAssignmentToolSet,
-    VariationMemoryLayerAssignment,
-)
+client.api_keys.enable_global() -> APIKey
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/agents/{agentId}/variations">client.agents.variations.<a href="./src/cadenya/resources/agents/variations.py">create</a>(agent_id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/variation_create_params.py">params</a>) -> <a href="./src/cadenya/types/agents/agent_variation.py">AgentVariation</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/agents/{agentId}/variations/{id}">client.agents.variations.<a href="./src/cadenya/resources/agents/variations.py">retrieve</a>(agent_id, id, \*, workspace_id) -> <a href="./src/cadenya/types/agents/agent_variation.py">AgentVariation</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/agents/{agentId}/variations/{id}">client.agents.variations.<a href="./src/cadenya/resources/agents/variations.py">update</a>(agent_id, id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/variation_update_params.py">params</a>) -> <a href="./src/cadenya/types/agents/agent_variation.py">AgentVariation</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/agents/{agentId}/variations">client.agents.variations.<a href="./src/cadenya/resources/agents/variations.py">list</a>(agent_id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/variation_list_params.py">params</a>) -> <a href="./src/cadenya/types/agents/agent_variation.py">SyncCursorPagination[AgentVariation]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/agents/{agentId}/variations/{id}">client.agents.variations.<a href="./src/cadenya/resources/agents/variations.py">delete</a>(agent_id, id, \*, workspace_id) -> None</code>
-- <code title="post /v1/workspaces/{workspaceId}/agents/{agentId}/variations/{variationId}/assignments">client.agents.variations.<a href="./src/cadenya/resources/agents/variations.py">add_assignment</a>(agent_id, variation_id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/variation_add_assignment_params.py">params</a>) -> <a href="./src/cadenya/types/agents/variation_assignment.py">VariationAssignment</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/agents/{agentId}/variations/{variationId}/memory_layer_assignments">client.agents.variations.<a href="./src/cadenya/resources/agents/variations.py">add_memory_layer</a>(agent_id, variation_id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/variation_add_memory_layer_params.py">params</a>) -> <a href="./src/cadenya/types/agents/variation_memory_layer_assignment.py">VariationMemoryLayerAssignment</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/agents/{agentId}/variations/{variationId}/assignments/{id}">client.agents.variations.<a href="./src/cadenya/resources/agents/variations.py">remove_assignment</a>(agent_id, variation_id, id, \*, workspace_id) -> None</code>
-- <code title="delete /v1/workspaces/{workspaceId}/agents/{agentId}/variations/{variationId}/memory_layer_assignments/{id}">client.agents.variations.<a href="./src/cadenya/resources/agents/variations.py">remove_memory_layer</a>(agent_id, variation_id, id, \*, workspace_id) -> None</code>
-- <code title="patch /v1/workspaces/{workspaceId}/agents/{agentId}/variations/{variationId}/memory_layer_assignments/{id}">client.agents.variations.<a href="./src/cadenya/resources/agents/variations.py">update_memory_layer</a>(agent_id, variation_id, id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/variation_update_memory_layer_params.py">params</a>) -> <a href="./src/cadenya/types/agents/variation_memory_layer_assignment.py">VariationMemoryLayerAssignment</a></code>
-
-## Schedules
-
-Types:
+Rotate the global API key
 
 ```python
-from cadenya.types.agents import (
-    AgentSchedule,
-    AgentScheduleInfo,
-    AgentScheduleSpec,
-    AgentScheduleSpecSchedule,
-    ScheduleCalendar,
-    ScheduleInterval,
-    ScheduleRange,
-)
+client.api_keys.rotate_global() -> APIKey
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/agents/{agentId}/schedules">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">create</a>(agent_id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/schedule_create_params.py">params</a>) -> <a href="./src/cadenya/types/agents/agent_schedule.py">AgentSchedule</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/agents/{agentId}/schedules/{id}">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">retrieve</a>(agent_id, id, \*, workspace_id) -> <a href="./src/cadenya/types/agents/agent_schedule.py">AgentSchedule</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/agents/{agentId}/schedules/{id}">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">update</a>(agent_id, id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/schedule_update_params.py">params</a>) -> <a href="./src/cadenya/types/agents/agent_schedule.py">AgentSchedule</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/agents/{agentId}/schedules">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">list</a>(agent_id, \*, workspace_id, \*\*<a href="src/cadenya/types/agents/schedule_list_params.py">params</a>) -> <a href="./src/cadenya/types/agents/agent_schedule.py">SyncCursorPagination[AgentSchedule]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/agents/{agentId}/schedules/{id}">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">delete</a>(agent_id, id, \*, workspace_id) -> None</code>
-- <code title="post /v1/workspaces/{workspaceId}/agents/{agentId}/schedules/{id}:archive">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">archive</a>(agent_id, id, \*, workspace_id) -> <a href="./src/cadenya/types/agents/agent_schedule.py">AgentSchedule</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/agents/{agentId}/schedules/{id}:pause">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">pause</a>(agent_id, id, \*, workspace_id) -> <a href="./src/cadenya/types/agents/agent_schedule.py">AgentSchedule</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/agents/{agentId}/schedules/{id}:resume">client.agents.schedules.<a href="./src/cadenya/resources/agents/schedules.py">resume</a>(agent_id, id, \*, workspace_id) -> <a href="./src/cadenya/types/agents/agent_schedule.py">AgentSchedule</a></code>
-
-# Objectives
-
-Types:
+List API keys
 
 ```python
-from cadenya.types import (
-    AssistantMessage,
-    AssistantToolCall,
-    CallableTool,
-    CallableToolAgent,
-    CallableToolCadenyaProvidedTool,
-    CallableToolTool,
-    ContextLengths,
-    ContextWindowCompacted,
-    MemoryRead,
-    MemoryReference,
-    Objective,
-    ObjectiveConfigSnapshot,
-    ObjectiveContextWindow,
-    ObjectiveContextWindowData,
-    ObjectiveDiagnostics,
-    ObjectiveError,
-    ObjectiveEvent,
-    ObjectiveEventData,
-    ObjectiveEventDataAssistantMessage,
-    ObjectiveEventDataCancelled,
-    ObjectiveEventDataContextWindowCompacted,
-    ObjectiveEventDataError,
-    ObjectiveEventDataFinalized,
-    ObjectiveEventDataMemoryRead,
-    ObjectiveEventDataNotice,
-    ObjectiveEventDataReasoning,
-    ObjectiveEventDataSubAgentSpawned,
-    ObjectiveEventDataSubAgentUpdated,
-    ObjectiveEventDataTimedOut,
-    ObjectiveEventDataToolApprovalRequested,
-    ObjectiveEventDataToolApproved,
-    ObjectiveEventDataToolCalled,
-    ObjectiveEventDataToolDenied,
-    ObjectiveEventDataToolError,
-    ObjectiveEventDataToolResult,
-    ObjectiveEventDataUserMessage,
-    ObjectiveEventInfo,
-    ObjectiveEventWebhookData,
-    ObjectiveInfo,
-    ObjectiveSecret,
-    Reasoning,
-    SubAgentSpawned,
-    SubAgentUpdated,
-    ToolApprovalRequested,
-    ToolApproved,
-    ToolCalled,
-    ToolDenied,
-    ToolError,
-    ToolResult,
-    UserMessage,
-    ObjectiveCompactResponse,
-    ObjectiveRetrieveDiagnosticsResponse,
-)
+client.api_keys.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, labels=None, sort_order=None, include_info=None) -> SyncPage[APIKey]
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/objectives">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/objective_create_params.py">params</a>) -> <a href="./src/cadenya/types/objective.py">Objective</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{id}">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/objective.py">Objective</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/objectives">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/objective_list_params.py">params</a>) -> <a href="./src/cadenya/types/objective.py">SyncCursorPagination[Objective]</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}:cancel">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">cancel</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_cancel_params.py">params</a>) -> <a href="./src/cadenya/types/objective.py">Objective</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}:compact">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">compact</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_compact_params.py">params</a>) -> <a href="./src/cadenya/types/objective_compact_response.py">ObjectiveCompactResponse</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}:continue">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">continue\_</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_continue_params.py">params</a>) -> <a href="./src/cadenya/types/objective_event.py">ObjectiveEvent</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/context_windows">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">list_context_windows</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_list_context_windows_params.py">params</a>) -> <a href="./src/cadenya/types/objective_context_window.py">SyncCursorPagination[ObjectiveContextWindow]</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/events">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">list_events</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objective_list_events_params.py">params</a>) -> <a href="./src/cadenya/types/objective_event.py">SyncCursorPagination[ObjectiveEvent]</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/diagnostics">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">retrieve_diagnostics</a>(objective_id, \*, workspace_id) -> <a href="./src/cadenya/types/objective_retrieve_diagnostics_response.py">ObjectiveRetrieveDiagnosticsResponse</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/events:stream">client.objectives.<a href="./src/cadenya/resources/objectives/objectives.py">stream_events</a>(objective_id, \*, workspace_id) -> <a href="./src/cadenya/types/objective_event.py">ObjectiveEvent</a></code>
-
-## Tools
-
-Types:
+Create a new API key
 
 ```python
-from cadenya.types.objectives import ObjectiveTool
+client.api_keys.create(*, workspace_id=None, metadata, spec) -> APIKey
 ```
-
-Methods:
-
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tools">client.objectives.tools.<a href="./src/cadenya/resources/objectives/tools.py">list</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objectives/tool_list_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_tool.py">SyncCursorPagination[ObjectiveTool]</a></code>
-
-## ToolCalls
-
-Types:
+Get an API key by ID
 
 ```python
-from cadenya.types.objectives import (
-    ObjectiveToolCall,
-    ObjectiveToolCallData,
-    ObjectiveToolCallInfo,
-    ObjectiveToolCallResult,
-    ObjectiveToolCallResultAudioBlock,
-    ObjectiveToolCallResultContentBlock,
-    ObjectiveToolCallResultContentBlockAudio,
-    ObjectiveToolCallResultContentBlockImage,
-    ObjectiveToolCallResultContentBlockText,
-    ObjectiveToolCallResultImageBlock,
-    ObjectiveToolCallResultTextBlock,
-    ObjectiveToolCallWithResult,
-    ResolvedSecret,
-    SetToolCallContentRequestAudioBlock,
-    SetToolCallContentRequestContentBlock,
-    SetToolCallContentRequestContentBlockAudio,
-    SetToolCallContentRequestContentBlockImage,
-    SetToolCallContentRequestContentBlockText,
-    SetToolCallContentRequestImageBlock,
-    SetToolCallContentRequestTextBlock,
-)
+client.api_keys.retrieve(id: str, *, workspace_id=None) -> APIKey
 ```
-
-Methods:
-
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls/{toolCallId}">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">retrieve</a>(objective_id, tool_call_id, \*, workspace_id) -> <a href="./src/cadenya/types/objectives/objective_tool_call_with_result.py">ObjectiveToolCallWithResult</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">list</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objectives/tool_call_list_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_tool_call.py">SyncCursorPagination[ObjectiveToolCall]</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls/{toolCallId}:approve">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">approve</a>(objective_id, tool_call_id, \*, workspace_id) -> <a href="./src/cadenya/types/objectives/objective_tool_call.py">ObjectiveToolCall</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls/{toolCallId}:deny">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">deny</a>(objective_id, tool_call_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objectives/tool_call_deny_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_tool_call.py">ObjectiveToolCall</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tool_calls/{toolCallId}:setContent">client.objectives.tool_calls.<a href="./src/cadenya/resources/objectives/tool_calls.py">set_content</a>(objective_id, tool_call_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objectives/tool_call_set_content_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_tool_call.py">ObjectiveToolCall</a></code>
-
-## Tasks
-
-Types:
+Delete an API key
 
 ```python
-from cadenya.types.objectives import ObjectiveTask, ObjectiveTaskData
+client.api_keys.delete(id: str, *, workspace_id=None) -> None
 ```
-
-Methods:
-
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tasks/{id}">client.objectives.tasks.<a href="./src/cadenya/resources/objectives/tasks.py">retrieve</a>(objective_id, id, \*, workspace_id) -> <a href="./src/cadenya/types/objectives/objective_task.py">ObjectiveTask</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/tasks">client.objectives.tasks.<a href="./src/cadenya/resources/objectives/tasks.py">list</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objectives/task_list_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_task.py">SyncCursorPagination[ObjectiveTask]</a></code>
-
-## Feedback
-
-Types:
+Update an API key
 
 ```python
-from cadenya.types.objectives import ObjectiveFeedback, ObjectiveFeedbackData, ObjectiveFeedbackInfo
+client.api_keys.update(id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> APIKey
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/objectives/{objectiveId}/feedback">client.objectives.feedback.<a href="./src/cadenya/resources/objectives/feedback.py">create</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objectives/feedback_create_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_feedback.py">ObjectiveFeedback</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/objectives/{objectiveId}/feedback">client.objectives.feedback.<a href="./src/cadenya/resources/objectives/feedback.py">list</a>(objective_id, \*, workspace_id, \*\*<a href="src/cadenya/types/objectives/feedback_list_params.py">params</a>) -> <a href="./src/cadenya/types/objectives/objective_feedback.py">SyncCursorPagination[ObjectiveFeedback]</a></code>
-
-# MemoryLayers
-
-Types:
+Disable an API key
 
 ```python
-from cadenya.types import MemoryLayer, MemoryLayerInfo, MemoryLayerSpec
+client.api_keys.disable(id: str, *, workspace_id=None) -> APIKey
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/memory_layers">client.memory_layers.<a href="./src/cadenya/resources/memory_layers/memory_layers.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/memory_layer_create_params.py">params</a>) -> <a href="./src/cadenya/types/memory_layer.py">MemoryLayer</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/memory_layers/{id}">client.memory_layers.<a href="./src/cadenya/resources/memory_layers/memory_layers.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/memory_layer.py">MemoryLayer</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/memory_layers/{id}">client.memory_layers.<a href="./src/cadenya/resources/memory_layers/memory_layers.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/memory_layer_update_params.py">params</a>) -> <a href="./src/cadenya/types/memory_layer.py">MemoryLayer</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/memory_layers">client.memory_layers.<a href="./src/cadenya/resources/memory_layers/memory_layers.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/memory_layer_list_params.py">params</a>) -> <a href="./src/cadenya/types/memory_layer.py">SyncCursorPagination[MemoryLayer]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/memory_layers/{id}">client.memory_layers.<a href="./src/cadenya/resources/memory_layers/memory_layers.py">delete</a>(id, \*, workspace_id) -> None</code>
-
-## Entries
-
-Types:
+Enable an API key
 
 ```python
-from cadenya.types.memory_layers import (
-    MemoryEntry,
-    MemoryEntryCreateSpec,
-    MemoryEntryCreateSpecContent,
-    MemoryEntryCreateSpecUploadID,
-    MemoryEntryDetail,
-    MemoryEntryInfo,
-    MemoryEntrySpec,
-    MemoryEntryUpdateSpec,
-)
+client.api_keys.enable(id: str, *, workspace_id=None) -> APIKey
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/memory_layers/{memoryLayerId}/entries">client.memory_layers.entries.<a href="./src/cadenya/resources/memory_layers/entries.py">create</a>(memory_layer_id, \*, workspace_id, \*\*<a href="src/cadenya/types/memory_layers/entry_create_params.py">params</a>) -> <a href="./src/cadenya/types/memory_layers/memory_entry_detail.py">MemoryEntryDetail</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/memory_layers/{memoryLayerId}/entries/{id}">client.memory_layers.entries.<a href="./src/cadenya/resources/memory_layers/entries.py">retrieve</a>(memory_layer_id, id, \*, workspace_id) -> <a href="./src/cadenya/types/memory_layers/memory_entry_detail.py">MemoryEntryDetail</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/memory_layers/{memoryLayerId}/entries/{id}">client.memory_layers.entries.<a href="./src/cadenya/resources/memory_layers/entries.py">update</a>(memory_layer_id, id, \*, workspace_id, \*\*<a href="src/cadenya/types/memory_layers/entry_update_params.py">params</a>) -> <a href="./src/cadenya/types/memory_layers/memory_entry_detail.py">MemoryEntryDetail</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/memory_layers/{memoryLayerId}/entries">client.memory_layers.entries.<a href="./src/cadenya/resources/memory_layers/entries.py">list</a>(memory_layer_id, \*, workspace_id, \*\*<a href="src/cadenya/types/memory_layers/entry_list_params.py">params</a>) -> <a href="./src/cadenya/types/memory_layers/memory_entry.py">SyncCursorPagination[MemoryEntry]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/memory_layers/{memoryLayerId}/entries/{id}">client.memory_layers.entries.<a href="./src/cadenya/resources/memory_layers/entries.py">delete</a>(memory_layer_id, id, \*, workspace_id) -> None</code>
-
-# Uploads
-
-Types:
+Rotate an API key
 
 ```python
-from cadenya.types import Upload, UploadInfo, UploadSpec
+client.api_keys.rotate(id: str, *, workspace_id=None) -> APIKey
 ```
 
-Methods:
+## client.workspace_admin
 
-- <code title="post /v1/workspaces/{workspaceId}/uploads">client.uploads.<a href="./src/cadenya/resources/uploads.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/upload_create_params.py">params</a>) -> <a href="./src/cadenya/types/upload.py">Upload</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/uploads/{id}">client.uploads.<a href="./src/cadenya/resources/uploads.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/upload.py">Upload</a></code>
-
-# Models
-
-Types:
+Search account profiles
 
 ```python
-from cadenya.types import Model, ModelSpec
+client.workspace_admin.list_profiles(*, limit=None, cursor=None, query=None, labels=None) -> SyncPage[Profile]
 ```
-
-Methods:
-
-- <code title="get /v1/workspaces/{workspaceId}/models/{id}">client.models.<a href="./src/cadenya/resources/models.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/model.py">Model</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/models">client.models.<a href="./src/cadenya/resources/models.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/model_list_params.py">params</a>) -> <a href="./src/cadenya/types/model.py">SyncCursorPagination[Model]</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/models/{id}:disable">client.models.<a href="./src/cadenya/resources/models.py">disable</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/model.py">Model</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/models/{id}:enable">client.models.<a href="./src/cadenya/resources/models.py">enable</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/model.py">Model</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/models:swapModelOnVariations">client.models.<a href="./src/cadenya/resources/models.py">swap</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/model_swap_params.py">params</a>) -> object</code>
-
-# Search
-
-Types:
+List all workspaces in the account
 
 ```python
-from cadenya.types import SearchSearchToolsOrToolSetsResponse
+client.workspace_admin.list_account(*, limit=None, cursor=None, include_archived=None, labels=None) -> SyncPage[Workspace]
 ```
-
-Methods:
-
-- <code title="get /v1/workspaces/{workspaceId}/search/tools_or_tool_sets">client.search.<a href="./src/cadenya/resources/search.py">search_tools_or_tool_sets</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/search_search_tools_or_tool_sets_params.py">params</a>) -> <a href="./src/cadenya/types/search_search_tools_or_tool_sets_response.py">SearchSearchToolsOrToolSetsResponse</a></code>
-
-# ToolSets
-
-Types:
+Create a workspace
 
 ```python
-from cadenya.types import (
-    ApprovalRequirementFilter,
-    ApprovalRequirementFilterAlways,
-    ApprovalRequirementFilterOnly,
-    AttributeFilter,
-    StringMatcher,
-    StringMatcherContains,
-    StringMatcherEndsWith,
-    StringMatcherExact,
-    StringMatcherRegex,
-    StringMatcherStartsWith,
-    SyncCompleted,
-    SyncFailed,
-    SyncStarted,
-    ToolFilter,
-    ToolSet,
-    ToolSetAdapter,
-    ToolSetAdapterBare,
-    ToolSetAdapterBareVariant,
-    ToolSetAdapterHTTP,
-    ToolSetAdapterHTTPVariant,
-    ToolSetAdapterMCP,
-    ToolSetAdapterMCPVariant,
-    ToolSetAdapterOpenAPI,
-    ToolSetAdapterOpenAPIUploadID,
-    ToolSetAdapterOpenAPIURL,
-    ToolSetAdapterOpenAPIVariant,
-    ToolSetEvent,
-    ToolSetEventData,
-    ToolSetEventDataSyncCompleted,
-    ToolSetEventDataSyncFailed,
-    ToolSetEventDataSyncStarted,
-    ToolSetInfo,
-    ToolSetSpec,
-    ToolSetUsage,
-    ToolSetGetOpenAPISpecResponse,
-)
+client.workspace_admin.create(*, metadata, spec) -> Workspace
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/tool_sets">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/tool_set_create_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/tool_sets/{id}">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/tool_sets/{id}">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_set_update_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/tool_sets">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/tool_set_list_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set.py">SyncCursorPagination[ToolSet]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/tool_sets/{id}">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">delete</a>(id, \*, workspace_id) -> None</code>
-- <code title="post /v1/workspaces/{workspaceId}/tool_sets/{id}:archive">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">archive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/openapi_spec">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">get_openapi_spec</a>(tool_set_id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_set_get_openapi_spec_response.py">ToolSetGetOpenAPISpecResponse</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/events">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">list_events</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_set_list_events_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set_event.py">SyncCursorPagination[ToolSetEvent]</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/usage">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">list_usage</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_set_list_usage_params.py">params</a>) -> <a href="./src/cadenya/types/tool_set_usage.py">SyncCursorPagination[ToolSetUsage]</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/tool_sets/{id}:unarchive">client.tool_sets.<a href="./src/cadenya/resources/tool_sets/tool_sets.py">unarchive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_set.py">ToolSet</a></code>
-
-## Tools
-
-Types:
+Get a workspace by ID
 
 ```python
-from cadenya.types.tool_sets import (
-    ConfigBare,
-    ConfigHTTP,
-    ConfigMCP,
-    ConfigOpenAPI,
-    MCPAnnotations,
-    Tool,
-    ToolInfo,
-    ToolSpec,
-    ToolSpecConfig,
-    ToolSpecConfigBare,
-    ToolSpecConfigHTTP,
-    ToolSpecConfigMCP,
-    ToolSpecConfigOpenAPI,
-)
+client.workspace_admin.retrieve(*, workspace_id=None) -> Workspace
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">create</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_sets/tool_create_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">retrieve</a>(tool_set_id, id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">update</a>(tool_set_id, id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_sets/tool_update_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">list</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_sets/tool_list_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool.py">SyncCursorPagination[Tool]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">delete</a>(tool_set_id, id, \*, workspace_id) -> None</code>
-- <code title="post /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}:omit">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">omit</a>(tool_set_id, id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/tools/{id}:restore">client.tool_sets.tools.<a href="./src/cadenya/resources/tool_sets/tools.py">restore</a>(tool_set_id, id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_sets/tool.py">Tool</a></code>
-
-## Secrets
-
-Types:
+Archive a workspace
 
 ```python
-from cadenya.types.tool_sets import ToolSetSecret, ToolSetSecretInfo, ToolSetSecretSpec
+client.workspace_admin.archive(*, workspace_id=None) -> None
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/secrets">client.tool_sets.secrets.<a href="./src/cadenya/resources/tool_sets/secrets.py">create</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_sets/secret_create_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool_set_secret.py">ToolSetSecret</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/secrets/{id}">client.tool_sets.secrets.<a href="./src/cadenya/resources/tool_sets/secrets.py">retrieve</a>(tool_set_id, id, \*, workspace_id) -> <a href="./src/cadenya/types/tool_sets/tool_set_secret.py">ToolSetSecret</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/secrets/{id}">client.tool_sets.secrets.<a href="./src/cadenya/resources/tool_sets/secrets.py">update</a>(tool_set_id, id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_sets/secret_update_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool_set_secret.py">ToolSetSecret</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/secrets">client.tool_sets.secrets.<a href="./src/cadenya/resources/tool_sets/secrets.py">list</a>(tool_set_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tool_sets/secret_list_params.py">params</a>) -> <a href="./src/cadenya/types/tool_sets/tool_set_secret.py">SyncCursorPagination[ToolSetSecret]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/tool_sets/{toolSetId}/secrets/{id}">client.tool_sets.secrets.<a href="./src/cadenya/resources/tool_sets/secrets.py">delete</a>(tool_set_id, id, \*, workspace_id) -> None</code>
-
-# APIKeys
-
-Types:
+Update a workspace
 
 ```python
-from cadenya.types import APIKey, APIKeyInfo, APIKeySpec
+client.workspace_admin.update(*, workspace_id=None, metadata=None, spec=None, update_mask=None) -> Workspace
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/api_keys">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/api_key_create_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/api_keys/{id}">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/api_keys/{id}">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/api_key_update_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/api_keys">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/api_key_list_params.py">params</a>) -> <a href="./src/cadenya/types/api_key.py">SyncCursorPagination[APIKey]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/api_keys/{id}">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">delete</a>(id, \*, workspace_id) -> None</code>
-- <code title="post /v1/workspaces/{workspaceId}/api_keys/{id}:disable">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">disable</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/api_keys/{id}:enable">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">enable</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/api_keys/{id}:rotate">client.api_keys.<a href="./src/cadenya/resources/api_keys.py">rotate</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-
-# GlobalAPIKey
-
-Methods:
-
-- <code title="get /v1/account/global_api_key">client.global_api_key.<a href="./src/cadenya/resources/global_api_key.py">retrieve</a>() -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="post /v1/account/global_api_key:disable">client.global_api_key.<a href="./src/cadenya/resources/global_api_key.py">disable</a>() -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="post /v1/account/global_api_key:enable">client.global_api_key.<a href="./src/cadenya/resources/global_api_key.py">enable</a>() -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-- <code title="post /v1/account/global_api_key:rotate">client.global_api_key.<a href="./src/cadenya/resources/global_api_key.py">rotate</a>() -> <a href="./src/cadenya/types/api_key.py">APIKey</a></code>
-
-# WorkspaceSecrets
-
-Types:
+List workspace members
 
 ```python
-from cadenya.types import WorkspaceSecret, WorkspaceSecretInfo, WorkspaceSecretSpec
+client.workspace_admin.list_members(*, workspace_id=None, limit=None, cursor=None) -> SyncPage[WorkspaceMember]
 ```
-
-Methods:
-
-- <code title="post /v1/workspaces/{workspaceId}/workspace_secrets">client.workspace_secrets.<a href="./src/cadenya/resources/workspace_secrets.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/workspace_secret_create_params.py">params</a>) -> <a href="./src/cadenya/types/workspace_secret.py">WorkspaceSecret</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/workspace_secrets/{id}">client.workspace_secrets.<a href="./src/cadenya/resources/workspace_secrets.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/workspace_secret.py">WorkspaceSecret</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/workspace_secrets/{id}">client.workspace_secrets.<a href="./src/cadenya/resources/workspace_secrets.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/workspace_secret_update_params.py">params</a>) -> <a href="./src/cadenya/types/workspace_secret.py">WorkspaceSecret</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/workspace_secrets">client.workspace_secrets.<a href="./src/cadenya/resources/workspace_secrets.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/workspace_secret_list_params.py">params</a>) -> <a href="./src/cadenya/types/workspace_secret.py">SyncCursorPagination[WorkspaceSecret]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/workspace_secrets/{id}">client.workspace_secrets.<a href="./src/cadenya/resources/workspace_secrets.py">delete</a>(id, \*, workspace_id) -> None</code>
-
-# Workspaces
-
-Types:
+Add a member to a workspace
 
 ```python
-from cadenya.types import Workspace, WorkspaceSpec
+client.workspace_admin.add_member(*, workspace_id=None, profile_id=None, email=None) -> WorkspaceMember
 ```
-
-Methods:
-
-- <code title="get /v1/workspaces">client.workspaces.<a href="./src/cadenya/resources/workspaces.py">list</a>(\*\*<a href="src/cadenya/types/workspace_list_params.py">params</a>) -> <a href="./src/cadenya/types/workspace.py">SyncCursorPagination[Workspace]</a></code>
-
-# WorkspaceAdmin
-
-Types:
+Remove a member from a workspace
 
 ```python
-from cadenya.types import WorkspaceMember
+client.workspace_admin.remove_member(profile_id: str, *, workspace_id=None) -> None
 ```
 
-Methods:
+## client.profiles
 
-- <code title="post /v1/account/workspaces">client.workspace_admin.<a href="./src/cadenya/resources/workspace_admin/workspace_admin.py">create</a>(\*\*<a href="src/cadenya/types/workspace_admin_create_params.py">params</a>) -> <a href="./src/cadenya/types/workspace.py">Workspace</a></code>
-- <code title="get /v1/account/workspaces/{workspaceId}">client.workspace_admin.<a href="./src/cadenya/resources/workspace_admin/workspace_admin.py">retrieve</a>(\*, workspace_id) -> <a href="./src/cadenya/types/workspace.py">Workspace</a></code>
-- <code title="patch /v1/account/workspaces/{workspaceId}">client.workspace_admin.<a href="./src/cadenya/resources/workspace_admin/workspace_admin.py">update</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/workspace_admin_update_params.py">params</a>) -> <a href="./src/cadenya/types/workspace.py">Workspace</a></code>
-- <code title="get /v1/account/workspaces">client.workspace_admin.<a href="./src/cadenya/resources/workspace_admin/workspace_admin.py">list</a>(\*\*<a href="src/cadenya/types/workspace_admin_list_params.py">params</a>) -> <a href="./src/cadenya/types/workspace.py">SyncCursorPagination[Workspace]</a></code>
-- <code title="delete /v1/account/workspaces/{workspaceId}">client.workspace_admin.<a href="./src/cadenya/resources/workspace_admin/workspace_admin.py">archive</a>(\*, workspace_id) -> None</code>
-
-## Members
-
-Methods:
-
-- <code title="get /v1/account/workspaces/{workspaceId}/members">client.workspace_admin.members.<a href="./src/cadenya/resources/workspace_admin/members.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/workspace_admin/member_list_params.py">params</a>) -> <a href="./src/cadenya/types/workspace_member.py">SyncCursorPagination[WorkspaceMember]</a></code>
-- <code title="post /v1/account/workspaces/{workspaceId}/members">client.workspace_admin.members.<a href="./src/cadenya/resources/workspace_admin/members.py">add</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/workspace_admin/member_add_params.py">params</a>) -> <a href="./src/cadenya/types/workspace_member.py">WorkspaceMember</a></code>
-- <code title="delete /v1/account/workspaces/{workspaceId}/members/{profileId}">client.workspace_admin.members.<a href="./src/cadenya/resources/workspace_admin/members.py">remove</a>(profile_id, \*, workspace_id) -> None</code>
-
-## Profiles
-
-Methods:
-
-- <code title="get /v1/account/profiles">client.workspace_admin.profiles.<a href="./src/cadenya/resources/workspace_admin/profiles.py">list</a>(\*\*<a href="src/cadenya/types/workspace_admin/profile_list_params.py">params</a>) -> <a href="./src/cadenya/types/profile.py">SyncCursorPagination[Profile]</a></code>
-
-# Webhooks
-
-Types:
+Retrieves the profile for the credentials accessing the API
 
 ```python
-from cadenya.types import UnsafeUnwrapWebhookEvent, UnwrapWebhookEvent
+client.profiles.whoami() -> Profile
 ```
 
-# Widgets
+## client.workspaces
 
-Types:
+List workspaces
 
 ```python
-from cadenya.types import Widget, WidgetInfo, WidgetSpec
+client.workspaces.list(*, limit=None, cursor=None, sort_order=None, include_info=None, labels=None) -> SyncPage[Workspace]
 ```
 
-Methods:
+## client.agents
 
-- <code title="post /v1/workspaces/{workspaceId}/widgets">client.widgets.<a href="./src/cadenya/resources/widgets.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/widget_create_params.py">params</a>) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/widgets/{id}">client.widgets.<a href="./src/cadenya/resources/widgets.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
-- <code title="patch /v1/workspaces/{workspaceId}/widgets/{id}">client.widgets.<a href="./src/cadenya/resources/widgets.py">update</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/widget_update_params.py">params</a>) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/widgets">client.widgets.<a href="./src/cadenya/resources/widgets.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/widget_list_params.py">params</a>) -> <a href="./src/cadenya/types/widget.py">SyncCursorPagination[Widget]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/widgets/{id}">client.widgets.<a href="./src/cadenya/resources/widgets.py">delete</a>(id, \*, workspace_id) -> None</code>
-- <code title="post /v1/workspaces/{workspaceId}/widgets/{id}:archive">client.widgets.<a href="./src/cadenya/resources/widgets.py">archive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/widgets/{id}:unarchive">client.widgets.<a href="./src/cadenya/resources/widgets.py">unarchive</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget.py">Widget</a></code>
-
-# Tenants
-
-Types:
+List agents
 
 ```python
-from cadenya.types import Subject, SubjectInfo, Tenant, TenantInfo
+client.agents.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, state=None, variation_selection_mode=None, labels=None, sort_order=None, include_info=None) -> SyncPage[Agent]
 ```
-
-Methods:
-
-- <code title="get /v1/workspaces/{workspaceId}/tenants/{id}">client.tenants.<a href="./src/cadenya/resources/tenants/tenants.py">retrieve</a>(id, \*, workspace_id, \*\*<a href="src/cadenya/types/tenant_retrieve_params.py">params</a>) -> <a href="./src/cadenya/types/tenant.py">Tenant</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/tenants">client.tenants.<a href="./src/cadenya/resources/tenants/tenants.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/tenant_list_params.py">params</a>) -> <a href="./src/cadenya/types/tenant.py">SyncCursorPagination[Tenant]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/tenants/{id}">client.tenants.<a href="./src/cadenya/resources/tenants/tenants.py">delete</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/tenant.py">Tenant</a></code>
-
-## Subjects
-
-Methods:
-
-- <code title="get /v1/workspaces/{workspaceId}/tenants/{tenantId}/subjects">client.tenants.subjects.<a href="./src/cadenya/resources/tenants/subjects.py">list</a>(tenant_id, \*, workspace_id, \*\*<a href="src/cadenya/types/tenants/subject_list_params.py">params</a>) -> <a href="./src/cadenya/types/subject.py">SyncCursorPagination[Subject]</a></code>
-
-# WidgetSessions
-
-Types:
+Create a new agent
 
 ```python
-from cadenya.types import (
-    SubjectAssertion,
-    SubjectReference,
-    TenantAssertion,
-    TenantReference,
-    WidgetSession,
-    WidgetSessionInfo,
-    WidgetSessionSpec,
-    WidgetSessionDeleteTenantResponse,
-)
+client.agents.create(*, workspace_id=None, metadata, spec, default_variation=None) -> Agent
+```
+List feedback for an agent
+
+```python
+client.agents.list_feedback(agent_id: str, *, workspace_id=None, limit=None, cursor=None, query=None, sentiment=None, agent_variation_id=None, created_after=None, created_before=None, labels=None, include_info=None) -> SyncPage[ObjectiveFeedback]
+```
+List webhook deliveries
+
+```python
+client.agents.list_webhook_deliveries(agent_id: str, *, workspace_id=None, cursor=None, limit=None, objective_id=None, event_type=None, labels=None) -> SyncPage[WebhookDelivery]
+```
+Get an agent by ID
+
+```python
+client.agents.retrieve(id: str, *, workspace_id=None) -> Agent
+```
+Delete an agent
+
+```python
+client.agents.delete(id: str, *, workspace_id=None) -> None
+```
+Update an agent
+
+```python
+client.agents.update(id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> Agent
+```
+Archive an agent
+
+```python
+client.agents.archive(id: str, *, workspace_id=None) -> Agent
+```
+Publish an agent
+
+```python
+client.agents.publish(id: str, *, workspace_id=None) -> Agent
+```
+Unarchive an agent
+
+```python
+client.agents.unarchive(id: str, *, workspace_id=None) -> Agent
+```
+Unpublish an agent
+
+```python
+client.agents.unpublish(id: str, *, workspace_id=None) -> Agent
 ```
 
-Methods:
+## client.agents.schedules
 
-- <code title="post /v1/workspaces/{workspaceId}/widget_sessions">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">create</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/widget_session_create_params.py">params</a>) -> <a href="./src/cadenya/types/widget_session.py">WidgetSession</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/widget_sessions/{id}">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">retrieve</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget_session.py">WidgetSession</a></code>
-- <code title="get /v1/workspaces/{workspaceId}/widget_sessions">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">list</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/widget_session_list_params.py">params</a>) -> <a href="./src/cadenya/types/widget_session.py">SyncCursorPagination[WidgetSession]</a></code>
-- <code title="delete /v1/workspaces/{workspaceId}/widget_sessions/{id}">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">delete</a>(id, \*, workspace_id) -> None</code>
-- <code title="delete /v1/workspaces/{workspaceId}/widget_sessions">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">delete_tenant</a>(\*, workspace_id, \*\*<a href="src/cadenya/types/widget_session_delete_tenant_params.py">params</a>) -> <a href="./src/cadenya/types/widget_session_delete_tenant_response.py">WidgetSessionDeleteTenantResponse</a></code>
-- <code title="post /v1/workspaces/{workspaceId}/widget_sessions/{id}:revoke">client.widget_sessions.<a href="./src/cadenya/resources/widget_sessions.py">revoke</a>(id, \*, workspace_id) -> <a href="./src/cadenya/types/widget_session.py">WidgetSession</a></code>
+List schedules
+
+```python
+client.agents.schedules.list(agent_id: str, *, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, labels=None, sort_order=None, include_info=None) -> SyncPage[AgentSchedule]
+```
+Create a new schedule
+
+```python
+client.agents.schedules.create(agent_id: str, *, workspace_id=None, metadata, spec) -> AgentSchedule
+```
+Get a schedule by ID
+
+```python
+client.agents.schedules.retrieve(agent_id: str, id: str, *, workspace_id=None) -> AgentSchedule
+```
+Delete a schedule
+
+```python
+client.agents.schedules.delete(agent_id: str, id: str, *, workspace_id=None) -> None
+```
+Update a schedule
+
+```python
+client.agents.schedules.update(agent_id: str, id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> AgentSchedule
+```
+Archive a schedule
+
+```python
+client.agents.schedules.archive(agent_id: str, id: str, *, workspace_id=None) -> AgentSchedule
+```
+Pause a schedule
+
+```python
+client.agents.schedules.pause(agent_id: str, id: str, *, workspace_id=None) -> AgentSchedule
+```
+Resume a schedule
+
+```python
+client.agents.schedules.resume(agent_id: str, id: str, *, workspace_id=None) -> AgentSchedule
+```
+
+## client.agents.variations
+
+List variations
+
+```python
+client.agents.variations.list(agent_id: str, *, workspace_id=None, limit=None, cursor=None, sort_order=None, include_info=None, labels=None) -> SyncPage[AgentVariation]
+```
+Create a new variation
+
+```python
+client.agents.variations.create(agent_id: str, *, workspace_id=None, metadata, spec) -> AgentVariation
+```
+Get a variation by ID
+
+```python
+client.agents.variations.retrieve(agent_id: str, id: str, *, workspace_id=None) -> AgentVariation
+```
+Delete a variation
+
+```python
+client.agents.variations.delete(agent_id: str, id: str, *, workspace_id=None) -> None
+```
+Update a variation
+
+```python
+client.agents.variations.update(agent_id: str, id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> AgentVariation
+```
+Add an assignment to a variation
+
+```python
+client.agents.variations.add_assignment(agent_id: str, variation_id: str, *, workspace_id=None, body) -> VariationAssignment
+```
+Remove an assignment from a variation
+
+```python
+client.agents.variations.remove_assignment(agent_id: str, variation_id: str, id: str, *, workspace_id=None) -> None
+```
+Attach a memory layer to a variation
+
+```python
+client.agents.variations.add_memory_layer(agent_id: str, variation_id: str, *, workspace_id=None, memory_layer_id, position=None) -> VariationMemoryLayerAssignment
+```
+Remove a memory layer assignment from a variation
+
+```python
+client.agents.variations.remove_memory_layer(agent_id: str, variation_id: str, id: str, *, workspace_id=None) -> None
+```
+Update a variation's memory layer assignment
+
+```python
+client.agents.variations.update_memory_layer(agent_id: str, variation_id: str, id: str, *, workspace_id=None, position=None) -> VariationMemoryLayerAssignment
+```
+
+## client.ai_provider_keys
+
+List AI provider keys
+
+```python
+client.ai_provider_keys.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, promotional=None, labels=None, sort_order=None, include_info=None) -> SyncPage[AIProviderKey]
+```
+Create a new AI provider key
+
+```python
+client.ai_provider_keys.create(*, workspace_id=None, metadata, spec) -> AIProviderKey
+```
+Get an AI provider key by ID
+
+```python
+client.ai_provider_keys.retrieve(id: str, *, workspace_id=None) -> AIProviderKey
+```
+Delete an AI provider key
+
+```python
+client.ai_provider_keys.delete(id: str, *, workspace_id=None) -> None
+```
+Update an AI provider key
+
+```python
+client.ai_provider_keys.update(id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> AIProviderKey
+```
+
+## client.memory_layers
+
+List memory layers
+
+```python
+client.memory_layers.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, type=None, agent_id=None, episodic_key_prefix=None, labels=None, sort_order=None, include_info=None) -> SyncPage[MemoryLayer]
+```
+Create a new memory layer
+
+```python
+client.memory_layers.create(*, workspace_id=None, metadata, spec) -> MemoryLayer
+```
+Get a memory layer by ID
+
+```python
+client.memory_layers.retrieve(id: str, *, workspace_id=None) -> MemoryLayer
+```
+Delete a memory layer
+
+```python
+client.memory_layers.delete(id: str, *, workspace_id=None) -> None
+```
+Update a memory layer
+
+```python
+client.memory_layers.update(id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> MemoryLayer
+```
+
+## client.memory_layers.entries
+
+List memory entries
+
+```python
+client.memory_layers.entries.list(memory_layer_id: str, *, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, labels=None, sort_order=None, include_info=None) -> SyncPage[MemoryEntry]
+```
+Create a new memory entry
+
+```python
+client.memory_layers.entries.create(memory_layer_id: str, *, workspace_id=None, metadata, spec) -> MemoryEntryDetail
+```
+Get a memory entry by ID
+
+```python
+client.memory_layers.entries.retrieve(memory_layer_id: str, id: str, *, workspace_id=None) -> MemoryEntryDetail
+```
+Delete a memory entry
+
+```python
+client.memory_layers.entries.delete(memory_layer_id: str, id: str, *, workspace_id=None) -> None
+```
+Update a memory entry
+
+```python
+client.memory_layers.entries.update(memory_layer_id: str, id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> MemoryEntryDetail
+```
+
+## client.models
+
+List models
+
+```python
+client.models.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, state=None, ai_provider_key_id=None, is_assigned=None, labels=None, sort_order=None, include_info=None) -> SyncPage[Model]
+```
+Get a model by ID
+
+```python
+client.models.retrieve(id: str, *, workspace_id=None) -> Model
+```
+Disable a model
+
+```python
+client.models.disable(id: str, *, workspace_id=None) -> Model
+```
+Enable a model
+
+```python
+client.models.enable(id: str, *, workspace_id=None) -> Model
+```
+Swap models on agent variations
+
+```python
+client.models.swap_on_variations(*, workspace_id=None, model_swaps=None) -> None
+```
+
+## client.objectives
+
+List objectives
+
+```python
+client.objectives.list(*, workspace_id=None, limit=None, cursor=None, agent_id=None, parent_objective_id=None, state=None, profile_id=None, sort_order=None, include_info=None, agent_schedule_id=None, labels=None, tenant_id=None, subject_id=None, widget_id=None, widget_session_id=None) -> SyncPage[Objective]
+```
+Create a new objective
+
+```python
+client.objectives.create(*, workspace_id=None, agent_id, variation_id=None, metadata=None, system_prompt_data, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None) -> Objective
+```
+Get an objective by ID
+
+```python
+client.objectives.retrieve(id: str, *, workspace_id=None) -> Objective
+```
+List objective context windows
+
+```python
+client.objectives.list_context_windows(objective_id: str, *, workspace_id=None, limit=None, cursor=None, include_info=None, labels=None) -> SyncPage[ObjectiveContextWindow]
+```
+Get objective context diagnostics
+
+```python
+client.objectives.retrieve_diagnostics(objective_id: str, *, workspace_id=None) -> GetObjectiveDiagnosticsResponse
+```
+List objective events
+
+```python
+client.objectives.list_events(objective_id: str, *, workspace_id=None, limit=None, cursor=None, sort_order=None, include_info=None, window_id=None, since_event_id=None, labels=None) -> SyncPage[ObjectiveEvent]
+```
+Stream objective events
+
+```python
+client.objectives.stream_events(objective_id: str, *, workspace_id=None, last_event_id=None) -> Stream[ObjectiveEvent]
+```
+List feedback for an objective
+
+```python
+client.objectives.list_feedback(objective_id: str, *, workspace_id=None, limit=None, cursor=None, labels=None) -> SyncPage[ObjectiveFeedback]
+```
+Submit feedback for an objective
+
+```python
+client.objectives.create_feedback(objective_id: str, *, workspace_id=None, metadata, data) -> ObjectiveFeedback
+```
+List objective tasks
+
+```python
+client.objectives.list_tasks(objective_id: str, *, workspace_id=None, limit=None, cursor=None, sort_order=None) -> SyncPage[ObjectiveTask]
+```
+Get an objective task by ID
+
+```python
+client.objectives.retrieve_task(objective_id: str, id: str, *, workspace_id=None) -> ObjectiveTask
+```
+List objective tool calls
+
+```python
+client.objectives.list_tool_calls(objective_id: str, *, workspace_id=None, limit=None, cursor=None, status=None, include_info=None, execution_status=None, labels=None) -> SyncPage[ObjectiveToolCall]
+```
+Get an objective tool call by ID
+
+```python
+client.objectives.retrieve_tool_call(objective_id: str, tool_call_id: str, *, workspace_id=None) -> ObjectiveToolCallWithResult
+```
+Approve a tool call
+
+```python
+client.objectives.approve_tool_call(objective_id: str, tool_call_id: str, *, workspace_id=None) -> ObjectiveToolCall
+```
+Deny a tool call
+
+```python
+client.objectives.deny_tool_call(objective_id: str, tool_call_id: str, *, workspace_id=None, memo=None) -> ObjectiveToolCall
+```
+Set a bare tool call's content
+
+```python
+client.objectives.set_tool_call_content(objective_id: str, tool_call_id: str, *, workspace_id=None, content) -> ObjectiveToolCall
+```
+List objective tools
+
+```python
+client.objectives.list_tools(objective_id: str, *, workspace_id=None, limit=None, cursor=None) -> SyncPage[ObjectiveTool]
+```
+Cancel an objective
+
+```python
+client.objectives.cancel(objective_id: str, *, workspace_id=None, reason=None) -> Objective
+```
+Compact an objective
+
+```python
+client.objectives.compact(objective_id: str, *, workspace_id=None, compaction_config=None) -> CompactObjectiveResponse
+```
+Continue an objective
+
+```python
+client.objectives.continue_(objective_id: str, *, workspace_id=None, message, enqueue=None) -> ObjectiveEvent
+```
+
+## client.tool_search
+
+Search for tools or tool sets
+
+```python
+client.tool_search.search_or_sets(*, workspace_id=None, query) -> SearchToolsOrToolSetsResponse
+```
+
+## client.tenants
+
+List tenants
+
+```python
+client.tenants.list(*, workspace_id=None, limit=None, cursor=None, query=None, labels=None, sort_order=None, include_info=None) -> SyncPage[Tenant]
+```
+Get a tenant by ID
+
+```python
+client.tenants.retrieve(id: str, *, workspace_id=None, include_info=None) -> Tenant
+```
+Erase a tenant
+
+```python
+client.tenants.delete(id: str, *, workspace_id=None) -> Tenant
+```
+List a tenant's subjects
+
+```python
+client.tenants.list_subjects(tenant_id: str, *, workspace_id=None, limit=None, cursor=None, query=None, sort_order=None, include_info=None) -> SyncPage[Subject]
+```
+
+## client.tool_sets
+
+List tool sets
+
+```python
+client.tool_sets.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, state=None, labels=None, sort_order=None, include_info=None) -> SyncPage[ToolSet]
+```
+Create a new tool set
+
+```python
+client.tool_sets.create(*, workspace_id=None, metadata, spec) -> ToolSet
+```
+Get a tool set by ID
+
+```python
+client.tool_sets.retrieve(id: str, *, workspace_id=None) -> ToolSet
+```
+Delete a tool set
+
+```python
+client.tool_sets.delete(id: str, *, workspace_id=None) -> None
+```
+Update a tool set
+
+```python
+client.tool_sets.update(id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> ToolSet
+```
+Archive a tool set
+
+```python
+client.tool_sets.archive(id: str, *, workspace_id=None) -> ToolSet
+```
+Unarchive a tool set
+
+```python
+client.tool_sets.unarchive(id: str, *, workspace_id=None) -> ToolSet
+```
+List tool set events
+
+```python
+client.tool_sets.list_events(tool_set_id: str, *, workspace_id=None, limit=None, cursor=None, sort_order=None, include_info=None, labels=None) -> SyncPage[ToolSetEvent]
+```
+Get consumed OpenAPI spec
+
+```python
+client.tool_sets.retrieve_open_api_spec(tool_set_id: str, *, workspace_id=None) -> GetToolSetOpenAPISpecResponse
+```
+List tool set usage
+
+```python
+client.tool_sets.list_usage(tool_set_id: str, *, workspace_id=None, tool_id=None, limit=None, cursor=None, sort_order=None) -> SyncPage[ToolSetUsage]
+```
+
+## client.tool_sets.secrets
+
+List tool set secrets
+
+```python
+client.tool_sets.secrets.list(tool_set_id: str, *, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, sort_order=None, include_info=None) -> SyncPage[ToolSetSecret]
+```
+Create a new tool set secret
+
+```python
+client.tool_sets.secrets.create(tool_set_id: str, *, workspace_id=None, metadata, spec) -> ToolSetSecret
+```
+Get a tool set secret by ID
+
+```python
+client.tool_sets.secrets.retrieve(tool_set_id: str, id: str, *, workspace_id=None) -> ToolSetSecret
+```
+Delete a tool set secret
+
+```python
+client.tool_sets.secrets.delete(tool_set_id: str, id: str, *, workspace_id=None) -> None
+```
+Update a tool set secret
+
+```python
+client.tool_sets.secrets.update(tool_set_id: str, id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> ToolSetSecret
+```
+
+## client.tool_sets.tools
+
+List tools
+
+```python
+client.tool_sets.tools.list(tool_set_id: str, *, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, names=None, states=None, requires_approval=None, labels=None, sort_order=None, include_info=None) -> SyncPage[Tool]
+```
+Create a new tool
+
+```python
+client.tool_sets.tools.create(tool_set_id: str, *, workspace_id=None, metadata, spec) -> Tool
+```
+Get a tool by ID
+
+```python
+client.tool_sets.tools.retrieve(tool_set_id: str, id: str, *, workspace_id=None) -> Tool
+```
+Delete a tool
+
+```python
+client.tool_sets.tools.delete(tool_set_id: str, id: str, *, workspace_id=None) -> None
+```
+Update a tool
+
+```python
+client.tool_sets.tools.update(tool_set_id: str, id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> Tool
+```
+Omit a tool
+
+```python
+client.tool_sets.tools.omit(tool_set_id: str, id: str, *, workspace_id=None) -> Tool
+```
+Restore a tool
+
+```python
+client.tool_sets.tools.restore(tool_set_id: str, id: str, *, workspace_id=None) -> Tool
+```
+
+## client.uploads
+
+Create an upload
+
+```python
+client.uploads.create(*, workspace_id=None, metadata, spec) -> Upload
+```
+Get an upload by ID
+
+```python
+client.uploads.retrieve(id: str, *, workspace_id=None) -> Upload
+```
+
+## client.widget_sessions
+
+List widget sessions
+
+```python
+client.widget_sessions.list(*, workspace_id=None, limit=None, cursor=None, widget_id=None, tenant_id=None, subject_id=None, state=None, labels=None, sort_order=None, include_info=None) -> SyncPage[WidgetSession]
+```
+Create a widget session
+
+```python
+client.widget_sessions.create(*, workspace_id=None, metadata=None, spec, secrets=None) -> WidgetSession
+```
+Delete all of a tenant's widget sessions
+
+```python
+client.widget_sessions.delete_tenant(*, workspace_id=None, tenant_id=None) -> DeleteTenantWidgetSessionsResponse
+```
+Get a widget session by ID
+
+```python
+client.widget_sessions.retrieve(id: str, *, workspace_id=None) -> WidgetSession
+```
+Delete a widget session
+
+```python
+client.widget_sessions.delete(id: str, *, workspace_id=None) -> None
+```
+Revoke a widget session
+
+```python
+client.widget_sessions.revoke(id: str, *, workspace_id=None) -> WidgetSession
+```
+
+## client.widgets
+
+List widgets
+
+```python
+client.widgets.list(*, workspace_id=None, limit=None, cursor=None, agent_id=None, labels=None, sort_order=None, include_info=None) -> SyncPage[Widget]
+```
+Create a new widget
+
+```python
+client.widgets.create(*, workspace_id=None, metadata, spec) -> Widget
+```
+Get a widget by ID
+
+```python
+client.widgets.retrieve(id: str, *, workspace_id=None) -> Widget
+```
+Delete a widget
+
+```python
+client.widgets.delete(id: str, *, workspace_id=None) -> None
+```
+Update a widget
+
+```python
+client.widgets.update(id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> Widget
+```
+Archive a widget
+
+```python
+client.widgets.archive(id: str, *, workspace_id=None) -> Widget
+```
+Unarchive a widget
+
+```python
+client.widgets.unarchive(id: str, *, workspace_id=None) -> Widget
+```
+
+## client.workspace_secrets
+
+List workspace secrets
+
+```python
+client.workspace_secrets.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, labels=None, sort_order=None, include_info=None) -> SyncPage[WorkspaceSecret]
+```
+Create a new workspace secret
+
+```python
+client.workspace_secrets.create(*, workspace_id=None, metadata, spec) -> WorkspaceSecret
+```
+Get a workspace secret by ID
+
+```python
+client.workspace_secrets.retrieve(id: str, *, workspace_id=None) -> WorkspaceSecret
+```
+Delete a workspace secret
+
+```python
+client.workspace_secrets.delete(id: str, *, workspace_id=None) -> None
+```
+Update a workspace secret
+
+```python
+client.workspace_secrets.update(id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> WorkspaceSecret
+```
