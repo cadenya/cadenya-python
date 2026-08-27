@@ -150,7 +150,7 @@ class Objectives:
         workspace_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.GetObjectiveDiagnosticsResponse:
-        """Get objective context diagnostics"""
+        """Get objective context usage"""
         workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
         _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/objectives/{path_param('objectiveId', objective_id)}/diagnostics"
         _data = self._core.request("GET", _path, request_options=request_options)
