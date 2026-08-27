@@ -59,8 +59,5 @@
       "hidden": true
     }
   ],
-  "release-type": "python",
-  "extra-files": [
-    "src/cadenya/_version.py"
-  ]
+  "release-type": "python"
 }
