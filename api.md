@@ -435,7 +435,7 @@ List objective context windows
 ```python
 client.objectives.list_context_windows(objective_id: str, *, workspace_id=None, limit=None, cursor=None, include_info=None, labels=None) -> SyncPage[ObjectiveContextWindow]
 ```
-Get objective context diagnostics
+Get objective context usage
 
 ```python
 client.objectives.retrieve_diagnostics(objective_id: str, *, workspace_id=None) -> GetObjectiveDiagnosticsResponse
@@ -633,7 +633,7 @@ client.tool_sets.secrets.update(tool_set_id: str, id: str, *, workspace_id=None,
 List tools
 
 ```python
-client.tool_sets.tools.list(tool_set_id: str, *, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, names=None, states=None, requires_approval=None, labels=None, sort_order=None, include_info=None) -> SyncPage[Tool]
+client.tool_sets.tools.list(tool_set_id: str, *, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, names=None, states=None, requires_approval=None, overlays=None, labels=None, sort_order=None, include_info=None) -> SyncPage[Tool]
 ```
 Create a new tool
 

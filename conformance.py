@@ -150,7 +150,7 @@ run("ToolService_CreateToolSetSecret", lambda: client.tool_sets.secrets.create("
 run("ToolService_GetToolSetSecret", lambda: client.tool_sets.secrets.retrieve("sample", "sample", workspace_id="sample"))
 run("ToolService_DeleteToolSetSecret", lambda: client.tool_sets.secrets.delete("sample", "sample", workspace_id="sample"))
 run("ToolService_UpdateToolSetSecret", lambda: client.tool_sets.secrets.update("sample", "sample", workspace_id="sample", metadata={"name": "sample"}, spec={}, update_mask="sample"))
-run("ToolService_ListTools", lambda: check_page(client.tool_sets.tools.list("sample", workspace_id="sample", limit=1, cursor="sample", prefix="sample", query="sample", names=["sample"], states=["STATE_UNSPECIFIED"], requires_approval=True, labels="sample", sort_order="sample", include_info=True)))
+run("ToolService_ListTools", lambda: check_page(client.tool_sets.tools.list("sample", workspace_id="sample", limit=1, cursor="sample", prefix="sample", query="sample", names=["sample"], states=["STATE_UNSPECIFIED"], requires_approval=True, overlays=["sample"], labels="sample", sort_order="sample", include_info=True)))
 run("ToolService_CreateTool", lambda: client.tool_sets.tools.create("sample", workspace_id="sample", metadata={"name": "sample"}, spec={"config": {"http": {"request_method": "HTTP_METHOD_UNSPECIFIED"}, "type": "http"}, "description": "sample", "parameters": {}, "requires_approval": True}))
 run("ToolService_GetTool", lambda: client.tool_sets.tools.retrieve("sample", "sample", workspace_id="sample"))
 run("ToolService_DeleteTool", lambda: client.tool_sets.tools.delete("sample", "sample", workspace_id="sample"))

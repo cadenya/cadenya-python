@@ -26,6 +26,7 @@ class Tools:
         names: Optional[List[str]] = None,
         states: Optional[List[types.ToolServiceListToolsStates]] = None,
         requires_approval: Optional[bool] = None,
+        overlays: Optional[List[str]] = None,
         labels: Optional[str] = None,
         sort_order: Optional[str] = None,
         include_info: Optional[bool] = None,
@@ -36,6 +37,7 @@ class Tools:
         _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/tool_sets/{path_param('toolSetId', tool_set_id)}/tools"
         names = list(names) if names is not None else None
         states = list(states) if states is not None else None
+        overlays = list(overlays) if overlays is not None else None
         _query = {
             "limit": limit,
             "cursor": cursor,
@@ -44,6 +46,7 @@ class Tools:
             "names": names,
             "states": states,
             "requiresApproval": requires_approval,
+            "overlays": overlays,
             "labels": labels,
             "sortOrder": sort_order,
             "includeInfo": include_info,
@@ -53,7 +56,7 @@ class Tools:
         _next_cursor = (((_data).get("pagination") or {})).get("nextCursor") or ""
 
         def _fetch(_cursor: str) -> SyncPage[types.Tool]:
-            return self.list(tool_set_id, workspace_id=workspace_id, limit=limit, cursor=_cursor, prefix=prefix, query=query, names=names, states=states, requires_approval=requires_approval, labels=labels, sort_order=sort_order, include_info=include_info, request_options=request_options)
+            return self.list(tool_set_id, workspace_id=workspace_id, limit=limit, cursor=_cursor, prefix=prefix, query=query, names=names, states=states, requires_approval=requires_approval, overlays=overlays, labels=labels, sort_order=sort_order, include_info=include_info, request_options=request_options)
 
         return SyncPage(_items, _next_cursor, _fetch)
 
