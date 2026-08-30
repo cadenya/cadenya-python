@@ -1725,19 +1725,6 @@ class ListObjectiveFeedbackResponse:
 
 
 @dataclass
-class ListObjectiveTasksResponse:
-    items: List[ObjectiveTask]
-    pagination: Optional[Page] = None
-
-    @staticmethod
-    def _from_json(data: Any) -> "ListObjectiveTasksResponse":
-        return ListObjectiveTasksResponse(
-            items=None if _req(data, "ListObjectiveTasksResponse", "items") is None else [ObjectiveTask._from_json(item) for item in (_req(data, "ListObjectiveTasksResponse", "items"))],
-            pagination=None if data.get("pagination") is None else Page._from_json(data.get("pagination")),
-        )
-
-
-@dataclass
 class ListObjectiveToolCallsResponse:
     items: List[ObjectiveToolCall]
     pagination: Optional[Page] = None
@@ -2606,38 +2593,6 @@ class ObjectiveInfo:
             tenant=None if data.get("tenant") is None else TenantReference._from_json(data.get("tenant")),
             subject=None if data.get("subject") is None else SubjectReference._from_json(data.get("subject")),
             widget=None if data.get("widget") is None else BareMetadata._from_json(data.get("widget")),
-        )
-
-
-@dataclass
-class ObjectiveTask:
-    """ObjectiveTask represents a task within an objective, typically created and managed by an AI agent  to track progress toward completing the objective."""
-
-    metadata: BareMetadata
-    data: ObjectiveTaskData
-
-    @staticmethod
-    def _from_json(data: Any) -> "ObjectiveTask":
-        return ObjectiveTask(
-            metadata=None if _req(data, "ObjectiveTask", "metadata") is None else BareMetadata._from_json(_req(data, "ObjectiveTask", "metadata")),
-            data=None if _req(data, "ObjectiveTask", "data") is None else ObjectiveTaskData._from_json(_req(data, "ObjectiveTask", "data")),
-        )
-
-
-@dataclass
-class ObjectiveTaskData:
-    number: int
-    task: str
-    completed: bool
-    completed_at: Optional[datetime] = None
-
-    @staticmethod
-    def _from_json(data: Any) -> "ObjectiveTaskData":
-        return ObjectiveTaskData(
-            number=_req(data, "ObjectiveTaskData", "number"),
-            task=_req(data, "ObjectiveTaskData", "task"),
-            completed=_req(data, "ObjectiveTaskData", "completed"),
-            completed_at=None if data.get("completedAt") is None else parse_datetime(data.get("completedAt")),
         )
 
 
