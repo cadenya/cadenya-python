@@ -69,7 +69,7 @@ class Cadenya:
             http_client=http_client,
             max_retries=max_retries,
             defaults=defaults,
-            user_agent="cadenya-python/1.0.0 (api 1.0)",
+            user_agent="cadenya-python/1.0.1 (api 1.0)",
         )
         self._core = core
         self.accounts = Accounts(core)

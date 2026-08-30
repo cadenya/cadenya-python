@@ -460,16 +460,6 @@ Submit feedback for an objective
 ```python
 client.objectives.create_feedback(objective_id: str, *, workspace_id=None, metadata, data) -> ObjectiveFeedback
 ```
-List objective tasks
-
-```python
-client.objectives.list_tasks(objective_id: str, *, workspace_id=None, limit=None, cursor=None, sort_order=None) -> SyncPage[ObjectiveTask]
-```
-Get an objective task by ID
-
-```python
-client.objectives.retrieve_task(objective_id: str, id: str, *, workspace_id=None) -> ObjectiveTask
-```
 List objective tool calls
 
 ```python

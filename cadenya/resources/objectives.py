@@ -254,47 +254,6 @@ class Objectives:
         _data = self._core.request("POST", _path, body=_body, request_options=request_options)
         return decode_response("objectives.create_feedback", _data, lambda _d: types.ObjectiveFeedback._from_json(_d))
 
-    def list_tasks(
-        self,
-        objective_id: str,
-        *,
-        workspace_id: Optional[str] = None,
-        limit: Optional[int] = None,
-        cursor: Optional[str] = None,
-        sort_order: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
-    ) -> SyncPage[types.ObjectiveTask]:
-        """List objective tasks"""
-        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/objectives/{path_param('objectiveId', objective_id)}/tasks"
-        _query = {
-            "limit": limit,
-            "cursor": cursor,
-            "sortOrder": sort_order,
-        }
-        _data = self._core.request("GET", _path, query=_query, request_options=request_options) or {}
-        _items = decode_response("objectives.list_tasks", _data, lambda _d: [types.ObjectiveTask._from_json(item) for item in (_d.get("items") or [])])
-        _next_cursor = (((_data).get("pagination") or {})).get("nextCursor") or ""
-
-        def _fetch(_cursor: str) -> SyncPage[types.ObjectiveTask]:
-            return self.list_tasks(objective_id, workspace_id=workspace_id, limit=limit, cursor=_cursor, sort_order=sort_order, request_options=request_options)
-
-        return SyncPage(_items, _next_cursor, _fetch)
-
-    def retrieve_task(
-        self,
-        objective_id: str,
-        id: str,
-        *,
-        workspace_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
-    ) -> types.ObjectiveTask:
-        """Get an objective task by ID"""
-        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/objectives/{path_param('objectiveId', objective_id)}/tasks/{path_param('id', id)}"
-        _data = self._core.request("GET", _path, request_options=request_options)
-        return decode_response("objectives.retrieve_task", _data, lambda _d: types.ObjectiveTask._from_json(_d))
-
     def list_tool_calls(
         self,
         objective_id: str,
