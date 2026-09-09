@@ -74,12 +74,16 @@ class AiProviderKeys:
         id: str,
         *,
         workspace_id: Optional[str] = None,
+        include_info: Optional[bool] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.AIProviderKey:
         """Get an AI provider key by ID"""
         workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
         _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/ai_provider_keys/{path_param('id', id)}"
-        _data = self._core.request("GET", _path, request_options=request_options)
+        _query = {
+            "includeInfo": include_info,
+        }
+        _data = self._core.request("GET", _path, query=_query, request_options=request_options)
         return decode_response("ai_provider_keys.retrieve", _data, lambda _d: types.AIProviderKey._from_json(_d))
 
     def delete(
@@ -103,6 +107,7 @@ class AiProviderKeys:
         metadata: Optional[types.UpdateResourceMetadataParam] = None,
         spec: Optional[types.AIProviderKeySpecParam] = None,
         update_mask: Optional[str] = None,
+        credential_patch: Optional[types.AIProviderCredentialPatchParam] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.AIProviderKey:
         """Update an AI provider key"""
@@ -112,6 +117,7 @@ class AiProviderKeys:
             "metadata": (lambda _v: types._encode_UpdateResourceMetadata(_v))(metadata),
             "spec": (lambda _v: types._encode_AIProviderKeySpec(_v))(spec),
             "updateMask": update_mask,
+            "credentialPatch": (lambda _v: types._encode_AIProviderCredentialPatch(_v))(credential_patch),
         }
         _body = {_k: _v for _k, _v in _body.items() if _v is not None}
         _data = self._core.request("PATCH", _path, body=_body, request_options=request_options)

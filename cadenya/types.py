@@ -23,7 +23,7 @@ def _req(data: Any, model: str, key: str) -> Any:
         raise APIResponseError(0, f"response missing required field {model}.{key}")
     return value
 
-AIProviderConfig = Union["AIProviderConfig_Openrouter", "AIProviderConfig_Openai", "AIProviderConfig_OpenaiCompatible"]
+AIProviderConfig = Union["AIProviderConfig_Openrouter", "AIProviderConfig_Openai", "AIProviderConfig_OpenaiCompatible", "AIProviderConfig_Vertex", "AIProviderConfig_Bedrock"]
 
 
 def _decode_AIProviderConfig(data: Any) -> Any:
@@ -38,9 +38,13 @@ def _decode_AIProviderConfig(data: Any) -> Any:
         return AIProviderConfig_Openai._from_json(data)
     if tag == "openaiCompatible":
         return AIProviderConfig_OpenaiCompatible._from_json(data)
+    if tag == "vertex":
+        return AIProviderConfig_Vertex._from_json(data)
+    if tag == "bedrock":
+        return AIProviderConfig_Bedrock._from_json(data)
     raise ValueError(f"AIProviderConfig: unknown type {tag!r}")
 
-AIProviderCredential = Union["AIProviderCredential_ApiKey", "AIProviderCredential_Headers"]
+AIProviderCredential = Union["AIProviderCredential_ApiKey", "AIProviderCredential_Headers", "AIProviderCredential_GoogleServiceAccount", "AIProviderCredential_AwsAccessKey"]
 
 
 def _decode_AIProviderCredential(data: Any) -> Any:
@@ -53,7 +57,60 @@ def _decode_AIProviderCredential(data: Any) -> Any:
         return AIProviderCredential_ApiKey._from_json(data)
     if tag == "headers":
         return AIProviderCredential_Headers._from_json(data)
+    if tag == "googleServiceAccount":
+        return AIProviderCredential_GoogleServiceAccount._from_json(data)
+    if tag == "awsAccessKey":
+        return AIProviderCredential_AwsAccessKey._from_json(data)
     raise ValueError(f"AIProviderCredential: unknown type {tag!r}")
+
+
+@dataclass
+class AIProviderCredentialFieldStatus:
+    """AIProviderCredentialFieldStatus is the safe read representation of one  credential field. Value is populated only when sensitive is false."""
+
+    name: Optional[str] = None
+    sensitive: Optional[bool] = None
+    configured: Optional[bool] = None
+    value: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "AIProviderCredentialFieldStatus":
+        return AIProviderCredentialFieldStatus(
+            name=data.get("name"),
+            sensitive=data.get("sensitive"),
+            configured=data.get("configured"),
+            value=data.get("value"),
+        )
+
+
+@dataclass
+class AIProviderCredentialPatch:
+    """AIProviderCredentialPatch changes selected fields of the current credential.  Omitted values are retained and clear_fields explicitly removes optional  fields. Changing type replaces the credential and requires all mandatory  fields for the new type."""
+
+    credentials: Optional[AIProviderCredential] = None
+    clear_fields: Optional[List[str]] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "AIProviderCredentialPatch":
+        return AIProviderCredentialPatch(
+            credentials=None if data.get("credentials") is None else _decode_AIProviderCredential(data.get("credentials")),
+            clear_fields=data.get("clearFields"),
+        )
+
+
+@dataclass
+class AIProviderCredentialStatus:
+    """AIProviderCredentialStatus describes the stored authentication method and  its fields without returning secret material."""
+
+    type: Optional[str] = None
+    fields: Optional[List[AIProviderCredentialFieldStatus]] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "AIProviderCredentialStatus":
+        return AIProviderCredentialStatus(
+            type=data.get("type"),
+            fields=None if data.get("fields") is None else [AIProviderCredentialFieldStatus._from_json(item) for item in (data.get("fields"))],
+        )
 
 
 @dataclass
@@ -72,6 +129,8 @@ class AIProviderKey:
             info=None if data.get("info") is None else AIProviderKeyInfo._from_json(data.get("info")),
         )
 
+AiProviderKeyInfoModelManagement = Literal["MODEL_MANAGEMENT_UNSPECIFIED", "MODEL_MANAGEMENT_CADENYA", "MODEL_MANAGEMENT_SYNCED", "MODEL_MANAGEMENT_CUSTOMIZABLE", "MODEL_MANAGEMENT_MANUAL"]
+
 
 @dataclass
 class AIProviderKeyInfo:
@@ -80,6 +139,8 @@ class AIProviderKeyInfo:
     enabled_model_count: int
     disabled_model_count: int
     is_promotional: bool
+    model_management: AiProviderKeyInfoModelManagement
+    credential_status: Optional[AIProviderCredentialStatus] = None
 
     @staticmethod
     def _from_json(data: Any) -> "AIProviderKeyInfo":
@@ -87,9 +148,11 @@ class AIProviderKeyInfo:
             enabled_model_count=_req(data, "AIProviderKeyInfo", "enabledModelCount"),
             disabled_model_count=_req(data, "AIProviderKeyInfo", "disabledModelCount"),
             is_promotional=_req(data, "AIProviderKeyInfo", "isPromotional"),
+            credential_status=None if data.get("credentialStatus") is None else AIProviderCredentialStatus._from_json(data.get("credentialStatus")),
+            model_management=_req(data, "AIProviderKeyInfo", "modelManagement"),
         )
 
-AiProviderKeySpecProvider = Literal["AI_PROVIDER_UNSPECIFIED", "AI_PROVIDER_OPENROUTER", "AI_PROVIDER_OPENAI", "AI_PROVIDER_ANTHROPIC", "AI_PROVIDER_GEMINI", "AI_PROVIDER_OPENAI_COMPATIBLE"]
+AiProviderKeySpecProvider = Literal["AI_PROVIDER_UNSPECIFIED", "AI_PROVIDER_OPENROUTER", "AI_PROVIDER_OPENAI", "AI_PROVIDER_ANTHROPIC", "AI_PROVIDER_GEMINI", "AI_PROVIDER_OPENAI_COMPATIBLE", "AI_PROVIDER_VERTEX", "AI_PROVIDER_BEDROCK"]
 
 
 @dataclass
@@ -419,9 +482,9 @@ AgentSpecVariationSelectionMode = Literal["VARIATION_SELECTION_MODE_UNSPECIFIED"
 class AgentSpec:
     """Agent specification (user-provided configuration)"""
 
-    variation_selection_mode: AgentSpecVariationSelectionMode
     description: Optional[str] = None
     webhook_events_url: Optional[str] = None
+    variation_selection_mode: Optional[AgentSpecVariationSelectionMode] = None
     system_prompt_data_schema: Optional[Dict[str, Any]] = None
     output_definition: Optional[Dict[str, Any]] = None
     enable_episodic_memory: Optional[bool] = None
@@ -432,7 +495,7 @@ class AgentSpec:
         return AgentSpec(
             description=data.get("description"),
             webhook_events_url=data.get("webhookEventsUrl"),
-            variation_selection_mode=_req(data, "AgentSpec", "variationSelectionMode"),
+            variation_selection_mode=data.get("variationSelectionMode"),
             system_prompt_data_schema=data.get("systemPromptDataSchema"),
             output_definition=data.get("outputDefinition"),
             enable_episodic_memory=data.get("enableEpisodicMemory"),
@@ -706,6 +769,19 @@ class BareMetadata:
         return BareMetadata(
             id=_req(data, "BareMetadata", "id"),
             name=data.get("name"),
+        )
+
+
+@dataclass
+class BedrockConfig:
+    """BedrockConfig selects the AWS source Region used for Bedrock Runtime calls."""
+
+    region: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "BedrockConfig":
+        return BedrockConfig(
+            region=data.get("region"),
         )
 
 CallableTool = Union["CallableTool_Tool", "CallableTool_Agent", "CallableTool_CadenyaProvidedTool"]
@@ -1138,6 +1214,25 @@ class CreateMemoryLayerRequest:
 
 
 @dataclass
+class CreateModelRequest:
+    """Create model request. The model is created on the given AI provider key with  PROVENANCE_MANUALLY_ENTERED and STATE_ENABLED. The key must be customer  provided and its provider must accept manual definitions (see  AIProviderKeyInfo.model_management)."""
+
+    metadata: CreateResourceMetadata
+    spec: ModelSpec
+    workspace_id: Optional[str] = None
+    ai_provider_key_id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "CreateModelRequest":
+        return CreateModelRequest(
+            workspace_id=data.get("workspaceId"),
+            ai_provider_key_id=data.get("aiProviderKeyId"),
+            metadata=None if _req(data, "CreateModelRequest", "metadata") is None else CreateResourceMetadata._from_json(_req(data, "CreateModelRequest", "metadata")),
+            spec=None if _req(data, "CreateModelRequest", "spec") is None else ModelSpec._from_json(_req(data, "CreateModelRequest", "spec")),
+        )
+
+
+@dataclass
 class CreateObjectiveFeedbackRequest:
     """Request to submit feedback for an objective"""
 
@@ -1389,6 +1484,36 @@ class CredentialAPIKey:
     def _from_json(data: Any) -> "CredentialAPIKey":
         return CredentialAPIKey(
             api_key=data.get("apiKey"),
+        )
+
+
+@dataclass
+class CredentialAWSAccessKey:
+    """CredentialAWSAccessKey carries AWS SigV4 credentials. Optional presence is  used by credential patches so omitted values remain unchanged."""
+
+    access_key_id: Optional[str] = None
+    secret_access_key: Optional[str] = None
+    session_token: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "CredentialAWSAccessKey":
+        return CredentialAWSAccessKey(
+            access_key_id=data.get("accessKeyId"),
+            secret_access_key=data.get("secretAccessKey"),
+            session_token=data.get("sessionToken"),
+        )
+
+
+@dataclass
+class CredentialGoogleServiceAccount:
+    """CredentialGoogleServiceAccount carries an in-memory Google service-account  credential document."""
+
+    json: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "CredentialGoogleServiceAccount":
+        return CredentialGoogleServiceAccount(
+            json=data.get("json"),
         )
 
 
@@ -2149,13 +2274,18 @@ class MemoryReference:
 
 ModelState = Literal["STATE_UNSPECIFIED", "STATE_ENABLED", "STATE_DISABLED"]
 
+ModelProvenance = Literal["PROVENANCE_UNSPECIFIED", "PROVENANCE_SYNCED_FROM_PROVIDER", "PROVENANCE_MANUALLY_ENTERED"]
+
 
 @dataclass
 class Model:
     metadata: ResourceMetadata
     spec: ModelSpec
     state: ModelState
+    provenance: ModelProvenance
+    base_pricing: ModelBasePricing
     info: Optional[ModelInfo] = None
+    pricing_override: Optional[ModelPricingOverride] = None
 
     @staticmethod
     def _from_json(data: Any) -> "Model":
@@ -2164,6 +2294,24 @@ class Model:
             spec=None if _req(data, "Model", "spec") is None else ModelSpec._from_json(_req(data, "Model", "spec")),
             info=None if data.get("info") is None else ModelInfo._from_json(data.get("info")),
             state=_req(data, "Model", "state"),
+            provenance=_req(data, "Model", "provenance"),
+            pricing_override=None if data.get("pricingOverride") is None else ModelPricingOverride._from_json(data.get("pricingOverride")),
+            base_pricing=None if _req(data, "Model", "basePricing") is None else ModelBasePricing._from_json(_req(data, "Model", "basePricing")),
+        )
+
+
+@dataclass
+class ModelBasePricing:
+    """ModelBasePricing is a model's default rates in cents per million tokens,  unaffected by pricing overrides. Zero means the rate is not known."""
+
+    input_price_per_million_tokens: str
+    output_price_per_million_tokens: str
+
+    @staticmethod
+    def _from_json(data: Any) -> "ModelBasePricing":
+        return ModelBasePricing(
+            input_price_per_million_tokens=_req(data, "ModelBasePricing", "inputPricePerMillionTokens"),
+            output_price_per_million_tokens=_req(data, "ModelBasePricing", "outputPricePerMillionTokens"),
         )
 
 
@@ -2185,6 +2333,21 @@ class ModelInfo:
 
 
 @dataclass
+class ModelPricingOverride:
+    """ModelPricingOverride replaces the catalog prices for a model. Each field is  independent: an absent field keeps the catalog price, a present field (zero  included) replaces it. Prices are cents per million tokens."""
+
+    input_price_per_million_tokens: Optional[str] = None
+    output_price_per_million_tokens: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ModelPricingOverride":
+        return ModelPricingOverride(
+            input_price_per_million_tokens=data.get("inputPricePerMillionTokens"),
+            output_price_per_million_tokens=data.get("outputPricePerMillionTokens"),
+        )
+
+
+@dataclass
 class ModelSpec:
     provider: str
     family: str
@@ -2193,6 +2356,7 @@ class ModelSpec:
     input_price_per_million_tokens: str
     output_price_per_million_tokens: str
     capabilities: List[ModelSpec_Capability]
+    provider_model_id: str
 
     @staticmethod
     def _from_json(data: Any) -> "ModelSpec":
@@ -2204,6 +2368,7 @@ class ModelSpec:
             input_price_per_million_tokens=_req(data, "ModelSpec", "inputPricePerMillionTokens"),
             output_price_per_million_tokens=_req(data, "ModelSpec", "outputPricePerMillionTokens"),
             capabilities=None if _req(data, "ModelSpec", "capabilities") is None else [_decode_ModelSpec_Capability(item) for item in (_req(data, "ModelSpec", "capabilities"))],
+            provider_model_id=_req(data, "ModelSpec", "providerModelId"),
         )
 
 ModelSpec_Capability = Union["ModelSpec_Capability_Temperature", "ModelSpec_Capability_TopP", "ModelSpec_Capability_TopK", "ModelSpec_Capability_StopSequences", "ModelSpec_Capability_MaxOutputTokens", "ModelSpec_Capability_Reasoning", "ModelSpec_Capability_Caching"]
@@ -2752,11 +2917,13 @@ class ObjectiveToolCallResult_ImageBlock:
 @dataclass
 class ObjectiveToolCallResult_TextBlock:
     text: str
+    size_bytes: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ObjectiveToolCallResult_TextBlock":
         return ObjectiveToolCallResult_TextBlock(
             text=_req(data, "ObjectiveToolCallResult_TextBlock", "text"),
+            size_bytes=data.get("sizeBytes"),
         )
 
 ObjectiveToolCallWithResultStatus = Literal["TOOL_CALL_STATUS_UNSPECIFIED", "TOOL_CALL_STATUS_AUTO_APPROVED", "TOOL_CALL_STATUS_WAITING_FOR_APPROVAL", "TOOL_CALL_STATUS_APPROVED", "TOOL_CALL_STATUS_DENIED"]
@@ -4264,6 +4431,7 @@ class UpdateAIProviderKeyRequest:
     metadata: Optional[UpdateResourceMetadata] = None
     spec: Optional[AIProviderKeySpec] = None
     update_mask: Optional[str] = None
+    credential_patch: Optional[AIProviderCredentialPatch] = None
 
     @staticmethod
     def _from_json(data: Any) -> "UpdateAIProviderKeyRequest":
@@ -4273,6 +4441,7 @@ class UpdateAIProviderKeyRequest:
             metadata=None if data.get("metadata") is None else UpdateResourceMetadata._from_json(data.get("metadata")),
             spec=None if data.get("spec") is None else AIProviderKeySpec._from_json(data.get("spec")),
             update_mask=data.get("updateMask"),
+            credential_patch=None if data.get("credentialPatch") is None else AIProviderCredentialPatch._from_json(data.get("credentialPatch")),
         )
 
 
@@ -4436,6 +4605,29 @@ class UpdateMemoryLayerRequest:
             id=data.get("id"),
             metadata=None if data.get("metadata") is None else UpdateResourceMetadata._from_json(data.get("metadata")),
             spec=None if data.get("spec") is None else MemoryLayerSpec._from_json(data.get("spec")),
+            update_mask=data.get("updateMask"),
+        )
+
+
+@dataclass
+class UpdateModelRequest:
+    """Update model request. update_mask must list leaf paths: metadata.name,  metadata.external_id, metadata.labels, spec.provider_model_id,  spec.provider, spec.family, spec.max_input_tokens, spec.max_output_tokens,  spec.capabilities, pricing_override.input_price_per_million_tokens, and  pricing_override.output_price_per_million_tokens. Synced models  (PROVENANCE_SYNCED_FROM_PROVIDER) reject metadata.name and spec.* paths.  spec price fields are never writable; price changes go through  pricing_override, where a masked-but-absent field clears the override.  Metadata and spec must be present when their respective paths are masked."""
+
+    workspace_id: Optional[str] = None
+    id: Optional[str] = None
+    metadata: Optional[UpdateResourceMetadata] = None
+    spec: Optional[ModelSpec] = None
+    pricing_override: Optional[ModelPricingOverride] = None
+    update_mask: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "UpdateModelRequest":
+        return UpdateModelRequest(
+            workspace_id=data.get("workspaceId"),
+            id=data.get("id"),
+            metadata=None if data.get("metadata") is None else UpdateResourceMetadata._from_json(data.get("metadata")),
+            spec=None if data.get("spec") is None else ModelSpec._from_json(data.get("spec")),
+            pricing_override=None if data.get("pricingOverride") is None else ModelPricingOverride._from_json(data.get("pricingOverride")),
             update_mask=data.get("updateMask"),
         )
 
@@ -4668,6 +4860,21 @@ class VariationMemoryLayerAssignment:
             id=_req(data, "VariationMemoryLayerAssignment", "id"),
             memory_layer=None if _req(data, "VariationMemoryLayerAssignment", "memoryLayer") is None else BareMetadata._from_json(_req(data, "VariationMemoryLayerAssignment", "memoryLayer")),
             position=_req(data, "VariationMemoryLayerAssignment", "position"),
+        )
+
+
+@dataclass
+class VertexConfig:
+    """VertexConfig configures the Google Cloud project and location used by the  Vertex AI backend. Both are required for service-account authentication."""
+
+    project_id: Optional[str] = None
+    location: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "VertexConfig":
+        return VertexConfig(
+            project_id=data.get("projectId"),
+            location=data.get("location"),
         )
 
 
@@ -5912,6 +6119,32 @@ class AIProviderCredential_Headers:
 
 
 @dataclass
+class AIProviderCredential_GoogleServiceAccount:
+    type: Literal["googleServiceAccount"]
+    google_service_account: CredentialGoogleServiceAccount
+
+    @staticmethod
+    def _from_json(data: Any) -> "AIProviderCredential_GoogleServiceAccount":
+        return AIProviderCredential_GoogleServiceAccount(
+            type=_req(data, "AIProviderCredential_GoogleServiceAccount", "type"),
+            google_service_account=None if _req(data, "AIProviderCredential_GoogleServiceAccount", "googleServiceAccount") is None else CredentialGoogleServiceAccount._from_json(_req(data, "AIProviderCredential_GoogleServiceAccount", "googleServiceAccount")),
+        )
+
+
+@dataclass
+class AIProviderCredential_AwsAccessKey:
+    type: Literal["awsAccessKey"]
+    aws_access_key: CredentialAWSAccessKey
+
+    @staticmethod
+    def _from_json(data: Any) -> "AIProviderCredential_AwsAccessKey":
+        return AIProviderCredential_AwsAccessKey(
+            type=_req(data, "AIProviderCredential_AwsAccessKey", "type"),
+            aws_access_key=None if _req(data, "AIProviderCredential_AwsAccessKey", "awsAccessKey") is None else CredentialAWSAccessKey._from_json(_req(data, "AIProviderCredential_AwsAccessKey", "awsAccessKey")),
+        )
+
+
+@dataclass
 class AIProviderConfig_Openrouter:
     type: Literal["openrouter"]
     openrouter: OpenRouterConfig
@@ -5947,6 +6180,32 @@ class AIProviderConfig_OpenaiCompatible:
         return AIProviderConfig_OpenaiCompatible(
             type=_req(data, "AIProviderConfig_OpenaiCompatible", "type"),
             openai_compatible=None if _req(data, "AIProviderConfig_OpenaiCompatible", "openaiCompatible") is None else OpenAICompatibleConfig._from_json(_req(data, "AIProviderConfig_OpenaiCompatible", "openaiCompatible")),
+        )
+
+
+@dataclass
+class AIProviderConfig_Vertex:
+    type: Literal["vertex"]
+    vertex: VertexConfig
+
+    @staticmethod
+    def _from_json(data: Any) -> "AIProviderConfig_Vertex":
+        return AIProviderConfig_Vertex(
+            type=_req(data, "AIProviderConfig_Vertex", "type"),
+            vertex=None if _req(data, "AIProviderConfig_Vertex", "vertex") is None else VertexConfig._from_json(_req(data, "AIProviderConfig_Vertex", "vertex")),
+        )
+
+
+@dataclass
+class AIProviderConfig_Bedrock:
+    type: Literal["bedrock"]
+    bedrock: BedrockConfig
+
+    @staticmethod
+    def _from_json(data: Any) -> "AIProviderConfig_Bedrock":
+        return AIProviderConfig_Bedrock(
+            type=_req(data, "AIProviderConfig_Bedrock", "type"),
+            bedrock=None if _req(data, "AIProviderConfig_Bedrock", "bedrock") is None else BedrockConfig._from_json(_req(data, "AIProviderConfig_Bedrock", "bedrock")),
         )
 
 
@@ -6067,8 +6326,12 @@ WidgetSessionServiceListWidgetSessionsState = Literal["STATE_UNSPECIFIED", "STAT
 
 # ---- request shapes ----
 
-AIProviderConfigParam = Union["AIProviderConfig_OpenrouterParam", "AIProviderConfig_OpenaiParam", "AIProviderConfig_OpenaiCompatibleParam"]
-AIProviderCredentialParam = Union["AIProviderCredential_ApiKeyParam", "AIProviderCredential_HeadersParam"]
+AIProviderConfigParam = Union["AIProviderConfig_OpenrouterParam", "AIProviderConfig_OpenaiParam", "AIProviderConfig_OpenaiCompatibleParam", "AIProviderConfig_VertexParam", "AIProviderConfig_BedrockParam"]
+AIProviderCredentialParam = Union["AIProviderCredential_ApiKeyParam", "AIProviderCredential_HeadersParam", "AIProviderCredential_GoogleServiceAccountParam", "AIProviderCredential_AwsAccessKeyParam"]
+AIProviderCredentialPatchParam = TypedDict("AIProviderCredentialPatchParam", {
+    "credentials": "AIProviderCredentialParam",
+    "clear_fields": List[str],
+}, total=False)
 AIProviderKeySpecParam = TypedDict("AIProviderKeySpecParam", {
     "provider": "AiProviderKeySpecProvider",
     "credentials": "AIProviderCredentialParam",
@@ -6095,7 +6358,7 @@ AgentScheduleSpec_ScheduleParam = TypedDict("AgentScheduleSpec_ScheduleParam", {
 AgentSpecParam = TypedDict("AgentSpecParam", {
     "description": str,
     "webhook_events_url": str,
-    "variation_selection_mode": Required["AgentSpecVariationSelectionMode"],
+    "variation_selection_mode": "AgentSpecVariationSelectionMode",
     "system_prompt_data_schema": Dict[str, Any],
     "output_definition": Dict[str, Any],
     "enable_episodic_memory": bool,
@@ -6133,6 +6396,25 @@ AgentVariationSpec_ModelConfigParam = TypedDict("AgentVariationSpec_ModelConfigP
 AgentVariationSpec_ProgressiveDiscoveryParam = TypedDict("AgentVariationSpec_ProgressiveDiscoveryParam", {
     "max_tools": int,
     "hints": List[str],
+}, total=False)
+BedrockConfigParam = TypedDict("BedrockConfigParam", {
+    "region": str,
+}, total=False)
+Capability_CachingParam = TypedDict("Capability_CachingParam", {
+}, total=False)
+Capability_MaxOutputTokensParam = TypedDict("Capability_MaxOutputTokensParam", {
+}, total=False)
+Capability_ReasoningParam = TypedDict("Capability_ReasoningParam", {
+    "mode": Required["CapabilityReasoningMode"],
+}, total=False)
+Capability_StopSequencesParam = TypedDict("Capability_StopSequencesParam", {
+    "limit": Required[int],
+}, total=False)
+Capability_TemperatureParam = TypedDict("Capability_TemperatureParam", {
+}, total=False)
+Capability_TopKParam = TypedDict("Capability_TopKParam", {
+}, total=False)
+Capability_TopPParam = TypedDict("Capability_TopPParam", {
 }, total=False)
 CompactionConfig_SummarizationStrategyParam = TypedDict("CompactionConfig_SummarizationStrategyParam", {
     "instructions": str,
@@ -6187,6 +6469,14 @@ CreateWidgetSessionRequest_SecretParam = TypedDict("CreateWidgetSessionRequest_S
 CredentialAPIKeyParam = TypedDict("CredentialAPIKeyParam", {
     "api_key": str,
 }, total=False)
+CredentialAWSAccessKeyParam = TypedDict("CredentialAWSAccessKeyParam", {
+    "access_key_id": str,
+    "secret_access_key": str,
+    "session_token": str,
+}, total=False)
+CredentialGoogleServiceAccountParam = TypedDict("CredentialGoogleServiceAccountParam", {
+    "json": str,
+}, total=False)
 CredentialHeadersParam = TypedDict("CredentialHeadersParam", {
     "headers": Dict[str, str],
 }, total=False)
@@ -6212,6 +6502,21 @@ MemoryReferenceParam = TypedDict("MemoryReferenceParam", {
     "memory_layer_id": Required[str],
     "memory_entry_id": str,
 }, total=False)
+ModelPricingOverrideParam = TypedDict("ModelPricingOverrideParam", {
+    "input_price_per_million_tokens": str,
+    "output_price_per_million_tokens": str,
+}, total=False)
+ModelSpecParam = TypedDict("ModelSpecParam", {
+    "provider": Required[str],
+    "family": Required[str],
+    "max_input_tokens": Required[int],
+    "max_output_tokens": Required[int],
+    "input_price_per_million_tokens": Required[str],
+    "output_price_per_million_tokens": Required[str],
+    "capabilities": Required[List["ModelSpec_CapabilityParam"]],
+    "provider_model_id": Required[str],
+}, total=False)
+ModelSpec_CapabilityParam = Union["ModelSpec_Capability_TemperatureParam", "ModelSpec_Capability_TopPParam", "ModelSpec_Capability_TopKParam", "ModelSpec_Capability_StopSequencesParam", "ModelSpec_Capability_MaxOutputTokensParam", "ModelSpec_Capability_ReasoningParam", "ModelSpec_Capability_CachingParam"]
 ObjectiveEpisodicConfigParam = TypedDict("ObjectiveEpisodicConfigParam", {
     "key": Required[str],
 }, total=False)
@@ -6374,6 +6679,10 @@ UploadSpecParam = TypedDict("UploadSpecParam", {
     "filename": Required[str],
     "content_type": Required[str],
     "size_bytes": Required[str],
+}, total=False)
+VertexConfigParam = TypedDict("VertexConfigParam", {
+    "project_id": str,
+    "location": str,
 }, total=False)
 WidgetSessionSpecParam = TypedDict("WidgetSessionSpecParam", {
     "widget_id": Required[str],
@@ -6550,6 +6859,14 @@ AIProviderCredential_HeadersParam = TypedDict("AIProviderCredential_HeadersParam
     "type": Required[Literal["headers"]],
     "headers": Required["CredentialHeadersParam"],
 }, total=False)
+AIProviderCredential_GoogleServiceAccountParam = TypedDict("AIProviderCredential_GoogleServiceAccountParam", {
+    "type": Required[Literal["googleServiceAccount"]],
+    "google_service_account": Required["CredentialGoogleServiceAccountParam"],
+}, total=False)
+AIProviderCredential_AwsAccessKeyParam = TypedDict("AIProviderCredential_AwsAccessKeyParam", {
+    "type": Required[Literal["awsAccessKey"]],
+    "aws_access_key": Required["CredentialAWSAccessKeyParam"],
+}, total=False)
 AIProviderConfig_OpenrouterParam = TypedDict("AIProviderConfig_OpenrouterParam", {
     "type": Required[Literal["openrouter"]],
     "openrouter": Required["OpenRouterConfigParam"],
@@ -6561,6 +6878,42 @@ AIProviderConfig_OpenaiParam = TypedDict("AIProviderConfig_OpenaiParam", {
 AIProviderConfig_OpenaiCompatibleParam = TypedDict("AIProviderConfig_OpenaiCompatibleParam", {
     "type": Required[Literal["openaiCompatible"]],
     "openai_compatible": Required["OpenAICompatibleConfigParam"],
+}, total=False)
+AIProviderConfig_VertexParam = TypedDict("AIProviderConfig_VertexParam", {
+    "type": Required[Literal["vertex"]],
+    "vertex": Required["VertexConfigParam"],
+}, total=False)
+AIProviderConfig_BedrockParam = TypedDict("AIProviderConfig_BedrockParam", {
+    "type": Required[Literal["bedrock"]],
+    "bedrock": Required["BedrockConfigParam"],
+}, total=False)
+ModelSpec_Capability_TemperatureParam = TypedDict("ModelSpec_Capability_TemperatureParam", {
+    "type": Required[Literal["temperature"]],
+    "temperature": Required["Capability_TemperatureParam"],
+}, total=False)
+ModelSpec_Capability_TopPParam = TypedDict("ModelSpec_Capability_TopPParam", {
+    "type": Required[Literal["topP"]],
+    "top_p": Required["Capability_TopPParam"],
+}, total=False)
+ModelSpec_Capability_TopKParam = TypedDict("ModelSpec_Capability_TopKParam", {
+    "type": Required[Literal["topK"]],
+    "top_k": Required["Capability_TopKParam"],
+}, total=False)
+ModelSpec_Capability_StopSequencesParam = TypedDict("ModelSpec_Capability_StopSequencesParam", {
+    "type": Required[Literal["stopSequences"]],
+    "stop_sequences": Required["Capability_StopSequencesParam"],
+}, total=False)
+ModelSpec_Capability_MaxOutputTokensParam = TypedDict("ModelSpec_Capability_MaxOutputTokensParam", {
+    "type": Required[Literal["maxOutputTokens"]],
+    "max_output_tokens": Required["Capability_MaxOutputTokensParam"],
+}, total=False)
+ModelSpec_Capability_ReasoningParam = TypedDict("ModelSpec_Capability_ReasoningParam", {
+    "type": Required[Literal["reasoning"]],
+    "reasoning": Required["Capability_ReasoningParam"],
+}, total=False)
+ModelSpec_Capability_CachingParam = TypedDict("ModelSpec_Capability_CachingParam", {
+    "type": Required[Literal["caching"]],
+    "caching": Required["Capability_CachingParam"],
 }, total=False)
 
 # ---- request encoders (snake_case -> wire keys) ----
@@ -6606,6 +6959,10 @@ def _encode_AIProviderConfig(data: Any) -> Any:
         return (lambda _v: _encode_AIProviderConfig_Openai(_v))(data)
     if tag == "openaiCompatible":
         return (lambda _v: _encode_AIProviderConfig_OpenaiCompatible(_v))(data)
+    if tag == "vertex":
+        return (lambda _v: _encode_AIProviderConfig_Vertex(_v))(data)
+    if tag == "bedrock":
+        return (lambda _v: _encode_AIProviderConfig_Bedrock(_v))(data)
     return data
 
 def _encode_AIProviderCredential(data: Any) -> Any:
@@ -6616,7 +6973,20 @@ def _encode_AIProviderCredential(data: Any) -> Any:
         return (lambda _v: _encode_AIProviderCredential_ApiKey(_v))(data)
     if tag == "headers":
         return (lambda _v: _encode_AIProviderCredential_Headers(_v))(data)
+    if tag == "googleServiceAccount":
+        return (lambda _v: _encode_AIProviderCredential_GoogleServiceAccount(_v))(data)
+    if tag == "awsAccessKey":
+        return (lambda _v: _encode_AIProviderCredential_AwsAccessKey(_v))(data)
     return data
+
+_FIELDS_AIProviderCredentialPatch: Dict[str, Any] = {
+    "credentials": ("credentials", (lambda _v: _encode_AIProviderCredential(_v))),
+    "clear_fields": ("clearFields", None),
+    "clearFields": ("clearFields", None),
+}
+
+def _encode_AIProviderCredentialPatch(data: Any) -> Any:
+    return _encode_fields(_FIELDS_AIProviderCredentialPatch, data)
 
 _FIELDS_AIProviderKeySpec: Dict[str, Any] = {
     "provider": ("provider", None),
@@ -6764,6 +7134,27 @@ _FIELDS_AgentVariationSpec_ProgressiveDiscovery: Dict[str, Any] = {
 def _encode_AgentVariationSpec_ProgressiveDiscovery(data: Any) -> Any:
     return _encode_fields(_FIELDS_AgentVariationSpec_ProgressiveDiscovery, data)
 
+_FIELDS_BedrockConfig: Dict[str, Any] = {
+    "region": ("region", None),
+}
+
+def _encode_BedrockConfig(data: Any) -> Any:
+    return _encode_fields(_FIELDS_BedrockConfig, data)
+
+_FIELDS_Capability_Reasoning: Dict[str, Any] = {
+    "mode": ("mode", None),
+}
+
+def _encode_Capability_Reasoning(data: Any) -> Any:
+    return _encode_fields(_FIELDS_Capability_Reasoning, data)
+
+_FIELDS_Capability_StopSequences: Dict[str, Any] = {
+    "limit": ("limit", None),
+}
+
+def _encode_Capability_StopSequences(data: Any) -> Any:
+    return _encode_fields(_FIELDS_Capability_StopSequences, data)
+
 _FIELDS_CompactionConfig_SummarizationStrategy: Dict[str, Any] = {
     "instructions": ("instructions", None),
 }
@@ -6879,6 +7270,25 @@ _FIELDS_CredentialAPIKey: Dict[str, Any] = {
 def _encode_CredentialAPIKey(data: Any) -> Any:
     return _encode_fields(_FIELDS_CredentialAPIKey, data)
 
+_FIELDS_CredentialAWSAccessKey: Dict[str, Any] = {
+    "access_key_id": ("accessKeyId", None),
+    "accessKeyId": ("accessKeyId", None),
+    "secret_access_key": ("secretAccessKey", None),
+    "secretAccessKey": ("secretAccessKey", None),
+    "session_token": ("sessionToken", None),
+    "sessionToken": ("sessionToken", None),
+}
+
+def _encode_CredentialAWSAccessKey(data: Any) -> Any:
+    return _encode_fields(_FIELDS_CredentialAWSAccessKey, data)
+
+_FIELDS_CredentialGoogleServiceAccount: Dict[str, Any] = {
+    "json": ("json", None),
+}
+
+def _encode_CredentialGoogleServiceAccount(data: Any) -> Any:
+    return _encode_fields(_FIELDS_CredentialGoogleServiceAccount, data)
+
 _FIELDS_CredentialHeaders: Dict[str, Any] = {
     "headers": ("headers", None),
 }
@@ -6940,6 +7350,55 @@ _FIELDS_MemoryReference: Dict[str, Any] = {
 
 def _encode_MemoryReference(data: Any) -> Any:
     return _encode_fields(_FIELDS_MemoryReference, data)
+
+_FIELDS_ModelPricingOverride: Dict[str, Any] = {
+    "input_price_per_million_tokens": ("inputPricePerMillionTokens", None),
+    "inputPricePerMillionTokens": ("inputPricePerMillionTokens", None),
+    "output_price_per_million_tokens": ("outputPricePerMillionTokens", None),
+    "outputPricePerMillionTokens": ("outputPricePerMillionTokens", None),
+}
+
+def _encode_ModelPricingOverride(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ModelPricingOverride, data)
+
+_FIELDS_ModelSpec: Dict[str, Any] = {
+    "provider": ("provider", None),
+    "family": ("family", None),
+    "max_input_tokens": ("maxInputTokens", None),
+    "maxInputTokens": ("maxInputTokens", None),
+    "max_output_tokens": ("maxOutputTokens", None),
+    "maxOutputTokens": ("maxOutputTokens", None),
+    "input_price_per_million_tokens": ("inputPricePerMillionTokens", None),
+    "inputPricePerMillionTokens": ("inputPricePerMillionTokens", None),
+    "output_price_per_million_tokens": ("outputPricePerMillionTokens", None),
+    "outputPricePerMillionTokens": ("outputPricePerMillionTokens", None),
+    "capabilities": ("capabilities", (lambda _v: [((lambda _v: _encode_ModelSpec_Capability(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "provider_model_id": ("providerModelId", None),
+    "providerModelId": ("providerModelId", None),
+}
+
+def _encode_ModelSpec(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ModelSpec, data)
+
+def _encode_ModelSpec_Capability(data: Any) -> Any:
+    if not isinstance(data, dict):
+        return data
+    tag = data.get("type")
+    if tag == "temperature":
+        return (lambda _v: _encode_ModelSpec_Capability_Temperature(_v))(data)
+    if tag == "topP":
+        return (lambda _v: _encode_ModelSpec_Capability_TopP(_v))(data)
+    if tag == "topK":
+        return (lambda _v: _encode_ModelSpec_Capability_TopK(_v))(data)
+    if tag == "stopSequences":
+        return (lambda _v: _encode_ModelSpec_Capability_StopSequences(_v))(data)
+    if tag == "maxOutputTokens":
+        return (lambda _v: _encode_ModelSpec_Capability_MaxOutputTokens(_v))(data)
+    if tag == "reasoning":
+        return (lambda _v: _encode_ModelSpec_Capability_Reasoning(_v))(data)
+    if tag == "caching":
+        return (lambda _v: _encode_ModelSpec_Capability_Caching(_v))(data)
+    return data
 
 _FIELDS_ObjectiveEpisodicConfig: Dict[str, Any] = {
     "key": ("key", None),
@@ -7376,6 +7835,15 @@ _FIELDS_UploadSpec: Dict[str, Any] = {
 def _encode_UploadSpec(data: Any) -> Any:
     return _encode_fields(_FIELDS_UploadSpec, data)
 
+_FIELDS_VertexConfig: Dict[str, Any] = {
+    "project_id": ("projectId", None),
+    "projectId": ("projectId", None),
+    "location": ("location", None),
+}
+
+def _encode_VertexConfig(data: Any) -> Any:
+    return _encode_fields(_FIELDS_VertexConfig, data)
+
 _FIELDS_WidgetSessionSpec: Dict[str, Any] = {
     "widget_id": ("widgetId", None),
     "widgetId": ("widgetId", None),
@@ -7737,6 +8205,24 @@ _FIELDS_AIProviderCredential_Headers: Dict[str, Any] = {
 def _encode_AIProviderCredential_Headers(data: Any) -> Any:
     return _encode_fields(_FIELDS_AIProviderCredential_Headers, data)
 
+_FIELDS_AIProviderCredential_GoogleServiceAccount: Dict[str, Any] = {
+    "type": ("type", None),
+    "google_service_account": ("googleServiceAccount", (lambda _v: _encode_CredentialGoogleServiceAccount(_v))),
+    "googleServiceAccount": ("googleServiceAccount", (lambda _v: _encode_CredentialGoogleServiceAccount(_v))),
+}
+
+def _encode_AIProviderCredential_GoogleServiceAccount(data: Any) -> Any:
+    return _encode_fields(_FIELDS_AIProviderCredential_GoogleServiceAccount, data)
+
+_FIELDS_AIProviderCredential_AwsAccessKey: Dict[str, Any] = {
+    "type": ("type", None),
+    "aws_access_key": ("awsAccessKey", (lambda _v: _encode_CredentialAWSAccessKey(_v))),
+    "awsAccessKey": ("awsAccessKey", (lambda _v: _encode_CredentialAWSAccessKey(_v))),
+}
+
+def _encode_AIProviderCredential_AwsAccessKey(data: Any) -> Any:
+    return _encode_fields(_FIELDS_AIProviderCredential_AwsAccessKey, data)
+
 _FIELDS_AIProviderConfig_Openrouter: Dict[str, Any] = {
     "type": ("type", None),
     "openrouter": ("openrouter", (lambda _v: _encode_OpenRouterConfig(_v))),
@@ -7761,4 +8247,80 @@ _FIELDS_AIProviderConfig_OpenaiCompatible: Dict[str, Any] = {
 
 def _encode_AIProviderConfig_OpenaiCompatible(data: Any) -> Any:
     return _encode_fields(_FIELDS_AIProviderConfig_OpenaiCompatible, data)
+
+_FIELDS_AIProviderConfig_Vertex: Dict[str, Any] = {
+    "type": ("type", None),
+    "vertex": ("vertex", (lambda _v: _encode_VertexConfig(_v))),
+}
+
+def _encode_AIProviderConfig_Vertex(data: Any) -> Any:
+    return _encode_fields(_FIELDS_AIProviderConfig_Vertex, data)
+
+_FIELDS_AIProviderConfig_Bedrock: Dict[str, Any] = {
+    "type": ("type", None),
+    "bedrock": ("bedrock", (lambda _v: _encode_BedrockConfig(_v))),
+}
+
+def _encode_AIProviderConfig_Bedrock(data: Any) -> Any:
+    return _encode_fields(_FIELDS_AIProviderConfig_Bedrock, data)
+
+_FIELDS_ModelSpec_Capability_Temperature: Dict[str, Any] = {
+    "type": ("type", None),
+    "temperature": ("temperature", None),
+}
+
+def _encode_ModelSpec_Capability_Temperature(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ModelSpec_Capability_Temperature, data)
+
+_FIELDS_ModelSpec_Capability_TopP: Dict[str, Any] = {
+    "type": ("type", None),
+    "top_p": ("topP", None),
+    "topP": ("topP", None),
+}
+
+def _encode_ModelSpec_Capability_TopP(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ModelSpec_Capability_TopP, data)
+
+_FIELDS_ModelSpec_Capability_TopK: Dict[str, Any] = {
+    "type": ("type", None),
+    "top_k": ("topK", None),
+    "topK": ("topK", None),
+}
+
+def _encode_ModelSpec_Capability_TopK(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ModelSpec_Capability_TopK, data)
+
+_FIELDS_ModelSpec_Capability_StopSequences: Dict[str, Any] = {
+    "type": ("type", None),
+    "stop_sequences": ("stopSequences", (lambda _v: _encode_Capability_StopSequences(_v))),
+    "stopSequences": ("stopSequences", (lambda _v: _encode_Capability_StopSequences(_v))),
+}
+
+def _encode_ModelSpec_Capability_StopSequences(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ModelSpec_Capability_StopSequences, data)
+
+_FIELDS_ModelSpec_Capability_MaxOutputTokens: Dict[str, Any] = {
+    "type": ("type", None),
+    "max_output_tokens": ("maxOutputTokens", None),
+    "maxOutputTokens": ("maxOutputTokens", None),
+}
+
+def _encode_ModelSpec_Capability_MaxOutputTokens(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ModelSpec_Capability_MaxOutputTokens, data)
+
+_FIELDS_ModelSpec_Capability_Reasoning: Dict[str, Any] = {
+    "type": ("type", None),
+    "reasoning": ("reasoning", (lambda _v: _encode_Capability_Reasoning(_v))),
+}
+
+def _encode_ModelSpec_Capability_Reasoning(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ModelSpec_Capability_Reasoning, data)
+
+_FIELDS_ModelSpec_Capability_Caching: Dict[str, Any] = {
+    "type": ("type", None),
+    "caching": ("caching", None),
+}
+
+def _encode_ModelSpec_Capability_Caching(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ModelSpec_Capability_Caching, data)
 

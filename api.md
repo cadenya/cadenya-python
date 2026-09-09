@@ -316,7 +316,7 @@ client.ai_provider_keys.create(*, workspace_id=None, metadata, spec) -> AIProvid
 Get an AI provider key by ID
 
 ```python
-client.ai_provider_keys.retrieve(id: str, *, workspace_id=None) -> AIProviderKey
+client.ai_provider_keys.retrieve(id: str, *, workspace_id=None, include_info=None) -> AIProviderKey
 ```
 Delete an AI provider key
 
@@ -326,7 +326,45 @@ client.ai_provider_keys.delete(id: str, *, workspace_id=None) -> None
 Update an AI provider key
 
 ```python
-client.ai_provider_keys.update(id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> AIProviderKey
+client.ai_provider_keys.update(id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None, credential_patch=None) -> AIProviderKey
+```
+
+## client.models
+
+Create a model
+
+```python
+client.models.create(ai_provider_key_id: str, *, workspace_id=None, metadata, spec) -> Model
+```
+List models
+
+```python
+client.models.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, state=None, ai_provider_key_id=None, is_assigned=None, labels=None, sort_order=None, include_info=None) -> SyncPage[Model]
+```
+Get a model by ID
+
+```python
+client.models.retrieve(id: str, *, workspace_id=None) -> Model
+```
+Update a model
+
+```python
+client.models.update(id: str, *, workspace_id=None, metadata=None, spec=None, pricing_override=None, update_mask=None) -> Model
+```
+Disable a model
+
+```python
+client.models.disable(id: str, *, workspace_id=None) -> Model
+```
+Enable a model
+
+```python
+client.models.enable(id: str, *, workspace_id=None) -> Model
+```
+Swap models on agent variations
+
+```python
+client.models.swap_on_variations(*, workspace_id=None, model_swaps=None) -> None
 ```
 
 ## client.memory_layers
@@ -383,34 +421,6 @@ Update a memory entry
 
 ```python
 client.memory_layers.entries.update(memory_layer_id: str, id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> MemoryEntryDetail
-```
-
-## client.models
-
-List models
-
-```python
-client.models.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, state=None, ai_provider_key_id=None, is_assigned=None, labels=None, sort_order=None, include_info=None) -> SyncPage[Model]
-```
-Get a model by ID
-
-```python
-client.models.retrieve(id: str, *, workspace_id=None) -> Model
-```
-Disable a model
-
-```python
-client.models.disable(id: str, *, workspace_id=None) -> Model
-```
-Enable a model
-
-```python
-client.models.enable(id: str, *, workspace_id=None) -> Model
-```
-Swap models on agent variations
-
-```python
-client.models.swap_on_variations(*, workspace_id=None, model_swaps=None) -> None
 ```
 
 ## client.objectives

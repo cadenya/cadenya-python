@@ -18,8 +18,8 @@ from .resources import (
     Workspaces,
     Agents,
     AiProviderKeys,
-    MemoryLayers,
     Models,
+    MemoryLayers,
     Objectives,
     ToolSearch,
     Tenants,
@@ -79,8 +79,8 @@ class Cadenya:
         self.workspaces = Workspaces(core)
         self.agents = Agents(core)
         self.ai_provider_keys = AiProviderKeys(core)
-        self.memory_layers = MemoryLayers(core)
         self.models = Models(core)
+        self.memory_layers = MemoryLayers(core)
         self.objectives = Objectives(core)
         self.tool_search = ToolSearch(core)
         self.tenants = Tenants(core)
