@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/cadenya/cadenya-python/compare/v1.0.1...v1.1.0) (2026-09-09)
+
+
+### Features
+
+* add provider credentials and model management ([b3c0733](https://github.com/cadenya/cadenya-python/commit/b3c07332b61f0b09e4583d15ecd9c5699a45b19e))
+
+
+### Chores
+
+* assorted updates ([#17](https://github.com/cadenya/cadenya-python/issues/17)) ([4bd889a](https://github.com/cadenya/cadenya-python/commit/4bd889ab7490a698a6fbca5cfb8510d4c816f341))
+
 ## [1.0.1](https://github.com/cadenya/cadenya-python/compare/v1.0.0...v1.0.1) (2026-08-27)
 
 
