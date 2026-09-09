@@ -14,6 +14,26 @@ class Models:
     def __init__(self, core: Core) -> None:
         self._core = core
 
+    def create(
+        self,
+        ai_provider_key_id: str,
+        *,
+        metadata: types.CreateResourceMetadataParam,
+        spec: types.ModelSpecParam,
+        workspace_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> types.Model:
+        """Create a model"""
+        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/ai_provider_keys/{path_param('aiProviderKeyId', ai_provider_key_id)}/models"
+        _body = {
+            "metadata": (lambda _v: types._encode_CreateResourceMetadata(_v))(metadata),
+            "spec": (lambda _v: types._encode_ModelSpec(_v))(spec),
+        }
+        _body = {_k: _v for _k, _v in _body.items() if _v is not None}
+        _data = self._core.request("POST", _path, body=_body, request_options=request_options)
+        return decode_response("models.create", _data, lambda _d: types.Model._from_json(_d))
+
     def list(
         self,
         *,
@@ -66,6 +86,30 @@ class Models:
         _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/models/{path_param('id', id)}"
         _data = self._core.request("GET", _path, request_options=request_options)
         return decode_response("models.retrieve", _data, lambda _d: types.Model._from_json(_d))
+
+    def update(
+        self,
+        id: str,
+        *,
+        workspace_id: Optional[str] = None,
+        metadata: Optional[types.UpdateResourceMetadataParam] = None,
+        spec: Optional[types.ModelSpecParam] = None,
+        pricing_override: Optional[types.ModelPricingOverrideParam] = None,
+        update_mask: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> types.Model:
+        """Update a model"""
+        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/models/{path_param('id', id)}"
+        _body = {
+            "metadata": (lambda _v: types._encode_UpdateResourceMetadata(_v))(metadata),
+            "spec": (lambda _v: types._encode_ModelSpec(_v))(spec),
+            "pricingOverride": (lambda _v: types._encode_ModelPricingOverride(_v))(pricing_override),
+            "updateMask": update_mask,
+        }
+        _body = {_k: _v for _k, _v in _body.items() if _v is not None}
+        _data = self._core.request("PATCH", _path, body=_body, request_options=request_options)
+        return decode_response("models.update", _data, lambda _d: types.Model._from_json(_d))
 
     def disable(
         self,
