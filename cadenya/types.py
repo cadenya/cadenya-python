@@ -316,7 +316,7 @@ def _decode_AddAgentVariationAssignmentRequest(data: Any) -> Any:
 
 @dataclass
 class AddAgentVariationMemoryLayerRequest:
-    """Attach a memory layer to a variation. The request is rejected when:    - the layer is system-managed (FailedPrecondition)    - the layer is already assigned to this variation (AlreadyExists)    - the variation is already at the 10-assignment cap (FailedPrecondition)    - the position is already in use on this variation (InvalidArgument)"""
+    """Attach a memory layer to a variation. Use UpdateAgentVariationMemoryLayer or  replace the spec list to reposition an existing layer. Rejected when:    - the layer is already assigned, regardless of position (AlreadyExists)    - the layer is system-managed (FailedPrecondition)    - the variation is already at the 10-assignment cap (FailedPrecondition)    - the position is already in use on this variation (InvalidArgument)"""
 
     memory_layer_id: str
     workspace_id: Optional[str] = None
@@ -529,9 +529,8 @@ class AgentVariationInfo:
     sub_agent_count: int
     score: float
     feedback_count: int
-    assignments: List[VariationAssignment]
-    memory_layer_assignments: List[VariationMemoryLayerAssignment]
     memory_layer_count: int
+    effective_tool_count: int
     created_by: Optional[Profile] = None
     model: Optional[ResourceMetadata] = None
 
@@ -545,15 +544,14 @@ class AgentVariationInfo:
             model=None if data.get("model") is None else ResourceMetadata._from_json(data.get("model")),
             score=_req(data, "AgentVariationInfo", "score"),
             feedback_count=_req(data, "AgentVariationInfo", "feedbackCount"),
-            assignments=None if _req(data, "AgentVariationInfo", "assignments") is None else [_decode_VariationAssignment(item) for item in (_req(data, "AgentVariationInfo", "assignments"))],
-            memory_layer_assignments=None if _req(data, "AgentVariationInfo", "memoryLayerAssignments") is None else [VariationMemoryLayerAssignment._from_json(item) for item in (_req(data, "AgentVariationInfo", "memoryLayerAssignments"))],
             memory_layer_count=_req(data, "AgentVariationInfo", "memoryLayerCount"),
+            effective_tool_count=_req(data, "AgentVariationInfo", "effectiveToolCount"),
         )
 
 
 @dataclass
 class AgentVariationSpec:
-    """AgentVariationSpec defines the operational configuration for a variation"""
+    """AgentVariationSpec defines the complete operational configuration for a  variation, including assignments. Reads always populate both assignment lists,  even when include_info is false. Create and update validate and persist the  configuration atomically: any invalid target or cascade rejects the entire  request. Targets must belong to the variation's workspace and pass the same  eligibility checks as the dedicated add methods."""
 
     system_prompt_template: Optional[str] = None
     progressive_discovery: Optional[AgentVariationSpec_ProgressiveDiscovery] = None
@@ -562,6 +560,8 @@ class AgentVariationSpec:
     model_config: Optional[AgentVariationSpec_ModelConfig] = None
     compaction_config: Optional[AgentVariationSpec_CompactionConfig] = None
     first_user_message_template: Optional[str] = None
+    assignments: Optional[List[VariationAssignment]] = None
+    memory_layer_assignments: Optional[List[VariationMemoryLayerAssignment]] = None
 
     @staticmethod
     def _from_json(data: Any) -> "AgentVariationSpec":
@@ -573,6 +573,8 @@ class AgentVariationSpec:
             model_config=None if data.get("modelConfig") is None else AgentVariationSpec_ModelConfig._from_json(data.get("modelConfig")),
             compaction_config=None if data.get("compactionConfig") is None else AgentVariationSpec_CompactionConfig._from_json(data.get("compactionConfig")),
             first_user_message_template=data.get("firstUserMessageTemplate"),
+            assignments=None if data.get("assignments") is None else [_decode_VariationAssignment(item) for item in (data.get("assignments"))],
+            memory_layer_assignments=None if data.get("memoryLayerAssignments") is None else [VariationMemoryLayerAssignment._from_json(item) for item in (data.get("memoryLayerAssignments"))],
         )
 
 
@@ -2415,7 +2417,7 @@ class Notice:
             key=_req(data, "Notice", "key"),
         )
 
-ObjectiveState = Literal["STATE_UNSPECIFIED", "STATE_PENDING", "STATE_RUNNING", "STATE_WAITING", "STATE_FAILED", "STATE_CANCELLED", "STATE_FINALIZED", "STATE_TIMED_OUT"]
+ObjectiveState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT"]
 
 
 @dataclass
@@ -2603,7 +2605,7 @@ class ObjectiveEvent:
             started_at=None if data.get("startedAt") is None else parse_datetime(data.get("startedAt")),
         )
 
-ObjectiveEventData = Union["ObjectiveEventData_UserMessage", "ObjectiveEventData_ToolApprovalRequested", "ObjectiveEventData_ToolApproved", "ObjectiveEventData_ToolDenied", "ObjectiveEventData_ToolCalled", "ObjectiveEventData_Error", "ObjectiveEventData_AssistantMessage", "ObjectiveEventData_ToolResult", "ObjectiveEventData_ToolError", "ObjectiveEventData_ContextWindowCompacted", "ObjectiveEventData_MemoryRead", "ObjectiveEventData_Cancelled", "ObjectiveEventData_SubAgentSpawned", "ObjectiveEventData_SubAgentUpdated", "ObjectiveEventData_Finalized", "ObjectiveEventData_Notice", "ObjectiveEventData_TimedOut", "ObjectiveEventData_Reasoning"]
+ObjectiveEventData = Union["ObjectiveEventData_UserMessage", "ObjectiveEventData_ToolApprovalRequested", "ObjectiveEventData_ToolApproved", "ObjectiveEventData_ToolDenied", "ObjectiveEventData_ToolCalled", "ObjectiveEventData_Error", "ObjectiveEventData_AssistantMessage", "ObjectiveEventData_ToolResult", "ObjectiveEventData_ToolError", "ObjectiveEventData_ContextWindowCompacted", "ObjectiveEventData_MemoryRead", "ObjectiveEventData_Cancelled", "ObjectiveEventData_SubAgentSpawned", "ObjectiveEventData_SubAgentUpdated", "ObjectiveEventData_Finalized", "ObjectiveEventData_Notice", "ObjectiveEventData_TimedOut", "ObjectiveEventData_Reasoning", "ObjectiveEventData_StateChanged"]
 
 
 def _decode_ObjectiveEventData(data: Any) -> Any:
@@ -2648,6 +2650,8 @@ def _decode_ObjectiveEventData(data: Any) -> Any:
         return ObjectiveEventData_TimedOut._from_json(data)
     if tag == "reasoning":
         return ObjectiveEventData_Reasoning._from_json(data)
+    if tag == "stateChanged":
+        return ObjectiveEventData_StateChanged._from_json(data)
     raise ValueError(f"ObjectiveEventData: unknown type {tag!r}")
 
 
@@ -2758,6 +2762,27 @@ class ObjectiveInfo:
             tenant=None if data.get("tenant") is None else TenantReference._from_json(data.get("tenant")),
             subject=None if data.get("subject") is None else SubjectReference._from_json(data.get("subject")),
             widget=None if data.get("widget") is None else BareMetadata._from_json(data.get("widget")),
+        )
+
+ObjectiveStateChangedFromState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT"]
+
+ObjectiveStateChangedToState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT"]
+
+
+@dataclass
+class ObjectiveStateChanged:
+    """ObjectiveStateChanged is written every time the objective's lifecycle state  is set, including the initial move into OBJECTIVE_STATE_PENDING at creation. Terminal  transitions also write their dedicated event (cancelled, timedOut,  finalized, error) immediately before this one, so consumers that only care  about the outcome can keep listening for those."""
+
+    from_state: ObjectiveStateChangedFromState
+    to_state: ObjectiveStateChangedToState
+    message: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveStateChanged":
+        return ObjectiveStateChanged(
+            from_state=_req(data, "ObjectiveStateChanged", "fromState"),
+            to_state=_req(data, "ObjectiveStateChanged", "toState"),
+            message=data.get("message"),
         )
 
 
@@ -3186,6 +3211,42 @@ class Reasoning:
     def _from_json(data: Any) -> "Reasoning":
         return Reasoning(
             content=_req(data, "Reasoning", "content"),
+        )
+
+RemoveAgentVariationAssignmentRequest = Union["RemoveAgentVariationAssignmentRequest_ToolId", "RemoveAgentVariationAssignmentRequest_ToolSetId", "RemoveAgentVariationAssignmentRequest_SubAgentId"]
+
+
+def _decode_RemoveAgentVariationAssignmentRequest(data: Any) -> Any:
+    if data is None:
+        return None
+    tag = data.get("type")
+    if not tag:
+        return None
+    if tag == "toolId":
+        return RemoveAgentVariationAssignmentRequest_ToolId._from_json(data)
+    if tag == "toolSetId":
+        return RemoveAgentVariationAssignmentRequest_ToolSetId._from_json(data)
+    if tag == "subAgentId":
+        return RemoveAgentVariationAssignmentRequest_SubAgentId._from_json(data)
+    raise ValueError(f"RemoveAgentVariationAssignmentRequest: unknown type {tag!r}")
+
+
+@dataclass
+class RemoveAgentVariationMemoryLayerRequest:
+    """Remove by memory layer ID. An unassigned layer returns NotFound.  The parent variation must still exist and be accessible."""
+
+    memory_layer_id: str
+    workspace_id: Optional[str] = None
+    agent_id: Optional[str] = None
+    variation_id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "RemoveAgentVariationMemoryLayerRequest":
+        return RemoveAgentVariationMemoryLayerRequest(
+            workspace_id=data.get("workspaceId"),
+            agent_id=data.get("agentId"),
+            variation_id=data.get("variationId"),
+            memory_layer_id=_req(data, "RemoveAgentVariationMemoryLayerRequest", "memoryLayerId"),
         )
 
 ResolvedSecretSource = Literal["RESOLVED_SECRET_SOURCE_UNSPECIFIED", "RESOLVED_SECRET_SOURCE_WORKSPACE", "RESOLVED_SECRET_SOURCE_TOOLSET", "RESOLVED_SECRET_SOURCE_OBJECTIVE"]
@@ -4527,13 +4588,13 @@ class UpdateAgentScheduleRequest:
 
 @dataclass
 class UpdateAgentVariationMemoryLayerRequest:
-    """Update an existing memory layer assignment. Only `position` is mutable.  A new position that collides with another assignment on the same variation  is rejected with InvalidArgument."""
+    """Update an existing memory layer assignment. Only `position` is mutable.  A new position that collides with another assignment on the same variation  is rejected with InvalidArgument. An unassigned layer returns NotFound."""
 
+    memory_layer_id: str
+    position: int
     workspace_id: Optional[str] = None
     agent_id: Optional[str] = None
     variation_id: Optional[str] = None
-    id: Optional[str] = None
-    position: Optional[int] = None
 
     @staticmethod
     def _from_json(data: Any) -> "UpdateAgentVariationMemoryLayerRequest":
@@ -4541,8 +4602,8 @@ class UpdateAgentVariationMemoryLayerRequest:
             workspace_id=data.get("workspaceId"),
             agent_id=data.get("agentId"),
             variation_id=data.get("variationId"),
-            id=data.get("id"),
-            position=data.get("position"),
+            memory_layer_id=_req(data, "UpdateAgentVariationMemoryLayerRequest", "memoryLayerId"),
+            position=_req(data, "UpdateAgentVariationMemoryLayerRequest", "position"),
         )
 
 
@@ -4828,7 +4889,7 @@ class UserMessage:
             content=_req(data, "UserMessage", "content"),
         )
 
-VariationAssignment = Union["VariationAssignment_Tool", "VariationAssignment_ToolSet", "VariationAssignment_Agent"]
+VariationAssignment = Union["VariationAssignment_ToolId", "VariationAssignment_ToolSetId", "VariationAssignment_SubAgentId"]
 
 
 def _decode_VariationAssignment(data: Any) -> Any:
@@ -4837,28 +4898,26 @@ def _decode_VariationAssignment(data: Any) -> Any:
     tag = data.get("type")
     if not tag:
         return None
-    if tag == "tool":
-        return VariationAssignment_Tool._from_json(data)
-    if tag == "toolSet":
-        return VariationAssignment_ToolSet._from_json(data)
-    if tag == "agent":
-        return VariationAssignment_Agent._from_json(data)
+    if tag == "toolId":
+        return VariationAssignment_ToolId._from_json(data)
+    if tag == "toolSetId":
+        return VariationAssignment_ToolSetId._from_json(data)
+    if tag == "subAgentId":
+        return VariationAssignment_SubAgentId._from_json(data)
     raise ValueError(f"VariationAssignment: unknown type {tag!r}")
 
 
 @dataclass
 class VariationMemoryLayerAssignment:
-    """VariationMemoryLayerAssignment attaches a single MemoryLayer to a  variation at a given position in the variation's baseline memory  cascade. A variation has at most one assignment per memory_layer_id.   Variations only support whole-layer attachments — entry pinning is an  objective-level capability."""
+    """A whole memory layer in a variation's baseline memory cascade. Identified  by the memory layer ID; no assignment junction ID is exposed. Entry pinning  remains an objective-level capability."""
 
-    id: str
-    memory_layer: BareMetadata
+    memory_layer_id: str
     position: int
 
     @staticmethod
     def _from_json(data: Any) -> "VariationMemoryLayerAssignment":
         return VariationMemoryLayerAssignment(
-            id=_req(data, "VariationMemoryLayerAssignment", "id"),
-            memory_layer=None if _req(data, "VariationMemoryLayerAssignment", "memoryLayer") is None else BareMetadata._from_json(_req(data, "VariationMemoryLayerAssignment", "memoryLayer")),
+            memory_layer_id=_req(data, "VariationMemoryLayerAssignment", "memoryLayerId"),
             position=_req(data, "VariationMemoryLayerAssignment", "position"),
         )
 
@@ -4892,7 +4951,7 @@ class WebhookDelivery:
 
 WebhookDeliveryDataStatus = Literal["WEBHOOK_DELIVERY_STATUS_UNSPECIFIED", "WEBHOOK_DELIVERY_STATUS_PENDING", "WEBHOOK_DELIVERY_STATUS_COMPLETED", "WEBHOOK_DELIVERY_STATUS_FAILED", "WEBHOOK_DELIVERY_STATUS_DISABLED"]
 
-WebhookDeliveryDataEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING"]
+WebhookDeliveryDataEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED"]
 
 
 @dataclass
@@ -5221,47 +5280,41 @@ class ObjectiveEventWebhookData:
 
 
 @dataclass
-class VariationAssignment_Tool:
-    type: Literal["tool"]
-    tool: BareMetadata
-    id: str
+class VariationAssignment_ToolId:
+    type: Literal["toolId"]
+    tool_id: str
 
     @staticmethod
-    def _from_json(data: Any) -> "VariationAssignment_Tool":
-        return VariationAssignment_Tool(
-            type=_req(data, "VariationAssignment_Tool", "type"),
-            tool=None if _req(data, "VariationAssignment_Tool", "tool") is None else BareMetadata._from_json(_req(data, "VariationAssignment_Tool", "tool")),
-            id=_req(data, "VariationAssignment_Tool", "id"),
+    def _from_json(data: Any) -> "VariationAssignment_ToolId":
+        return VariationAssignment_ToolId(
+            type=_req(data, "VariationAssignment_ToolId", "type"),
+            tool_id=_req(data, "VariationAssignment_ToolId", "toolId"),
         )
 
 
 @dataclass
-class VariationAssignment_ToolSet:
-    type: Literal["toolSet"]
-    tool_set: BareMetadata
-    id: str
+class VariationAssignment_ToolSetId:
+    type: Literal["toolSetId"]
+    tool_set_id: str
 
     @staticmethod
-    def _from_json(data: Any) -> "VariationAssignment_ToolSet":
-        return VariationAssignment_ToolSet(
-            type=_req(data, "VariationAssignment_ToolSet", "type"),
-            tool_set=None if _req(data, "VariationAssignment_ToolSet", "toolSet") is None else BareMetadata._from_json(_req(data, "VariationAssignment_ToolSet", "toolSet")),
-            id=_req(data, "VariationAssignment_ToolSet", "id"),
+    def _from_json(data: Any) -> "VariationAssignment_ToolSetId":
+        return VariationAssignment_ToolSetId(
+            type=_req(data, "VariationAssignment_ToolSetId", "type"),
+            tool_set_id=_req(data, "VariationAssignment_ToolSetId", "toolSetId"),
         )
 
 
 @dataclass
-class VariationAssignment_Agent:
-    type: Literal["agent"]
-    agent: BareMetadata
-    id: str
+class VariationAssignment_SubAgentId:
+    type: Literal["subAgentId"]
+    sub_agent_id: str
 
     @staticmethod
-    def _from_json(data: Any) -> "VariationAssignment_Agent":
-        return VariationAssignment_Agent(
-            type=_req(data, "VariationAssignment_Agent", "type"),
-            agent=None if _req(data, "VariationAssignment_Agent", "agent") is None else BareMetadata._from_json(_req(data, "VariationAssignment_Agent", "agent")),
-            id=_req(data, "VariationAssignment_Agent", "id"),
+    def _from_json(data: Any) -> "VariationAssignment_SubAgentId":
+        return VariationAssignment_SubAgentId(
+            type=_req(data, "VariationAssignment_SubAgentId", "type"),
+            sub_agent_id=_req(data, "VariationAssignment_SubAgentId", "subAgentId"),
         )
 
 
@@ -5924,6 +5977,19 @@ class ObjectiveEventData_Reasoning:
 
 
 @dataclass
+class ObjectiveEventData_StateChanged:
+    type: Literal["stateChanged"]
+    state_changed: ObjectiveStateChanged
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveEventData_StateChanged":
+        return ObjectiveEventData_StateChanged(
+            type=_req(data, "ObjectiveEventData_StateChanged", "type"),
+            state_changed=None if _req(data, "ObjectiveEventData_StateChanged", "stateChanged") is None else ObjectiveStateChanged._from_json(_req(data, "ObjectiveEventData_StateChanged", "stateChanged")),
+        )
+
+
+@dataclass
 class CallableTool_Tool:
     type: Literal["tool"]
     tool: ResourceMetadata
@@ -6086,6 +6152,63 @@ class AddAgentVariationAssignmentRequest_SubAgentId:
         return AddAgentVariationAssignmentRequest_SubAgentId(
             type=_req(data, "AddAgentVariationAssignmentRequest_SubAgentId", "type"),
             sub_agent_id=_req(data, "AddAgentVariationAssignmentRequest_SubAgentId", "subAgentId"),
+            workspace_id=data.get("workspaceId"),
+            agent_id=data.get("agentId"),
+            variation_id=data.get("variationId"),
+        )
+
+
+@dataclass
+class RemoveAgentVariationAssignmentRequest_ToolId:
+    type: Literal["toolId"]
+    tool_id: str
+    workspace_id: Optional[str] = None
+    agent_id: Optional[str] = None
+    variation_id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "RemoveAgentVariationAssignmentRequest_ToolId":
+        return RemoveAgentVariationAssignmentRequest_ToolId(
+            type=_req(data, "RemoveAgentVariationAssignmentRequest_ToolId", "type"),
+            tool_id=_req(data, "RemoveAgentVariationAssignmentRequest_ToolId", "toolId"),
+            workspace_id=data.get("workspaceId"),
+            agent_id=data.get("agentId"),
+            variation_id=data.get("variationId"),
+        )
+
+
+@dataclass
+class RemoveAgentVariationAssignmentRequest_ToolSetId:
+    type: Literal["toolSetId"]
+    tool_set_id: str
+    workspace_id: Optional[str] = None
+    agent_id: Optional[str] = None
+    variation_id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "RemoveAgentVariationAssignmentRequest_ToolSetId":
+        return RemoveAgentVariationAssignmentRequest_ToolSetId(
+            type=_req(data, "RemoveAgentVariationAssignmentRequest_ToolSetId", "type"),
+            tool_set_id=_req(data, "RemoveAgentVariationAssignmentRequest_ToolSetId", "toolSetId"),
+            workspace_id=data.get("workspaceId"),
+            agent_id=data.get("agentId"),
+            variation_id=data.get("variationId"),
+        )
+
+
+@dataclass
+class RemoveAgentVariationAssignmentRequest_SubAgentId:
+    type: Literal["subAgentId"]
+    sub_agent_id: str
+    workspace_id: Optional[str] = None
+    agent_id: Optional[str] = None
+    variation_id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "RemoveAgentVariationAssignmentRequest_SubAgentId":
+        return RemoveAgentVariationAssignmentRequest_SubAgentId(
+            type=_req(data, "RemoveAgentVariationAssignmentRequest_SubAgentId", "type"),
+            sub_agent_id=_req(data, "RemoveAgentVariationAssignmentRequest_SubAgentId", "subAgentId"),
             workspace_id=data.get("workspaceId"),
             agent_id=data.get("agentId"),
             variation_id=data.get("variationId"),
@@ -6305,13 +6428,13 @@ AgentServiceListAgentsVariationSelectionMode = Literal["VARIATION_SELECTION_MODE
 
 AgentServiceListAgentFeedbackSentiment = Literal["FEEDBACK_SENTIMENT_UNSPECIFIED", "FEEDBACK_SENTIMENT_POSITIVE", "FEEDBACK_SENTIMENT_NEGATIVE"]
 
-AgentServiceListAgentWebhookDeliveriesEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING"]
+AgentServiceListAgentWebhookDeliveriesEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED"]
 
 MemoryServiceListMemoryLayersType = Literal["MEMORY_LAYER_TYPE_UNSPECIFIED", "MEMORY_LAYER_TYPE_EPISODIC", "MEMORY_LAYER_TYPE_SKILLS"]
 
 ModelServiceListModelsState = Literal["STATE_UNSPECIFIED", "STATE_ENABLED", "STATE_DISABLED"]
 
-ObjectiveServiceListObjectivesState = Literal["STATE_UNSPECIFIED", "STATE_PENDING", "STATE_RUNNING", "STATE_WAITING", "STATE_FAILED", "STATE_CANCELLED", "STATE_FINALIZED", "STATE_TIMED_OUT"]
+ObjectiveServiceListObjectivesState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT"]
 
 ObjectiveServiceListObjectiveToolCallsStatus = Literal["TOOL_CALL_STATUS_UNSPECIFIED", "TOOL_CALL_STATUS_AUTO_APPROVED", "TOOL_CALL_STATUS_WAITING_FOR_APPROVAL", "TOOL_CALL_STATUS_APPROVED", "TOOL_CALL_STATUS_DENIED"]
 
@@ -6372,6 +6495,8 @@ AgentVariationSpecParam = TypedDict("AgentVariationSpecParam", {
     "model_config": "AgentVariationSpec_ModelConfigParam",
     "compaction_config": "AgentVariationSpec_CompactionConfigParam",
     "first_user_message_template": str,
+    "assignments": List["VariationAssignmentParam"],
+    "memory_layer_assignments": List["VariationMemoryLayerAssignmentParam"],
 }, total=False)
 AgentVariationSpec_CompactionConfigParam = TypedDict("AgentVariationSpec_CompactionConfigParam", {
     "trigger_threshold": float,
@@ -6546,6 +6671,7 @@ ParameterAction_SetParam = TypedDict("ParameterAction_SetParam", {
     "path": Required[str],
     "value_template": Required[str],
 }, total=False)
+RemoveAgentVariationAssignmentRequestParam = Union["RemoveAgentVariationAssignmentRequest_ToolIdParam", "RemoveAgentVariationAssignmentRequest_ToolSetIdParam", "RemoveAgentVariationAssignmentRequest_SubAgentIdParam"]
 ResultAction_TransformParam = TypedDict("ResultAction_TransformParam", {
     "content_template": Required[str],
     "on_error": Required["ResultActionTransformOnError"],
@@ -6680,6 +6806,11 @@ UploadSpecParam = TypedDict("UploadSpecParam", {
     "content_type": Required[str],
     "size_bytes": Required[str],
 }, total=False)
+VariationAssignmentParam = Union["VariationAssignment_ToolIdParam", "VariationAssignment_ToolSetIdParam", "VariationAssignment_SubAgentIdParam"]
+VariationMemoryLayerAssignmentParam = TypedDict("VariationMemoryLayerAssignmentParam", {
+    "memory_layer_id": Required[str],
+    "position": Required[int],
+}, total=False)
 VertexConfigParam = TypedDict("VertexConfigParam", {
     "project_id": str,
     "location": str,
@@ -6701,6 +6832,18 @@ WorkspaceSecretSpecParam = TypedDict("WorkspaceSecretSpecParam", {
 }, total=False)
 WorkspaceSpecParam = TypedDict("WorkspaceSpecParam", {
     "description": str,
+}, total=False)
+VariationAssignment_ToolIdParam = TypedDict("VariationAssignment_ToolIdParam", {
+    "type": Required[Literal["toolId"]],
+    "tool_id": Required[str],
+}, total=False)
+VariationAssignment_ToolSetIdParam = TypedDict("VariationAssignment_ToolSetIdParam", {
+    "type": Required[Literal["toolSetId"]],
+    "tool_set_id": Required[str],
+}, total=False)
+VariationAssignment_SubAgentIdParam = TypedDict("VariationAssignment_SubAgentIdParam", {
+    "type": Required[Literal["subAgentId"]],
+    "sub_agent_id": Required[str],
 }, total=False)
 ToolSetAdapter_McpVariantParam = TypedDict("ToolSetAdapter_McpVariantParam", {
     "type": Required[Literal["mcp"]],
@@ -6848,6 +6991,18 @@ AddAgentVariationAssignmentRequest_ToolSetIdParam = TypedDict("AddAgentVariation
     "tool_set_id": Required[str],
 }, total=False)
 AddAgentVariationAssignmentRequest_SubAgentIdParam = TypedDict("AddAgentVariationAssignmentRequest_SubAgentIdParam", {
+    "type": Required[Literal["subAgentId"]],
+    "sub_agent_id": Required[str],
+}, total=False)
+RemoveAgentVariationAssignmentRequest_ToolIdParam = TypedDict("RemoveAgentVariationAssignmentRequest_ToolIdParam", {
+    "type": Required[Literal["toolId"]],
+    "tool_id": Required[str],
+}, total=False)
+RemoveAgentVariationAssignmentRequest_ToolSetIdParam = TypedDict("RemoveAgentVariationAssignmentRequest_ToolSetIdParam", {
+    "type": Required[Literal["toolSetId"]],
+    "tool_set_id": Required[str],
+}, total=False)
+RemoveAgentVariationAssignmentRequest_SubAgentIdParam = TypedDict("RemoveAgentVariationAssignmentRequest_SubAgentIdParam", {
     "type": Required[Literal["subAgentId"]],
     "sub_agent_id": Required[str],
 }, total=False)
@@ -7076,6 +7231,9 @@ _FIELDS_AgentVariationSpec: Dict[str, Any] = {
     "compactionConfig": ("compactionConfig", (lambda _v: _encode_AgentVariationSpec_CompactionConfig(_v))),
     "first_user_message_template": ("firstUserMessageTemplate", None),
     "firstUserMessageTemplate": ("firstUserMessageTemplate", None),
+    "assignments": ("assignments", (lambda _v: [((lambda _v: _encode_VariationAssignment(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "memory_layer_assignments": ("memoryLayerAssignments", (lambda _v: [((lambda _v: _encode_VariationMemoryLayerAssignment(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "memoryLayerAssignments": ("memoryLayerAssignments", (lambda _v: [((lambda _v: _encode_VariationMemoryLayerAssignment(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
 }
 
 def _encode_AgentVariationSpec(data: Any) -> Any:
@@ -7468,6 +7626,18 @@ _FIELDS_ParameterAction_Set: Dict[str, Any] = {
 def _encode_ParameterAction_Set(data: Any) -> Any:
     return _encode_fields(_FIELDS_ParameterAction_Set, data)
 
+def _encode_RemoveAgentVariationAssignmentRequest(data: Any) -> Any:
+    if not isinstance(data, dict):
+        return data
+    tag = data.get("type")
+    if tag == "toolId":
+        return (lambda _v: _encode_RemoveAgentVariationAssignmentRequest_ToolId(_v))(data)
+    if tag == "toolSetId":
+        return (lambda _v: _encode_RemoveAgentVariationAssignmentRequest_ToolSetId(_v))(data)
+    if tag == "subAgentId":
+        return (lambda _v: _encode_RemoveAgentVariationAssignmentRequest_SubAgentId(_v))(data)
+    return data
+
 _FIELDS_ResultAction_Transform: Dict[str, Any] = {
     "content_template": ("contentTemplate", None),
     "contentTemplate": ("contentTemplate", None),
@@ -7835,6 +8005,27 @@ _FIELDS_UploadSpec: Dict[str, Any] = {
 def _encode_UploadSpec(data: Any) -> Any:
     return _encode_fields(_FIELDS_UploadSpec, data)
 
+def _encode_VariationAssignment(data: Any) -> Any:
+    if not isinstance(data, dict):
+        return data
+    tag = data.get("type")
+    if tag == "toolId":
+        return (lambda _v: _encode_VariationAssignment_ToolId(_v))(data)
+    if tag == "toolSetId":
+        return (lambda _v: _encode_VariationAssignment_ToolSetId(_v))(data)
+    if tag == "subAgentId":
+        return (lambda _v: _encode_VariationAssignment_SubAgentId(_v))(data)
+    return data
+
+_FIELDS_VariationMemoryLayerAssignment: Dict[str, Any] = {
+    "memory_layer_id": ("memoryLayerId", None),
+    "memoryLayerId": ("memoryLayerId", None),
+    "position": ("position", None),
+}
+
+def _encode_VariationMemoryLayerAssignment(data: Any) -> Any:
+    return _encode_fields(_FIELDS_VariationMemoryLayerAssignment, data)
+
 _FIELDS_VertexConfig: Dict[str, Any] = {
     "project_id": ("projectId", None),
     "projectId": ("projectId", None),
@@ -7884,6 +8075,33 @@ _FIELDS_WorkspaceSpec: Dict[str, Any] = {
 
 def _encode_WorkspaceSpec(data: Any) -> Any:
     return _encode_fields(_FIELDS_WorkspaceSpec, data)
+
+_FIELDS_VariationAssignment_ToolId: Dict[str, Any] = {
+    "type": ("type", None),
+    "tool_id": ("toolId", None),
+    "toolId": ("toolId", None),
+}
+
+def _encode_VariationAssignment_ToolId(data: Any) -> Any:
+    return _encode_fields(_FIELDS_VariationAssignment_ToolId, data)
+
+_FIELDS_VariationAssignment_ToolSetId: Dict[str, Any] = {
+    "type": ("type", None),
+    "tool_set_id": ("toolSetId", None),
+    "toolSetId": ("toolSetId", None),
+}
+
+def _encode_VariationAssignment_ToolSetId(data: Any) -> Any:
+    return _encode_fields(_FIELDS_VariationAssignment_ToolSetId, data)
+
+_FIELDS_VariationAssignment_SubAgentId: Dict[str, Any] = {
+    "type": ("type", None),
+    "sub_agent_id": ("subAgentId", None),
+    "subAgentId": ("subAgentId", None),
+}
+
+def _encode_VariationAssignment_SubAgentId(data: Any) -> Any:
+    return _encode_fields(_FIELDS_VariationAssignment_SubAgentId, data)
 
 _FIELDS_ToolSetAdapter_McpVariant: Dict[str, Any] = {
     "type": ("type", None),
@@ -8187,6 +8405,36 @@ _FIELDS_AddAgentVariationAssignmentRequest_SubAgentId: Dict[str, Any] = {
 _DROP_AddAgentVariationAssignmentRequest_SubAgentId = frozenset(("agentId", "agent_id", "variationId", "variation_id", "workspaceId", "workspace_id",))
 def _encode_AddAgentVariationAssignmentRequest_SubAgentId(data: Any) -> Any:
     return _encode_fields(_FIELDS_AddAgentVariationAssignmentRequest_SubAgentId, data, _DROP_AddAgentVariationAssignmentRequest_SubAgentId)
+
+_FIELDS_RemoveAgentVariationAssignmentRequest_ToolId: Dict[str, Any] = {
+    "type": ("type", None),
+    "tool_id": ("toolId", None),
+    "toolId": ("toolId", None),
+}
+
+_DROP_RemoveAgentVariationAssignmentRequest_ToolId = frozenset(("agentId", "agent_id", "variationId", "variation_id", "workspaceId", "workspace_id",))
+def _encode_RemoveAgentVariationAssignmentRequest_ToolId(data: Any) -> Any:
+    return _encode_fields(_FIELDS_RemoveAgentVariationAssignmentRequest_ToolId, data, _DROP_RemoveAgentVariationAssignmentRequest_ToolId)
+
+_FIELDS_RemoveAgentVariationAssignmentRequest_ToolSetId: Dict[str, Any] = {
+    "type": ("type", None),
+    "tool_set_id": ("toolSetId", None),
+    "toolSetId": ("toolSetId", None),
+}
+
+_DROP_RemoveAgentVariationAssignmentRequest_ToolSetId = frozenset(("agentId", "agent_id", "variationId", "variation_id", "workspaceId", "workspace_id",))
+def _encode_RemoveAgentVariationAssignmentRequest_ToolSetId(data: Any) -> Any:
+    return _encode_fields(_FIELDS_RemoveAgentVariationAssignmentRequest_ToolSetId, data, _DROP_RemoveAgentVariationAssignmentRequest_ToolSetId)
+
+_FIELDS_RemoveAgentVariationAssignmentRequest_SubAgentId: Dict[str, Any] = {
+    "type": ("type", None),
+    "sub_agent_id": ("subAgentId", None),
+    "subAgentId": ("subAgentId", None),
+}
+
+_DROP_RemoveAgentVariationAssignmentRequest_SubAgentId = frozenset(("agentId", "agent_id", "variationId", "variation_id", "workspaceId", "workspace_id",))
+def _encode_RemoveAgentVariationAssignmentRequest_SubAgentId(data: Any) -> Any:
+    return _encode_fields(_FIELDS_RemoveAgentVariationAssignmentRequest_SubAgentId, data, _DROP_RemoveAgentVariationAssignmentRequest_SubAgentId)
 
 _FIELDS_AIProviderCredential_ApiKey: Dict[str, Any] = {
     "type": ("type", None),

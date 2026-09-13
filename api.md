@@ -278,27 +278,27 @@ client.agents.variations.update(agent_id: str, id: str, *, workspace_id=None, me
 Add an assignment to a variation
 
 ```python
-client.agents.variations.add_assignment(agent_id: str, variation_id: str, *, workspace_id=None, body) -> VariationAssignment
-```
-Remove an assignment from a variation
-
-```python
-client.agents.variations.remove_assignment(agent_id: str, variation_id: str, id: str, *, workspace_id=None) -> None
+client.agents.variations.add_assignment(agent_id: str, variation_id: str, *, workspace_id=None, body) -> AgentVariation
 ```
 Attach a memory layer to a variation
 
 ```python
-client.agents.variations.add_memory_layer(agent_id: str, variation_id: str, *, workspace_id=None, memory_layer_id, position=None) -> VariationMemoryLayerAssignment
+client.agents.variations.add_memory_layer(agent_id: str, variation_id: str, *, workspace_id=None, memory_layer_id, position=None) -> AgentVariation
+```
+Remove an assignment from a variation
+
+```python
+client.agents.variations.remove_assignment(agent_id: str, variation_id: str, *, workspace_id=None, body) -> AgentVariation
 ```
 Remove a memory layer assignment from a variation
 
 ```python
-client.agents.variations.remove_memory_layer(agent_id: str, variation_id: str, id: str, *, workspace_id=None) -> None
+client.agents.variations.remove_memory_layer(agent_id: str, variation_id: str, *, workspace_id=None, memory_layer_id) -> AgentVariation
 ```
 Update a variation's memory layer assignment
 
 ```python
-client.agents.variations.update_memory_layer(agent_id: str, variation_id: str, id: str, *, workspace_id=None, position=None) -> VariationMemoryLayerAssignment
+client.agents.variations.update_memory_layer(agent_id: str, variation_id: str, *, workspace_id=None, memory_layer_id, position) -> AgentVariation
 ```
 
 ## client.ai_provider_keys
