@@ -124,27 +124,12 @@ class AgentVariations:
         body: types.AddAgentVariationAssignmentRequestParam,
         workspace_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> types.VariationAssignment:
+    ) -> types.AgentVariation:
         """Add an assignment to a variation"""
         workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/agents/{path_param('agentId', agent_id)}/variations/{path_param('variationId', variation_id)}/assignments"
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/agents/{path_param('agentId', agent_id)}/variations/{path_param('variationId', variation_id)}:addAssignment"
         _data = self._core.request("POST", _path, body=(lambda _v: types._encode_AddAgentVariationAssignmentRequest(_v))(body), request_options=request_options)
-        return decode_response("agents.variations.add_assignment", _data, lambda _d: types._decode_VariationAssignment(_d))
-
-    def remove_assignment(
-        self,
-        agent_id: str,
-        variation_id: str,
-        id: str,
-        *,
-        workspace_id: Optional[str] = None,
-        request_options: Optional[RequestOptions] = None,
-    ) -> None:
-        """Remove an assignment from a variation"""
-        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/agents/{path_param('agentId', agent_id)}/variations/{path_param('variationId', variation_id)}/assignments/{path_param('id', id)}"
-        self._core.request("DELETE", _path, expects_body=False, request_options=request_options)
-        return None
+        return decode_response("agents.variations.add_assignment", _data, lambda _d: types.AgentVariation._from_json(_d))
 
     def add_memory_layer(
         self,
@@ -155,49 +140,69 @@ class AgentVariations:
         workspace_id: Optional[str] = None,
         position: Optional[int] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> types.VariationMemoryLayerAssignment:
+    ) -> types.AgentVariation:
         """Attach a memory layer to a variation"""
         workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/agents/{path_param('agentId', agent_id)}/variations/{path_param('variationId', variation_id)}/memory_layer_assignments"
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/agents/{path_param('agentId', agent_id)}/variations/{path_param('variationId', variation_id)}:addMemoryLayer"
         _body = {
             "memoryLayerId": memory_layer_id,
             "position": position,
         }
         _body = {_k: _v for _k, _v in _body.items() if _v is not None}
         _data = self._core.request("POST", _path, body=_body, request_options=request_options)
-        return decode_response("agents.variations.add_memory_layer", _data, lambda _d: types.VariationMemoryLayerAssignment._from_json(_d))
+        return decode_response("agents.variations.add_memory_layer", _data, lambda _d: types.AgentVariation._from_json(_d))
+
+    def remove_assignment(
+        self,
+        agent_id: str,
+        variation_id: str,
+        *,
+        body: types.RemoveAgentVariationAssignmentRequestParam,
+        workspace_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> types.AgentVariation:
+        """Remove an assignment from a variation"""
+        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/agents/{path_param('agentId', agent_id)}/variations/{path_param('variationId', variation_id)}:removeAssignment"
+        _data = self._core.request("POST", _path, body=(lambda _v: types._encode_RemoveAgentVariationAssignmentRequest(_v))(body), request_options=request_options)
+        return decode_response("agents.variations.remove_assignment", _data, lambda _d: types.AgentVariation._from_json(_d))
 
     def remove_memory_layer(
         self,
         agent_id: str,
         variation_id: str,
-        id: str,
         *,
+        memory_layer_id: str,
         workspace_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> None:
+    ) -> types.AgentVariation:
         """Remove a memory layer assignment from a variation"""
         workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/agents/{path_param('agentId', agent_id)}/variations/{path_param('variationId', variation_id)}/memory_layer_assignments/{path_param('id', id)}"
-        self._core.request("DELETE", _path, expects_body=False, request_options=request_options)
-        return None
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/agents/{path_param('agentId', agent_id)}/variations/{path_param('variationId', variation_id)}:removeMemoryLayer"
+        _body = {
+            "memoryLayerId": memory_layer_id,
+        }
+        _body = {_k: _v for _k, _v in _body.items() if _v is not None}
+        _data = self._core.request("POST", _path, body=_body, request_options=request_options)
+        return decode_response("agents.variations.remove_memory_layer", _data, lambda _d: types.AgentVariation._from_json(_d))
 
     def update_memory_layer(
         self,
         agent_id: str,
         variation_id: str,
-        id: str,
         *,
+        memory_layer_id: str,
+        position: int,
         workspace_id: Optional[str] = None,
-        position: Optional[int] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> types.VariationMemoryLayerAssignment:
+    ) -> types.AgentVariation:
         """Update a variation's memory layer assignment"""
         workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/agents/{path_param('agentId', agent_id)}/variations/{path_param('variationId', variation_id)}/memory_layer_assignments/{path_param('id', id)}"
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/agents/{path_param('agentId', agent_id)}/variations/{path_param('variationId', variation_id)}:updateMemoryLayer"
         _body = {
+            "memoryLayerId": memory_layer_id,
             "position": position,
         }
         _body = {_k: _v for _k, _v in _body.items() if _v is not None}
-        _data = self._core.request("PATCH", _path, body=_body, request_options=request_options)
-        return decode_response("agents.variations.update_memory_layer", _data, lambda _d: types.VariationMemoryLayerAssignment._from_json(_d))
+        _data = self._core.request("POST", _path, body=_body, request_options=request_options)
+        return decode_response("agents.variations.update_memory_layer", _data, lambda _d: types.AgentVariation._from_json(_d))
