@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cadenya/cadenya-python/compare/v1.1.0...v1.2.0) (2026-09-13)
+
+
+### Features
+
+* add declarative variation assignments ([8e7f497](https://github.com/cadenya/cadenya-python/commit/8e7f497475f42aab8b5d6225a96a0e67c7fd624f))
+
 ## [1.1.0](https://github.com/cadenya/cadenya-python/compare/v1.0.1...v1.1.0) (2026-09-09)
 
 
