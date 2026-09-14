@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/cadenya/cadenya-python/compare/v1.2.0...v1.3.0) (2026-09-14)
+
+
+### Features
+
+* expose variation assignment metadata ([eb9c9c0](https://github.com/cadenya/cadenya-python/commit/eb9c9c00ba1f97036ce0f14f76383442cb684760))
+
 ## [1.2.0](https://github.com/cadenya/cadenya-python/compare/v1.1.0...v1.2.0) (2026-09-13)
 
 
