@@ -531,6 +531,7 @@ class AgentVariationInfo:
     feedback_count: int
     memory_layer_count: int
     effective_tool_count: int
+    assignment_metadata: Dict[str, BareMetadata]
     created_by: Optional[Profile] = None
     model: Optional[ResourceMetadata] = None
 
@@ -546,6 +547,7 @@ class AgentVariationInfo:
             feedback_count=_req(data, "AgentVariationInfo", "feedbackCount"),
             memory_layer_count=_req(data, "AgentVariationInfo", "memoryLayerCount"),
             effective_tool_count=_req(data, "AgentVariationInfo", "effectiveToolCount"),
+            assignment_metadata=None if _req(data, "AgentVariationInfo", "assignmentMetadata") is None else {k: BareMetadata._from_json(v) for k, v in (_req(data, "AgentVariationInfo", "assignmentMetadata")).items()},
         )
 
 
@@ -761,7 +763,7 @@ class AssistantToolCall:
 
 @dataclass
 class BareMetadata:
-    """BareMetadata contains the minimal metadata for a resource: the ID and an  optional human-readable name. These are used for reference fields where the  full metadata (account scoping, timestamps, labels, external IDs) is not  needed — e.g., the tool references inside an agent variation spec or the  tools assigned to an objective. Both fields are server-populated; clients  provide IDs through sibling fields rather than by constructing a  BareMetadata themselves."""
+    """BareMetadata contains the minimal metadata for a resource: the ID and an  optional human-readable name. These are used for reference fields where the  full metadata (account scoping, timestamps, labels, external IDs) is not  needed — e.g., the assignment metadata inside agent variation info or the  tools assigned to an objective. Both fields are server-populated; clients  provide IDs through sibling fields rather than by constructing a  BareMetadata themselves."""
 
     id: str
     name: Optional[str] = None
