@@ -2607,7 +2607,7 @@ class ObjectiveEvent:
             started_at=None if data.get("startedAt") is None else parse_datetime(data.get("startedAt")),
         )
 
-ObjectiveEventData = Union["ObjectiveEventData_UserMessage", "ObjectiveEventData_ToolApprovalRequested", "ObjectiveEventData_ToolApproved", "ObjectiveEventData_ToolDenied", "ObjectiveEventData_ToolCalled", "ObjectiveEventData_Error", "ObjectiveEventData_AssistantMessage", "ObjectiveEventData_ToolResult", "ObjectiveEventData_ToolError", "ObjectiveEventData_ContextWindowCompacted", "ObjectiveEventData_MemoryRead", "ObjectiveEventData_Cancelled", "ObjectiveEventData_SubAgentSpawned", "ObjectiveEventData_SubAgentUpdated", "ObjectiveEventData_Finalized", "ObjectiveEventData_Notice", "ObjectiveEventData_TimedOut", "ObjectiveEventData_Reasoning", "ObjectiveEventData_StateChanged"]
+ObjectiveEventData = Union["ObjectiveEventData_UserMessage", "ObjectiveEventData_ToolApprovalRequested", "ObjectiveEventData_ToolApproved", "ObjectiveEventData_ToolDenied", "ObjectiveEventData_ToolCalled", "ObjectiveEventData_Error", "ObjectiveEventData_AssistantMessage", "ObjectiveEventData_ToolResult", "ObjectiveEventData_ToolError", "ObjectiveEventData_ContextWindowCompacted", "ObjectiveEventData_MemoryRead", "ObjectiveEventData_Cancelled", "ObjectiveEventData_SubAgentSpawned", "ObjectiveEventData_SubAgentUpdated", "ObjectiveEventData_Finalized", "ObjectiveEventData_Notice", "ObjectiveEventData_TimedOut", "ObjectiveEventData_Reasoning", "ObjectiveEventData_StateChanged", "ObjectiveEventData_Heartbeat"]
 
 
 def _decode_ObjectiveEventData(data: Any) -> Any:
@@ -2654,6 +2654,8 @@ def _decode_ObjectiveEventData(data: Any) -> Any:
         return ObjectiveEventData_Reasoning._from_json(data)
     if tag == "stateChanged":
         return ObjectiveEventData_StateChanged._from_json(data)
+    if tag == "heartbeat":
+        return ObjectiveEventData_Heartbeat._from_json(data)
     raise ValueError(f"ObjectiveEventData: unknown type {tag!r}")
 
 
@@ -2726,6 +2728,17 @@ class ObjectiveFinalized:
         return ObjectiveFinalized(
             output=data.get("output"),
         )
+
+
+@dataclass
+class ObjectiveHeartbeat:
+    """ObjectiveHeartbeat reports recent execution liveness. It is transient:  delivered only on live streams, never stored in event history or delivered  to webhooks. Its hb_ event ID is not a reconnect cursor. Heartbeats do not  change objective state or promise progress from the model."""
+
+    pass
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveHeartbeat":
+        return ObjectiveHeartbeat()
 
 
 @dataclass
@@ -4953,7 +4966,7 @@ class WebhookDelivery:
 
 WebhookDeliveryDataStatus = Literal["WEBHOOK_DELIVERY_STATUS_UNSPECIFIED", "WEBHOOK_DELIVERY_STATUS_PENDING", "WEBHOOK_DELIVERY_STATUS_COMPLETED", "WEBHOOK_DELIVERY_STATUS_FAILED", "WEBHOOK_DELIVERY_STATUS_DISABLED"]
 
-WebhookDeliveryDataEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED"]
+WebhookDeliveryDataEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED", "OBJECTIVE_EVENT_TYPE_HEARTBEAT"]
 
 
 @dataclass
@@ -5992,6 +6005,19 @@ class ObjectiveEventData_StateChanged:
 
 
 @dataclass
+class ObjectiveEventData_Heartbeat:
+    type: Literal["heartbeat"]
+    heartbeat: ObjectiveHeartbeat
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveEventData_Heartbeat":
+        return ObjectiveEventData_Heartbeat(
+            type=_req(data, "ObjectiveEventData_Heartbeat", "type"),
+            heartbeat=None if _req(data, "ObjectiveEventData_Heartbeat", "heartbeat") is None else ObjectiveHeartbeat._from_json(_req(data, "ObjectiveEventData_Heartbeat", "heartbeat")),
+        )
+
+
+@dataclass
 class CallableTool_Tool:
     type: Literal["tool"]
     tool: ResourceMetadata
@@ -6430,7 +6456,7 @@ AgentServiceListAgentsVariationSelectionMode = Literal["VARIATION_SELECTION_MODE
 
 AgentServiceListAgentFeedbackSentiment = Literal["FEEDBACK_SENTIMENT_UNSPECIFIED", "FEEDBACK_SENTIMENT_POSITIVE", "FEEDBACK_SENTIMENT_NEGATIVE"]
 
-AgentServiceListAgentWebhookDeliveriesEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED"]
+AgentServiceListAgentWebhookDeliveriesEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED", "OBJECTIVE_EVENT_TYPE_HEARTBEAT"]
 
 MemoryServiceListMemoryLayersType = Literal["MEMORY_LAYER_TYPE_UNSPECIFIED", "MEMORY_LAYER_TYPE_EPISODIC", "MEMORY_LAYER_TYPE_SKILLS"]
 
