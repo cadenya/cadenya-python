@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/cadenya/cadenya-python/compare/v1.3.0...v1.4.0) (2026-09-16)
+
+
+### Features
+
+* support objective heartbeat events ([8e072d0](https://github.com/cadenya/cadenya-python/commit/8e072d0262534d308782092fc034fd1aee1710e9))
+
 ## [1.3.0](https://github.com/cadenya/cadenya-python/compare/v1.2.0...v1.3.0) (2026-09-14)
 
 
