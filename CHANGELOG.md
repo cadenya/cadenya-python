@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/cadenya/cadenya-python/compare/v1.4.0...v1.5.0) (2026-09-17)
+
+
+### Features
+
+* expose widget session credentials and required identity ([#26](https://github.com/cadenya/cadenya-python/issues/26)) ([d536673](https://github.com/cadenya/cadenya-python/commit/d536673b5974fd9c09ea132ec1a617956d7c0741))
+
 ## [1.4.0](https://github.com/cadenya/cadenya-python/compare/v1.3.0...v1.4.0) (2026-09-16)
 
 
