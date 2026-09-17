@@ -3592,6 +3592,16 @@ class SetToolCallContentRequest_TextBlock:
             text=_req(data, "SetToolCallContentRequest_TextBlock", "text"),
         )
 
+StatusDetails = Union["WidgetSessionErrorInfo", "GoogleProtobufAny"]
+
+
+def _decode_StatusDetails(data: Any) -> Any:
+    if isinstance(data, dict) and all(k in data for k in ("@type", "domain", "reason",)):
+        return WidgetSessionErrorInfo._from_json(data)
+    if isinstance(data, dict):
+        return GoogleProtobufAny._from_json(data)
+    raise ValueError("StatusDetails: no variant matched")
+
 
 @dataclass
 class Status:
@@ -3599,14 +3609,14 @@ class Status:
 
     code: Optional[int] = None
     message: Optional[str] = None
-    details: Optional[List[GoogleProtobufAny]] = None
+    details: Optional[List[StatusDetails]] = None
 
     @staticmethod
     def _from_json(data: Any) -> "Status":
         return Status(
             code=data.get("code"),
             message=data.get("message"),
-            details=None if data.get("details") is None else [GoogleProtobufAny._from_json(item) for item in (data.get("details"))],
+            details=None if data.get("details") is None else [_decode_StatusDetails(item) for item in (data.get("details"))],
         )
 
 
@@ -5050,13 +5060,14 @@ WidgetSessionState = Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_EXPIRED
 
 @dataclass
 class WidgetSession:
-    """WidgetSession is a delegated, narrowed credential for one visitor's use of  a widget, minted server-to-server by the customer's backend. The session  carries all customer-asserted context — tenant, subject, labels, secrets —  and every conversation (objective) created through the widget inherits it.  The bearer token returned at mint is short-lived and refreshed at the  widget host; the session row is what makes revocation possible."""
+    """WidgetSession is a delegated, narrowed credential for one visitor's use of  a widget, minted server-to-server by the customer's backend. The session  carries all customer-asserted context — tenant, subject, labels, secrets —  and every conversation (objective) created through the widget inherits it.  The browser renews short-lived bearer tokens at the widget host with  RenewWidgetSession, authenticated by its existing token. Renewal preserves  this bounded grant and does not extend its hard expiry."""
 
     metadata: OperationMetadata
     spec: WidgetSessionSpec
     state: WidgetSessionState
     secrets: List[WidgetSession_Secret]
     info: Optional[WidgetSessionInfo] = None
+    credentials: Optional[WidgetSessionCredentials] = None
 
     @staticmethod
     def _from_json(data: Any) -> "WidgetSession":
@@ -5066,6 +5077,28 @@ class WidgetSession:
             info=None if data.get("info") is None else WidgetSessionInfo._from_json(data.get("info")),
             state=_req(data, "WidgetSession", "state"),
             secrets=None if _req(data, "WidgetSession", "secrets") is None else [WidgetSession_Secret._from_json(item) for item in (_req(data, "WidgetSession", "secrets"))],
+            credentials=None if data.get("credentials") is None else WidgetSessionCredentials._from_json(data.get("credentials")),
+        )
+
+
+@dataclass
+class WidgetSessionCredentials:
+    """WidgetSessionCredentials is the only credential envelope the customer's  backend forwards to the browser. Never log or persist its token. Responses  containing credentials use Cache-Control: no-store. Both initial and later  issuance use the same schema; no refresh token or management key is included."""
+
+    session_id: str
+    host: str
+    token: str
+    token_expires_at: datetime
+    session_expires_at: datetime
+
+    @staticmethod
+    def _from_json(data: Any) -> "WidgetSessionCredentials":
+        return WidgetSessionCredentials(
+            session_id=_req(data, "WidgetSessionCredentials", "sessionId"),
+            host=_req(data, "WidgetSessionCredentials", "host"),
+            token=_req(data, "WidgetSessionCredentials", "token"),
+            token_expires_at=None if _req(data, "WidgetSessionCredentials", "tokenExpiresAt") is None else parse_datetime(_req(data, "WidgetSessionCredentials", "tokenExpiresAt")),
+            session_expires_at=None if _req(data, "WidgetSessionCredentials", "sessionExpiresAt") is None else parse_datetime(_req(data, "WidgetSessionCredentials", "sessionExpiresAt")),
         )
 
 
@@ -5099,9 +5132,9 @@ class WidgetSessionSpec:
     """WidgetSessionSpec is the configuration of a session, fixed at mint."""
 
     widget_id: str
+    tenant: TenantAssertion
+    subject: SubjectAssertion
     token: str
-    tenant: Optional[TenantAssertion] = None
-    subject: Optional[SubjectAssertion] = None
     expires_at: Optional[datetime] = None
     token_expires_at: Optional[datetime] = None
     pinned_parameters: Optional[Dict[str, str]] = None
@@ -5110,8 +5143,8 @@ class WidgetSessionSpec:
     def _from_json(data: Any) -> "WidgetSessionSpec":
         return WidgetSessionSpec(
             widget_id=_req(data, "WidgetSessionSpec", "widgetId"),
-            tenant=None if data.get("tenant") is None else TenantAssertion._from_json(data.get("tenant")),
-            subject=None if data.get("subject") is None else SubjectAssertion._from_json(data.get("subject")),
+            tenant=None if _req(data, "WidgetSessionSpec", "tenant") is None else TenantAssertion._from_json(_req(data, "WidgetSessionSpec", "tenant")),
+            subject=None if _req(data, "WidgetSessionSpec", "subject") is None else SubjectAssertion._from_json(_req(data, "WidgetSessionSpec", "subject")),
             expires_at=None if data.get("expiresAt") is None else parse_datetime(data.get("expiresAt")),
             token=_req(data, "WidgetSessionSpec", "token"),
             token_expires_at=None if data.get("tokenExpiresAt") is None else parse_datetime(data.get("tokenExpiresAt")),
@@ -6450,6 +6483,27 @@ class ModelSpec_Capability_Caching:
             caching=None if _req(data, "ModelSpec_Capability_Caching", "caching") is None else Capability_Caching._from_json(_req(data, "ModelSpec_Capability_Caching", "caching")),
         )
 
+WidgetSessionErrorReason = Literal["TOKEN_EXPIRED", "SESSION_REVOKED", "SESSION_EXPIRED", "SESSION_EXHAUSTED"]
+
+
+@dataclass
+class WidgetSessionErrorInfo:
+    """google.rpc.ErrorInfo detail for widget lifecycle failures. Match both domain and reason; ignore unknown reasons rather than renewing automatically."""
+
+    type: Literal["type.googleapis.com/google.rpc.ErrorInfo"]
+    domain: Literal["api.cadenya.com"]
+    reason: WidgetSessionErrorReason
+    metadata: Optional[Dict[str, str]] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "WidgetSessionErrorInfo":
+        return WidgetSessionErrorInfo(
+            type=_req(data, "WidgetSessionErrorInfo", "@type"),
+            domain=_req(data, "WidgetSessionErrorInfo", "domain"),
+            reason=_req(data, "WidgetSessionErrorInfo", "reason"),
+            metadata=data.get("metadata"),
+        )
+
 AgentServiceListAgentsState = Literal["STATE_UNSPECIFIED", "STATE_DRAFT", "STATE_PUBLISHED", "STATE_ARCHIVED"]
 
 AgentServiceListAgentsVariationSelectionMode = Literal["VARIATION_SELECTION_MODE_UNSPECIFIED", "VARIATION_SELECTION_MODE_RANDOM", "VARIATION_SELECTION_MODE_WEIGHTED"]
@@ -6845,8 +6899,8 @@ VertexConfigParam = TypedDict("VertexConfigParam", {
 }, total=False)
 WidgetSessionSpecParam = TypedDict("WidgetSessionSpecParam", {
     "widget_id": Required[str],
-    "tenant": "TenantAssertionParam",
-    "subject": "SubjectAssertionParam",
+    "tenant": Required["TenantAssertionParam"],
+    "subject": Required["SubjectAssertionParam"],
     "expires_at": Union[str, datetime],
     "pinned_parameters": Dict[str, str],
 }, total=False)
