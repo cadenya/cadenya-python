@@ -4,6 +4,7 @@ from .api_keys import ApiKeys
 from .workspace_admin import WorkspaceAdmin
 from .profiles import Profiles
 from .workspaces import Workspaces
+from .agent_pools import AgentPools
 from .agents import Agents
 from .agent_schedules import AgentSchedules
 from .agent_variations import AgentVariations
