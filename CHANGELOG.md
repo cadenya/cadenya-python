@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/cadenya/cadenya-python/compare/v1.5.0...v1.6.0) (2026-09-18)
+
+
+### Features
+
+* add agent pools and callable identity ([937426d](https://github.com/cadenya/cadenya-python/commit/937426df5d9c00c4abb37aa52c466ab8db9ca631))
+
 ## [1.5.0](https://github.com/cadenya/cadenya-python/compare/v1.4.0...v1.5.0) (2026-09-17)
 
 
