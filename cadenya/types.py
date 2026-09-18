@@ -296,7 +296,22 @@ class AccountSpec:
             workspaces=None if _req(data, "AccountSpec", "workspaces") is None else [Workspace._from_json(item) for item in (_req(data, "AccountSpec", "workspaces"))],
         )
 
-AddAgentVariationAssignmentRequest = Union["AddAgentVariationAssignmentRequest_ToolId", "AddAgentVariationAssignmentRequest_ToolSetId", "AddAgentVariationAssignmentRequest_SubAgentId"]
+
+@dataclass
+class ActivateAgentPoolRequest:
+    """Activate an inactive pool."""
+
+    workspace_id: Optional[str] = None
+    id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ActivateAgentPoolRequest":
+        return ActivateAgentPoolRequest(
+            workspace_id=data.get("workspaceId"),
+            id=data.get("id"),
+        )
+
+AddAgentVariationAssignmentRequest = Union["AddAgentVariationAssignmentRequest_ToolId", "AddAgentVariationAssignmentRequest_ToolSetId", "AddAgentVariationAssignmentRequest_SubAgentId", "AddAgentVariationAssignmentRequest_AgentPoolId"]
 
 
 def _decode_AddAgentVariationAssignmentRequest(data: Any) -> Any:
@@ -311,6 +326,8 @@ def _decode_AddAgentVariationAssignmentRequest(data: Any) -> Any:
         return AddAgentVariationAssignmentRequest_ToolSetId._from_json(data)
     if tag == "subAgentId":
         return AddAgentVariationAssignmentRequest_SubAgentId._from_json(data)
+    if tag == "agentPoolId":
+        return AddAgentVariationAssignmentRequest_AgentPoolId._from_json(data)
     raise ValueError(f"AddAgentVariationAssignmentRequest: unknown type {tag!r}")
 
 
@@ -385,6 +402,93 @@ class AgentInfo:
         return AgentInfo(
             variation_count=_req(data, "AgentInfo", "variationCount"),
             created_by=None if data.get("createdBy") is None else Profile._from_json(data.get("createdBy")),
+        )
+
+AgentPoolState = Literal["AGENT_POOL_STATE_UNSPECIFIED", "AGENT_POOL_STATE_ACTIVE", "AGENT_POOL_STATE_INACTIVE", "AGENT_POOL_STATE_ARCHIVED"]
+
+
+@dataclass
+class AgentPool:
+    """A workspace-scoped group of agents. When assigned to a variation, the pool  exposes one callable target that routes a request to a member agent.  Pool membership references agents; variation assignments reference the pool."""
+
+    metadata: ResourceMetadata
+    spec: AgentPoolSpec
+    state: AgentPoolState
+    info: Optional[AgentPoolInfo] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "AgentPool":
+        return AgentPool(
+            metadata=None if _req(data, "AgentPool", "metadata") is None else ResourceMetadata._from_json(_req(data, "AgentPool", "metadata")),
+            spec=None if _req(data, "AgentPool", "spec") is None else AgentPoolSpec._from_json(_req(data, "AgentPool", "spec")),
+            info=None if data.get("info") is None else AgentPoolInfo._from_json(data.get("info")),
+            state=_req(data, "AgentPool", "state"),
+        )
+
+
+@dataclass
+class AgentPoolAssignment:
+    """A member of a pool, identified by its agent ID. This is distinct from a  VariationAssignment, which attaches the entire pool to a variation."""
+
+    agent_id: str
+
+    @staticmethod
+    def _from_json(data: Any) -> "AgentPoolAssignment":
+        return AgentPoolAssignment(
+            agent_id=_req(data, "AgentPoolAssignment", "agentId"),
+        )
+
+
+@dataclass
+class AgentPoolInfo:
+    """AgentPoolInfo represents the information of an agent pool."""
+
+    assigned_agents: int
+    created_by: Profile
+
+    @staticmethod
+    def _from_json(data: Any) -> "AgentPoolInfo":
+        return AgentPoolInfo(
+            assigned_agents=_req(data, "AgentPoolInfo", "assignedAgents"),
+            created_by=None if _req(data, "AgentPoolInfo", "createdBy") is None else Profile._from_json(_req(data, "AgentPoolInfo", "createdBy")),
+        )
+
+
+@dataclass
+class AgentPoolSpec:
+    """AgentPoolSpec describes the pool's purpose, membership, input schema, and routing instructions."""
+
+    description: str
+    assignments: List[AgentPoolAssignment]
+    state: Optional[Dict[str, Any]] = None
+    instructions: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "AgentPoolSpec":
+        return AgentPoolSpec(
+            description=_req(data, "AgentPoolSpec", "description"),
+            state=data.get("state"),
+            assignments=None if _req(data, "AgentPoolSpec", "assignments") is None else [AgentPoolAssignment._from_json(item) for item in (_req(data, "AgentPoolSpec", "assignments"))],
+            instructions=data.get("instructions"),
+        )
+
+
+@dataclass
+class AgentPoolUpdateSpec:
+    """Partial input for UpdateAgentPool. The server applies update_mask, then  validates the resulting AgentPoolSpec before persisting any changes."""
+
+    description: Optional[str] = None
+    state: Optional[Dict[str, Any]] = None
+    assignments: Optional[List[AgentPoolAssignment]] = None
+    instructions: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "AgentPoolUpdateSpec":
+        return AgentPoolUpdateSpec(
+            description=data.get("description"),
+            state=data.get("state"),
+            assignments=None if data.get("assignments") is None else [AgentPoolAssignment._from_json(item) for item in (data.get("assignments"))],
+            instructions=data.get("instructions"),
         )
 
 AgentScheduleState = Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_PAUSED", "STATE_ARCHIVED"]
@@ -532,6 +636,7 @@ class AgentVariationInfo:
     memory_layer_count: int
     effective_tool_count: int
     assignment_metadata: Dict[str, BareMetadata]
+    agent_pool_count: int
     created_by: Optional[Profile] = None
     model: Optional[ResourceMetadata] = None
 
@@ -548,6 +653,7 @@ class AgentVariationInfo:
             memory_layer_count=_req(data, "AgentVariationInfo", "memoryLayerCount"),
             effective_tool_count=_req(data, "AgentVariationInfo", "effectiveToolCount"),
             assignment_metadata=None if _req(data, "AgentVariationInfo", "assignmentMetadata") is None else {k: BareMetadata._from_json(v) for k, v in (_req(data, "AgentVariationInfo", "assignmentMetadata")).items()},
+            agent_pool_count=_req(data, "AgentVariationInfo", "agentPoolCount"),
         )
 
 
@@ -672,6 +778,21 @@ class ApproveToolCallRequest:
 
 
 @dataclass
+class ArchiveAgentPoolRequest:
+    """Archive an active or inactive pool, preserving membership and assignments."""
+
+    workspace_id: Optional[str] = None
+    id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ArchiveAgentPoolRequest":
+        return ArchiveAgentPoolRequest(
+            workspace_id=data.get("workspaceId"),
+            id=data.get("id"),
+        )
+
+
+@dataclass
 class ArchiveAgentRequest:
     """Archive agent request"""
 
@@ -788,7 +909,7 @@ class BedrockConfig:
             region=data.get("region"),
         )
 
-CallableTool = Union["CallableTool_Tool", "CallableTool_Agent", "CallableTool_CadenyaProvidedTool"]
+CallableTool = Union["CallableTool_Tool", "CallableTool_Agent", "CallableTool_CadenyaProvidedTool", "CallableTool_AgentPool"]
 
 
 def _decode_CallableTool(data: Any) -> Any:
@@ -803,6 +924,8 @@ def _decode_CallableTool(data: Any) -> Any:
         return CallableTool_Agent._from_json(data)
     if tag == "cadenyaProvidedTool":
         return CallableTool_CadenyaProvidedTool._from_json(data)
+    if tag == "agentPool":
+        return CallableTool_AgentPool._from_json(data)
     raise ValueError(f"CallableTool: unknown type {tag!r}")
 
 
@@ -1125,6 +1248,23 @@ class CreateAccountResourceMetadata:
             name=_req(data, "CreateAccountResourceMetadata", "name"),
             external_id=data.get("externalId"),
             labels=data.get("labels"),
+        )
+
+
+@dataclass
+class CreateAgentPoolRequest:
+    """Create a pool in INACTIVE state. Validate and persist membership atomically."""
+
+    metadata: CreateResourceMetadata
+    spec: AgentPoolSpec
+    workspace_id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "CreateAgentPoolRequest":
+        return CreateAgentPoolRequest(
+            workspace_id=data.get("workspaceId"),
+            metadata=None if _req(data, "CreateAgentPoolRequest", "metadata") is None else CreateResourceMetadata._from_json(_req(data, "CreateAgentPoolRequest", "metadata")),
+            spec=None if _req(data, "CreateAgentPoolRequest", "spec") is None else AgentPoolSpec._from_json(_req(data, "CreateAgentPoolRequest", "spec")),
         )
 
 
@@ -1535,6 +1675,21 @@ class CredentialHeaders:
 
 
 @dataclass
+class DeactivateAgentPoolRequest:
+    """Deactivate an active pool."""
+
+    workspace_id: Optional[str] = None
+    id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "DeactivateAgentPoolRequest":
+        return DeactivateAgentPoolRequest(
+            workspace_id=data.get("workspaceId"),
+            id=data.get("id"),
+        )
+
+
+@dataclass
 class DeleteTenantWidgetSessionsResponse:
     """Delete tenant widget sessions response."""
 
@@ -1707,6 +1862,21 @@ class ListAgentFeedbackResponse:
     def _from_json(data: Any) -> "ListAgentFeedbackResponse":
         return ListAgentFeedbackResponse(
             items=None if _req(data, "ListAgentFeedbackResponse", "items") is None else [ObjectiveFeedback._from_json(item) for item in (_req(data, "ListAgentFeedbackResponse", "items"))],
+            pagination=None if data.get("pagination") is None else Page._from_json(data.get("pagination")),
+        )
+
+
+@dataclass
+class ListAgentPoolsResponse:
+    """List agent pools response"""
+
+    items: List[AgentPool]
+    pagination: Optional[Page] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ListAgentPoolsResponse":
+        return ListAgentPoolsResponse(
+            items=None if _req(data, "ListAgentPoolsResponse", "items") is None else [AgentPool._from_json(item) for item in (_req(data, "ListAgentPoolsResponse", "items"))],
             pagination=None if data.get("pagination") is None else Page._from_json(data.get("pagination")),
         )
 
@@ -3228,7 +3398,7 @@ class Reasoning:
             content=_req(data, "Reasoning", "content"),
         )
 
-RemoveAgentVariationAssignmentRequest = Union["RemoveAgentVariationAssignmentRequest_ToolId", "RemoveAgentVariationAssignmentRequest_ToolSetId", "RemoveAgentVariationAssignmentRequest_SubAgentId"]
+RemoveAgentVariationAssignmentRequest = Union["RemoveAgentVariationAssignmentRequest_ToolId", "RemoveAgentVariationAssignmentRequest_ToolSetId", "RemoveAgentVariationAssignmentRequest_SubAgentId", "RemoveAgentVariationAssignmentRequest_AgentPoolId"]
 
 
 def _decode_RemoveAgentVariationAssignmentRequest(data: Any) -> Any:
@@ -3243,6 +3413,8 @@ def _decode_RemoveAgentVariationAssignmentRequest(data: Any) -> Any:
         return RemoveAgentVariationAssignmentRequest_ToolSetId._from_json(data)
     if tag == "subAgentId":
         return RemoveAgentVariationAssignmentRequest_SubAgentId._from_json(data)
+    if tag == "agentPoolId":
+        return RemoveAgentVariationAssignmentRequest_AgentPoolId._from_json(data)
     raise ValueError(f"RemoveAgentVariationAssignmentRequest: unknown type {tag!r}")
 
 
@@ -4451,6 +4623,21 @@ def _decode_ToolSpec_Config(data: Any) -> Any:
 
 
 @dataclass
+class UnarchiveAgentPoolRequest:
+    """Restore an archived pool to INACTIVE; activate it separately to route requests."""
+
+    workspace_id: Optional[str] = None
+    id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "UnarchiveAgentPoolRequest":
+        return UnarchiveAgentPoolRequest(
+            workspace_id=data.get("workspaceId"),
+            id=data.get("id"),
+        )
+
+
+@dataclass
 class UnarchiveAgentRequest:
     """Unarchive agent request"""
 
@@ -4564,6 +4751,27 @@ class UpdateAccountResourceMetadata:
             name=_req(data, "UpdateAccountResourceMetadata", "name"),
             external_id=data.get("externalId"),
             labels=data.get("labels"),
+        )
+
+
+@dataclass
+class UpdateAgentPoolRequest:
+    """Update agent pool request"""
+
+    workspace_id: Optional[str] = None
+    id: Optional[str] = None
+    metadata: Optional[UpdateResourceMetadata] = None
+    spec: Optional[AgentPoolUpdateSpec] = None
+    update_mask: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "UpdateAgentPoolRequest":
+        return UpdateAgentPoolRequest(
+            workspace_id=data.get("workspaceId"),
+            id=data.get("id"),
+            metadata=None if data.get("metadata") is None else UpdateResourceMetadata._from_json(data.get("metadata")),
+            spec=None if data.get("spec") is None else AgentPoolUpdateSpec._from_json(data.get("spec")),
+            update_mask=data.get("updateMask"),
         )
 
 
@@ -4914,7 +5122,7 @@ class UserMessage:
             content=_req(data, "UserMessage", "content"),
         )
 
-VariationAssignment = Union["VariationAssignment_ToolId", "VariationAssignment_ToolSetId", "VariationAssignment_SubAgentId"]
+VariationAssignment = Union["VariationAssignment_ToolId", "VariationAssignment_ToolSetId", "VariationAssignment_SubAgentId", "VariationAssignment_AgentPoolId"]
 
 
 def _decode_VariationAssignment(data: Any) -> Any:
@@ -4929,6 +5137,8 @@ def _decode_VariationAssignment(data: Any) -> Any:
         return VariationAssignment_ToolSetId._from_json(data)
     if tag == "subAgentId":
         return VariationAssignment_SubAgentId._from_json(data)
+    if tag == "agentPoolId":
+        return VariationAssignment_AgentPoolId._from_json(data)
     raise ValueError(f"VariationAssignment: unknown type {tag!r}")
 
 
@@ -5363,6 +5573,19 @@ class VariationAssignment_SubAgentId:
         return VariationAssignment_SubAgentId(
             type=_req(data, "VariationAssignment_SubAgentId", "type"),
             sub_agent_id=_req(data, "VariationAssignment_SubAgentId", "subAgentId"),
+        )
+
+
+@dataclass
+class VariationAssignment_AgentPoolId:
+    type: Literal["agentPoolId"]
+    agent_pool_id: str
+
+    @staticmethod
+    def _from_json(data: Any) -> "VariationAssignment_AgentPoolId":
+        return VariationAssignment_AgentPoolId(
+            type=_req(data, "VariationAssignment_AgentPoolId", "type"),
+            agent_pool_id=_req(data, "VariationAssignment_AgentPoolId", "agentPoolId"),
         )
 
 
@@ -6090,6 +6313,19 @@ class CallableTool_CadenyaProvidedTool:
 
 
 @dataclass
+class CallableTool_AgentPool:
+    type: Literal["agentPool"]
+    agent_pool: ResourceMetadata
+
+    @staticmethod
+    def _from_json(data: Any) -> "CallableTool_AgentPool":
+        return CallableTool_AgentPool(
+            type=_req(data, "CallableTool_AgentPool", "type"),
+            agent_pool=None if _req(data, "CallableTool_AgentPool", "agentPool") is None else ResourceMetadata._from_json(_req(data, "CallableTool_AgentPool", "agentPool")),
+        )
+
+
+@dataclass
 class MemoryEntryCreateSpec_Content:
     type: Literal["content"]
     content: str
@@ -6220,6 +6456,25 @@ class AddAgentVariationAssignmentRequest_SubAgentId:
 
 
 @dataclass
+class AddAgentVariationAssignmentRequest_AgentPoolId:
+    type: Literal["agentPoolId"]
+    agent_pool_id: str
+    workspace_id: Optional[str] = None
+    agent_id: Optional[str] = None
+    variation_id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "AddAgentVariationAssignmentRequest_AgentPoolId":
+        return AddAgentVariationAssignmentRequest_AgentPoolId(
+            type=_req(data, "AddAgentVariationAssignmentRequest_AgentPoolId", "type"),
+            agent_pool_id=_req(data, "AddAgentVariationAssignmentRequest_AgentPoolId", "agentPoolId"),
+            workspace_id=data.get("workspaceId"),
+            agent_id=data.get("agentId"),
+            variation_id=data.get("variationId"),
+        )
+
+
+@dataclass
 class RemoveAgentVariationAssignmentRequest_ToolId:
     type: Literal["toolId"]
     tool_id: str
@@ -6270,6 +6525,25 @@ class RemoveAgentVariationAssignmentRequest_SubAgentId:
         return RemoveAgentVariationAssignmentRequest_SubAgentId(
             type=_req(data, "RemoveAgentVariationAssignmentRequest_SubAgentId", "type"),
             sub_agent_id=_req(data, "RemoveAgentVariationAssignmentRequest_SubAgentId", "subAgentId"),
+            workspace_id=data.get("workspaceId"),
+            agent_id=data.get("agentId"),
+            variation_id=data.get("variationId"),
+        )
+
+
+@dataclass
+class RemoveAgentVariationAssignmentRequest_AgentPoolId:
+    type: Literal["agentPoolId"]
+    agent_pool_id: str
+    workspace_id: Optional[str] = None
+    agent_id: Optional[str] = None
+    variation_id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "RemoveAgentVariationAssignmentRequest_AgentPoolId":
+        return RemoveAgentVariationAssignmentRequest_AgentPoolId(
+            type=_req(data, "RemoveAgentVariationAssignmentRequest_AgentPoolId", "type"),
+            agent_pool_id=_req(data, "RemoveAgentVariationAssignmentRequest_AgentPoolId", "agentPoolId"),
             workspace_id=data.get("workspaceId"),
             agent_id=data.get("agentId"),
             variation_id=data.get("variationId"),
@@ -6504,6 +6778,8 @@ class WidgetSessionErrorInfo:
             metadata=data.get("metadata"),
         )
 
+AgentPoolServiceListAgentPoolsState = Literal["AGENT_POOL_STATE_UNSPECIFIED", "AGENT_POOL_STATE_ACTIVE", "AGENT_POOL_STATE_INACTIVE", "AGENT_POOL_STATE_ARCHIVED"]
+
 AgentServiceListAgentsState = Literal["STATE_UNSPECIFIED", "STATE_DRAFT", "STATE_PUBLISHED", "STATE_ARCHIVED"]
 
 AgentServiceListAgentsVariationSelectionMode = Literal["VARIATION_SELECTION_MODE_UNSPECIFIED", "VARIATION_SELECTION_MODE_RANDOM", "VARIATION_SELECTION_MODE_WEIGHTED"]
@@ -6546,7 +6822,22 @@ APIKeySpecParam = TypedDict("APIKeySpecParam", {
     "description": str,
     "permissions": List[str],
 }, total=False)
-AddAgentVariationAssignmentRequestParam = Union["AddAgentVariationAssignmentRequest_ToolIdParam", "AddAgentVariationAssignmentRequest_ToolSetIdParam", "AddAgentVariationAssignmentRequest_SubAgentIdParam"]
+AddAgentVariationAssignmentRequestParam = Union["AddAgentVariationAssignmentRequest_ToolIdParam", "AddAgentVariationAssignmentRequest_ToolSetIdParam", "AddAgentVariationAssignmentRequest_SubAgentIdParam", "AddAgentVariationAssignmentRequest_AgentPoolIdParam"]
+AgentPoolAssignmentParam = TypedDict("AgentPoolAssignmentParam", {
+    "agent_id": Required[str],
+}, total=False)
+AgentPoolSpecParam = TypedDict("AgentPoolSpecParam", {
+    "description": Required[str],
+    "state": Dict[str, Any],
+    "assignments": Required[List["AgentPoolAssignmentParam"]],
+    "instructions": str,
+}, total=False)
+AgentPoolUpdateSpecParam = TypedDict("AgentPoolUpdateSpecParam", {
+    "description": str,
+    "state": Dict[str, Any],
+    "assignments": List["AgentPoolAssignmentParam"],
+    "instructions": str,
+}, total=False)
 AgentScheduleSpecParam = TypedDict("AgentScheduleSpecParam", {
     "schedule": Required["AgentScheduleSpec_ScheduleParam"],
     "overlap_policy": "AgentScheduleSpecOverlapPolicy",
@@ -6753,7 +7044,7 @@ ParameterAction_SetParam = TypedDict("ParameterAction_SetParam", {
     "path": Required[str],
     "value_template": Required[str],
 }, total=False)
-RemoveAgentVariationAssignmentRequestParam = Union["RemoveAgentVariationAssignmentRequest_ToolIdParam", "RemoveAgentVariationAssignmentRequest_ToolSetIdParam", "RemoveAgentVariationAssignmentRequest_SubAgentIdParam"]
+RemoveAgentVariationAssignmentRequestParam = Union["RemoveAgentVariationAssignmentRequest_ToolIdParam", "RemoveAgentVariationAssignmentRequest_ToolSetIdParam", "RemoveAgentVariationAssignmentRequest_SubAgentIdParam", "RemoveAgentVariationAssignmentRequest_AgentPoolIdParam"]
 ResultAction_TransformParam = TypedDict("ResultAction_TransformParam", {
     "content_template": Required[str],
     "on_error": Required["ResultActionTransformOnError"],
@@ -6888,7 +7179,7 @@ UploadSpecParam = TypedDict("UploadSpecParam", {
     "content_type": Required[str],
     "size_bytes": Required[str],
 }, total=False)
-VariationAssignmentParam = Union["VariationAssignment_ToolIdParam", "VariationAssignment_ToolSetIdParam", "VariationAssignment_SubAgentIdParam"]
+VariationAssignmentParam = Union["VariationAssignment_ToolIdParam", "VariationAssignment_ToolSetIdParam", "VariationAssignment_SubAgentIdParam", "VariationAssignment_AgentPoolIdParam"]
 VariationMemoryLayerAssignmentParam = TypedDict("VariationMemoryLayerAssignmentParam", {
     "memory_layer_id": Required[str],
     "position": Required[int],
@@ -6926,6 +7217,10 @@ VariationAssignment_ToolSetIdParam = TypedDict("VariationAssignment_ToolSetIdPar
 VariationAssignment_SubAgentIdParam = TypedDict("VariationAssignment_SubAgentIdParam", {
     "type": Required[Literal["subAgentId"]],
     "sub_agent_id": Required[str],
+}, total=False)
+VariationAssignment_AgentPoolIdParam = TypedDict("VariationAssignment_AgentPoolIdParam", {
+    "type": Required[Literal["agentPoolId"]],
+    "agent_pool_id": Required[str],
 }, total=False)
 ToolSetAdapter_McpVariantParam = TypedDict("ToolSetAdapter_McpVariantParam", {
     "type": Required[Literal["mcp"]],
@@ -7076,6 +7371,10 @@ AddAgentVariationAssignmentRequest_SubAgentIdParam = TypedDict("AddAgentVariatio
     "type": Required[Literal["subAgentId"]],
     "sub_agent_id": Required[str],
 }, total=False)
+AddAgentVariationAssignmentRequest_AgentPoolIdParam = TypedDict("AddAgentVariationAssignmentRequest_AgentPoolIdParam", {
+    "type": Required[Literal["agentPoolId"]],
+    "agent_pool_id": Required[str],
+}, total=False)
 RemoveAgentVariationAssignmentRequest_ToolIdParam = TypedDict("RemoveAgentVariationAssignmentRequest_ToolIdParam", {
     "type": Required[Literal["toolId"]],
     "tool_id": Required[str],
@@ -7087,6 +7386,10 @@ RemoveAgentVariationAssignmentRequest_ToolSetIdParam = TypedDict("RemoveAgentVar
 RemoveAgentVariationAssignmentRequest_SubAgentIdParam = TypedDict("RemoveAgentVariationAssignmentRequest_SubAgentIdParam", {
     "type": Required[Literal["subAgentId"]],
     "sub_agent_id": Required[str],
+}, total=False)
+RemoveAgentVariationAssignmentRequest_AgentPoolIdParam = TypedDict("RemoveAgentVariationAssignmentRequest_AgentPoolIdParam", {
+    "type": Required[Literal["agentPoolId"]],
+    "agent_pool_id": Required[str],
 }, total=False)
 AIProviderCredential_ApiKeyParam = TypedDict("AIProviderCredential_ApiKeyParam", {
     "type": Required[Literal["apiKey"]],
@@ -7253,7 +7556,37 @@ def _encode_AddAgentVariationAssignmentRequest(data: Any) -> Any:
         return (lambda _v: _encode_AddAgentVariationAssignmentRequest_ToolSetId(_v))(data)
     if tag == "subAgentId":
         return (lambda _v: _encode_AddAgentVariationAssignmentRequest_SubAgentId(_v))(data)
+    if tag == "agentPoolId":
+        return (lambda _v: _encode_AddAgentVariationAssignmentRequest_AgentPoolId(_v))(data)
     return data
+
+_FIELDS_AgentPoolAssignment: Dict[str, Any] = {
+    "agent_id": ("agentId", None),
+    "agentId": ("agentId", None),
+}
+
+def _encode_AgentPoolAssignment(data: Any) -> Any:
+    return _encode_fields(_FIELDS_AgentPoolAssignment, data)
+
+_FIELDS_AgentPoolSpec: Dict[str, Any] = {
+    "description": ("description", None),
+    "state": ("state", None),
+    "assignments": ("assignments", (lambda _v: [((lambda _v: _encode_AgentPoolAssignment(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "instructions": ("instructions", None),
+}
+
+def _encode_AgentPoolSpec(data: Any) -> Any:
+    return _encode_fields(_FIELDS_AgentPoolSpec, data)
+
+_FIELDS_AgentPoolUpdateSpec: Dict[str, Any] = {
+    "description": ("description", None),
+    "state": ("state", None),
+    "assignments": ("assignments", (lambda _v: [((lambda _v: _encode_AgentPoolAssignment(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "instructions": ("instructions", None),
+}
+
+def _encode_AgentPoolUpdateSpec(data: Any) -> Any:
+    return _encode_fields(_FIELDS_AgentPoolUpdateSpec, data)
 
 _FIELDS_AgentScheduleSpec: Dict[str, Any] = {
     "schedule": ("schedule", (lambda _v: _encode_AgentScheduleSpec_Schedule(_v))),
@@ -7718,6 +8051,8 @@ def _encode_RemoveAgentVariationAssignmentRequest(data: Any) -> Any:
         return (lambda _v: _encode_RemoveAgentVariationAssignmentRequest_ToolSetId(_v))(data)
     if tag == "subAgentId":
         return (lambda _v: _encode_RemoveAgentVariationAssignmentRequest_SubAgentId(_v))(data)
+    if tag == "agentPoolId":
+        return (lambda _v: _encode_RemoveAgentVariationAssignmentRequest_AgentPoolId(_v))(data)
     return data
 
 _FIELDS_ResultAction_Transform: Dict[str, Any] = {
@@ -8097,6 +8432,8 @@ def _encode_VariationAssignment(data: Any) -> Any:
         return (lambda _v: _encode_VariationAssignment_ToolSetId(_v))(data)
     if tag == "subAgentId":
         return (lambda _v: _encode_VariationAssignment_SubAgentId(_v))(data)
+    if tag == "agentPoolId":
+        return (lambda _v: _encode_VariationAssignment_AgentPoolId(_v))(data)
     return data
 
 _FIELDS_VariationMemoryLayerAssignment: Dict[str, Any] = {
@@ -8184,6 +8521,15 @@ _FIELDS_VariationAssignment_SubAgentId: Dict[str, Any] = {
 
 def _encode_VariationAssignment_SubAgentId(data: Any) -> Any:
     return _encode_fields(_FIELDS_VariationAssignment_SubAgentId, data)
+
+_FIELDS_VariationAssignment_AgentPoolId: Dict[str, Any] = {
+    "type": ("type", None),
+    "agent_pool_id": ("agentPoolId", None),
+    "agentPoolId": ("agentPoolId", None),
+}
+
+def _encode_VariationAssignment_AgentPoolId(data: Any) -> Any:
+    return _encode_fields(_FIELDS_VariationAssignment_AgentPoolId, data)
 
 _FIELDS_ToolSetAdapter_McpVariant: Dict[str, Any] = {
     "type": ("type", None),
@@ -8488,6 +8834,16 @@ _DROP_AddAgentVariationAssignmentRequest_SubAgentId = frozenset(("agentId", "age
 def _encode_AddAgentVariationAssignmentRequest_SubAgentId(data: Any) -> Any:
     return _encode_fields(_FIELDS_AddAgentVariationAssignmentRequest_SubAgentId, data, _DROP_AddAgentVariationAssignmentRequest_SubAgentId)
 
+_FIELDS_AddAgentVariationAssignmentRequest_AgentPoolId: Dict[str, Any] = {
+    "type": ("type", None),
+    "agent_pool_id": ("agentPoolId", None),
+    "agentPoolId": ("agentPoolId", None),
+}
+
+_DROP_AddAgentVariationAssignmentRequest_AgentPoolId = frozenset(("agentId", "agent_id", "variationId", "variation_id", "workspaceId", "workspace_id",))
+def _encode_AddAgentVariationAssignmentRequest_AgentPoolId(data: Any) -> Any:
+    return _encode_fields(_FIELDS_AddAgentVariationAssignmentRequest_AgentPoolId, data, _DROP_AddAgentVariationAssignmentRequest_AgentPoolId)
+
 _FIELDS_RemoveAgentVariationAssignmentRequest_ToolId: Dict[str, Any] = {
     "type": ("type", None),
     "tool_id": ("toolId", None),
@@ -8517,6 +8873,16 @@ _FIELDS_RemoveAgentVariationAssignmentRequest_SubAgentId: Dict[str, Any] = {
 _DROP_RemoveAgentVariationAssignmentRequest_SubAgentId = frozenset(("agentId", "agent_id", "variationId", "variation_id", "workspaceId", "workspace_id",))
 def _encode_RemoveAgentVariationAssignmentRequest_SubAgentId(data: Any) -> Any:
     return _encode_fields(_FIELDS_RemoveAgentVariationAssignmentRequest_SubAgentId, data, _DROP_RemoveAgentVariationAssignmentRequest_SubAgentId)
+
+_FIELDS_RemoveAgentVariationAssignmentRequest_AgentPoolId: Dict[str, Any] = {
+    "type": ("type", None),
+    "agent_pool_id": ("agentPoolId", None),
+    "agentPoolId": ("agentPoolId", None),
+}
+
+_DROP_RemoveAgentVariationAssignmentRequest_AgentPoolId = frozenset(("agentId", "agent_id", "variationId", "variation_id", "workspaceId", "workspace_id",))
+def _encode_RemoveAgentVariationAssignmentRequest_AgentPoolId(data: Any) -> Any:
+    return _encode_fields(_FIELDS_RemoveAgentVariationAssignmentRequest_AgentPoolId, data, _DROP_RemoveAgentVariationAssignmentRequest_AgentPoolId)
 
 _FIELDS_AIProviderCredential_ApiKey: Dict[str, Any] = {
     "type": ("type", None),

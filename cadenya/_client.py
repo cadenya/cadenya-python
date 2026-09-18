@@ -16,6 +16,7 @@ from .resources import (
     WorkspaceAdmin,
     Profiles,
     Workspaces,
+    AgentPools,
     Agents,
     AiProviderKeys,
     Models,
@@ -69,7 +70,7 @@ class Cadenya:
             http_client=http_client,
             max_retries=max_retries,
             defaults=defaults,
-            user_agent="cadenya-python/1.3.0 (api 1.0)",
+            user_agent="cadenya-python/1.5.0 (api 1.0)",
         )
         self._core = core
         self.accounts = Accounts(core)
@@ -77,6 +78,7 @@ class Cadenya:
         self.workspace_admin = WorkspaceAdmin(core)
         self.profiles = Profiles(core)
         self.workspaces = Workspaces(core)
+        self.agent_pools = AgentPools(core)
         self.agents = Agents(core)
         self.ai_provider_keys = AiProviderKeys(core)
         self.models = Models(core)

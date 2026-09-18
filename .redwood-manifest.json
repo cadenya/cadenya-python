@@ -10,6 +10,7 @@
   "cadenya/py.typed",
   "cadenya/resources/__init__.py",
   "cadenya/resources/accounts.py",
+  "cadenya/resources/agent_pools.py",
   "cadenya/resources/agent_schedules.py",
   "cadenya/resources/agent_variations.py",
   "cadenya/resources/agents.py",

@@ -147,6 +147,54 @@ List workspaces
 client.workspaces.list(*, limit=None, cursor=None, sort_order=None, include_info=None, labels=None) -> SyncPage[Workspace]
 ```
 
+## client.agent_pools
+
+List agent pools
+
+```python
+client.agent_pools.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, state=None, labels=None, sort_order=None, include_info=None) -> SyncPage[AgentPool]
+```
+Create a new agent pool
+
+```python
+client.agent_pools.create(*, workspace_id=None, metadata, spec) -> AgentPool
+```
+Get an agent pool by ID
+
+```python
+client.agent_pools.retrieve(id: str, *, workspace_id=None) -> AgentPool
+```
+Delete an agent pool
+
+```python
+client.agent_pools.delete(id: str, *, workspace_id=None) -> None
+```
+Update an agent pool
+
+```python
+client.agent_pools.update(id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> AgentPool
+```
+Activate an agent pool
+
+```python
+client.agent_pools.activate(id: str, *, workspace_id=None) -> AgentPool
+```
+Archive an agent pool
+
+```python
+client.agent_pools.archive(id: str, *, workspace_id=None) -> AgentPool
+```
+Deactivate an agent pool
+
+```python
+client.agent_pools.deactivate(id: str, *, workspace_id=None) -> AgentPool
+```
+Unarchive an agent pool
+
+```python
+client.agent_pools.unarchive(id: str, *, workspace_id=None) -> AgentPool
+```
+
 ## client.agents
 
 List agents
