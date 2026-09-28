@@ -1029,7 +1029,7 @@ class Capability_TopP:
 
 @dataclass
 class CompactObjectiveRequest:
-    """Compact objective request — triggers compaction on a running objective."""
+    """Compact objective request. Compaction is queued for a busy agent loop and starts immediately for a waiting objective."""
 
     workspace_id: Optional[str] = None
     objective_id: Optional[str] = None
@@ -1041,19 +1041,6 @@ class CompactObjectiveRequest:
             workspace_id=data.get("workspaceId"),
             objective_id=data.get("objectiveId"),
             compaction_config=None if data.get("compactionConfig") is None else AgentVariationSpec_CompactionConfig._from_json(data.get("compactionConfig")),
-        )
-
-
-@dataclass
-class CompactObjectiveResponse:
-    """Compact objective response"""
-
-    context_window: Optional[ObjectiveContextWindowData] = None
-
-    @staticmethod
-    def _from_json(data: Any) -> "CompactObjectiveResponse":
-        return CompactObjectiveResponse(
-            context_window=None if data.get("contextWindow") is None else ObjectiveContextWindowData._from_json(data.get("contextWindow")),
         )
 
 
@@ -1203,6 +1190,21 @@ class ContinueObjectiveRequest:
             enqueue=data.get("enqueue"),
         )
 
+ContinueObjectiveResponse = Union["ContinueObjectiveResponse_Event", "ContinueObjectiveResponse_QueuedAction"]
+
+
+def _decode_ContinueObjectiveResponse(data: Any) -> Any:
+    if data is None:
+        return None
+    tag = data.get("type")
+    if not tag:
+        return None
+    if tag == "event":
+        return ContinueObjectiveResponse_Event._from_json(data)
+    if tag == "queuedAction":
+        return ContinueObjectiveResponse_QueuedAction._from_json(data)
+    raise ValueError(f"ContinueObjectiveResponse: unknown type {tag!r}")
+
 
 @dataclass
 class CreateAIProviderKeyRequest:
@@ -1326,6 +1328,73 @@ class CreateAgentVariationRequest:
 
 
 @dataclass
+class CreateAndStreamObjectiveRequest:
+    """The request body for creating an objective and streaming its events.  Accepts everything Create objective accepts, and additionally requires  `metadata.externalId`, which is the idempotency key for the stream."""
+
+    workspace_id: str
+    agent_id: str
+    metadata: CreateAndStreamObjectiveRequest_Metadata
+    variation_id: Optional[str] = None
+    system_prompt_data: Optional[Dict[str, Any]] = None
+    first_user_message: Optional[str] = None
+    secrets: Optional[List[CreateObjectiveRequest_Secret]] = None
+    memory_cascade: Optional[List[MemoryReference]] = None
+    first_user_message_data: Optional[Dict[str, Any]] = None
+    episodic_memory: Optional[ObjectiveEpisodicConfig] = None
+    tenant: Optional[TenantAssertion] = None
+    subject: Optional[SubjectAssertion] = None
+    pinned_parameters: Optional[Dict[str, str]] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "CreateAndStreamObjectiveRequest":
+        return CreateAndStreamObjectiveRequest(
+            workspace_id=_req(data, "CreateAndStreamObjectiveRequest", "workspaceId"),
+            agent_id=_req(data, "CreateAndStreamObjectiveRequest", "agentId"),
+            variation_id=data.get("variationId"),
+            metadata=None if _req(data, "CreateAndStreamObjectiveRequest", "metadata") is None else CreateAndStreamObjectiveRequest_Metadata._from_json(_req(data, "CreateAndStreamObjectiveRequest", "metadata")),
+            system_prompt_data=data.get("systemPromptData"),
+            first_user_message=data.get("firstUserMessage"),
+            secrets=None if data.get("secrets") is None else [CreateObjectiveRequest_Secret._from_json(item) for item in (data.get("secrets"))],
+            memory_cascade=None if data.get("memoryCascade") is None else [MemoryReference._from_json(item) for item in (data.get("memoryCascade"))],
+            first_user_message_data=data.get("firstUserMessageData"),
+            episodic_memory=None if data.get("episodicMemory") is None else ObjectiveEpisodicConfig._from_json(data.get("episodicMemory")),
+            tenant=None if data.get("tenant") is None else TenantAssertion._from_json(data.get("tenant")),
+            subject=None if data.get("subject") is None else SubjectAssertion._from_json(data.get("subject")),
+            pinned_parameters=data.get("pinnedParameters"),
+        )
+
+
+@dataclass
+class CreateAndStreamObjectiveRequest_Metadata:
+    """Objective metadata, with an external ID that is required here because  it is the request's idempotency key: repeating a request that carries  an external ID already in use attaches to that objective instead of  starting a second one."""
+
+    external_id: str
+    labels: Optional[Dict[str, str]] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "CreateAndStreamObjectiveRequest_Metadata":
+        return CreateAndStreamObjectiveRequest_Metadata(
+            labels=data.get("labels"),
+            external_id=_req(data, "CreateAndStreamObjectiveRequest_Metadata", "externalId"),
+        )
+
+CreateAndStreamObjectiveResponse = Union["CreateAndStreamObjectiveResponse_Objective", "CreateAndStreamObjectiveResponse_Event"]
+
+
+def _decode_CreateAndStreamObjectiveResponse(data: Any) -> Any:
+    if data is None:
+        return None
+    tag = data.get("type")
+    if not tag:
+        return None
+    if tag == "objective":
+        return CreateAndStreamObjectiveResponse_Objective._from_json(data)
+    if tag == "event":
+        return CreateAndStreamObjectiveResponse_Event._from_json(data)
+    raise ValueError(f"CreateAndStreamObjectiveResponse: unknown type {tag!r}")
+
+
+@dataclass
 class CreateMemoryEntryRequest:
     metadata: CreateResourceMetadata
     spec: MemoryEntryCreateSpec
@@ -1399,9 +1468,9 @@ class CreateObjectiveFeedbackRequest:
 class CreateObjectiveRequest:
     workspace_id: str
     agent_id: str
-    system_prompt_data: Dict[str, Any]
     variation_id: Optional[str] = None
     metadata: Optional[CreateOperationMetadata] = None
+    system_prompt_data: Optional[Dict[str, Any]] = None
     first_user_message: Optional[str] = None
     secrets: Optional[List[CreateObjectiveRequest_Secret]] = None
     memory_cascade: Optional[List[MemoryReference]] = None
@@ -1418,7 +1487,7 @@ class CreateObjectiveRequest:
             agent_id=_req(data, "CreateObjectiveRequest", "agentId"),
             variation_id=data.get("variationId"),
             metadata=None if data.get("metadata") is None else CreateOperationMetadata._from_json(data.get("metadata")),
-            system_prompt_data=_req(data, "CreateObjectiveRequest", "systemPromptData"),
+            system_prompt_data=data.get("systemPromptData"),
             first_user_message=data.get("firstUserMessage"),
             secrets=None if data.get("secrets") is None else [CreateObjectiveRequest_Secret._from_json(item) for item in (data.get("secrets"))],
             memory_cascade=None if data.get("memoryCascade") is None else [MemoryReference._from_json(item) for item in (data.get("memoryCascade"))],
@@ -1813,6 +1882,21 @@ class GoogleProtobufAny:
 
 
 @dataclass
+class InterruptObjectiveRequest:
+    """InterruptObjectiveRequest stops a running objective without cancelling background agents."""
+
+    workspace_id: Optional[str] = None
+    objective_id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "InterruptObjectiveRequest":
+        return InterruptObjectiveRequest(
+            workspace_id=data.get("workspaceId"),
+            objective_id=data.get("objectiveId"),
+        )
+
+
+@dataclass
 class ListAIProviderKeysResponse:
     items: List[AIProviderKey]
     pagination: Optional[Page] = None
@@ -2019,6 +2103,19 @@ class ListObjectiveFeedbackResponse:
     def _from_json(data: Any) -> "ListObjectiveFeedbackResponse":
         return ListObjectiveFeedbackResponse(
             items=None if _req(data, "ListObjectiveFeedbackResponse", "items") is None else [ObjectiveFeedback._from_json(item) for item in (_req(data, "ListObjectiveFeedbackResponse", "items"))],
+            pagination=None if data.get("pagination") is None else Page._from_json(data.get("pagination")),
+        )
+
+
+@dataclass
+class ListObjectiveQueuedActionsResponse:
+    items: List[ObjectiveQueuedAction]
+    pagination: Optional[Page] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ListObjectiveQueuedActionsResponse":
+        return ListObjectiveQueuedActionsResponse(
+            items=None if _req(data, "ListObjectiveQueuedActionsResponse", "items") is None else [ObjectiveQueuedAction._from_json(item) for item in (_req(data, "ListObjectiveQueuedActionsResponse", "items"))],
             pagination=None if data.get("pagination") is None else Page._from_json(data.get("pagination")),
         )
 
@@ -2480,12 +2577,14 @@ class ModelBasePricing:
 
     input_price_per_million_tokens: str
     output_price_per_million_tokens: str
+    cached_input_price_per_million_tokens: str
 
     @staticmethod
     def _from_json(data: Any) -> "ModelBasePricing":
         return ModelBasePricing(
             input_price_per_million_tokens=_req(data, "ModelBasePricing", "inputPricePerMillionTokens"),
             output_price_per_million_tokens=_req(data, "ModelBasePricing", "outputPricePerMillionTokens"),
+            cached_input_price_per_million_tokens=_req(data, "ModelBasePricing", "cachedInputPricePerMillionTokens"),
         )
 
 
@@ -2512,12 +2611,14 @@ class ModelPricingOverride:
 
     input_price_per_million_tokens: Optional[str] = None
     output_price_per_million_tokens: Optional[str] = None
+    cached_input_price_per_million_tokens: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ModelPricingOverride":
         return ModelPricingOverride(
             input_price_per_million_tokens=data.get("inputPricePerMillionTokens"),
             output_price_per_million_tokens=data.get("outputPricePerMillionTokens"),
+            cached_input_price_per_million_tokens=data.get("cachedInputPricePerMillionTokens"),
         )
 
 
@@ -2531,6 +2632,7 @@ class ModelSpec:
     output_price_per_million_tokens: str
     capabilities: List[ModelSpec_Capability]
     provider_model_id: str
+    cached_input_price_per_million_tokens: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ModelSpec":
@@ -2541,6 +2643,7 @@ class ModelSpec:
             max_output_tokens=_req(data, "ModelSpec", "maxOutputTokens"),
             input_price_per_million_tokens=_req(data, "ModelSpec", "inputPricePerMillionTokens"),
             output_price_per_million_tokens=_req(data, "ModelSpec", "outputPricePerMillionTokens"),
+            cached_input_price_per_million_tokens=data.get("cachedInputPricePerMillionTokens"),
             capabilities=None if _req(data, "ModelSpec", "capabilities") is None else [_decode_ModelSpec_Capability(item) for item in (_req(data, "ModelSpec", "capabilities"))],
             provider_model_id=_req(data, "ModelSpec", "providerModelId"),
         )
@@ -2589,7 +2692,7 @@ class Notice:
             key=_req(data, "Notice", "key"),
         )
 
-ObjectiveState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT"]
+ObjectiveState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT", "OBJECTIVE_STATE_INTERRUPTING"]
 
 
 @dataclass
@@ -2777,7 +2880,7 @@ class ObjectiveEvent:
             started_at=None if data.get("startedAt") is None else parse_datetime(data.get("startedAt")),
         )
 
-ObjectiveEventData = Union["ObjectiveEventData_UserMessage", "ObjectiveEventData_ToolApprovalRequested", "ObjectiveEventData_ToolApproved", "ObjectiveEventData_ToolDenied", "ObjectiveEventData_ToolCalled", "ObjectiveEventData_Error", "ObjectiveEventData_AssistantMessage", "ObjectiveEventData_ToolResult", "ObjectiveEventData_ToolError", "ObjectiveEventData_ContextWindowCompacted", "ObjectiveEventData_MemoryRead", "ObjectiveEventData_Cancelled", "ObjectiveEventData_SubAgentSpawned", "ObjectiveEventData_SubAgentUpdated", "ObjectiveEventData_Finalized", "ObjectiveEventData_Notice", "ObjectiveEventData_TimedOut", "ObjectiveEventData_Reasoning", "ObjectiveEventData_StateChanged", "ObjectiveEventData_Heartbeat"]
+ObjectiveEventData = Union["ObjectiveEventData_UserMessage", "ObjectiveEventData_ToolApprovalRequested", "ObjectiveEventData_ToolApproved", "ObjectiveEventData_ToolDenied", "ObjectiveEventData_ToolCalled", "ObjectiveEventData_Error", "ObjectiveEventData_AssistantMessage", "ObjectiveEventData_ToolResult", "ObjectiveEventData_ToolError", "ObjectiveEventData_ContextWindowCompacted", "ObjectiveEventData_MemoryRead", "ObjectiveEventData_Cancelled", "ObjectiveEventData_SubAgentSpawned", "ObjectiveEventData_SubAgentUpdated", "ObjectiveEventData_Finalized", "ObjectiveEventData_Notice", "ObjectiveEventData_TimedOut", "ObjectiveEventData_Reasoning", "ObjectiveEventData_StateChanged", "ObjectiveEventData_Heartbeat", "ObjectiveEventData_Interrupted"]
 
 
 def _decode_ObjectiveEventData(data: Any) -> Any:
@@ -2826,6 +2929,8 @@ def _decode_ObjectiveEventData(data: Any) -> Any:
         return ObjectiveEventData_StateChanged._from_json(data)
     if tag == "heartbeat":
         return ObjectiveEventData_Heartbeat._from_json(data)
+    if tag == "interrupted":
+        return ObjectiveEventData_Interrupted._from_json(data)
     raise ValueError(f"ObjectiveEventData: unknown type {tag!r}")
 
 
@@ -2949,9 +3054,62 @@ class ObjectiveInfo:
             widget=None if data.get("widget") is None else BareMetadata._from_json(data.get("widget")),
         )
 
-ObjectiveStateChangedFromState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT"]
 
-ObjectiveStateChangedToState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT"]
+@dataclass
+class ObjectiveInterrupted:
+    """ObjectiveInterrupted confirms that foreground execution stopped and the objective is waiting."""
+
+    message: str
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveInterrupted":
+        return ObjectiveInterrupted(
+            message=_req(data, "ObjectiveInterrupted", "message"),
+        )
+
+ObjectiveQueuedActionState = Literal["STATE_UNSPECIFIED", "STATE_QUEUED", "STATE_SENT", "STATE_REMOVED", "STATE_DISCARDED"]
+
+
+@dataclass
+class ObjectiveQueuedAction:
+    """ObjectiveQueuedAction is work sent to an objective while its agent loop was  busy. The agent picks queued actions up in order at the next boundary where  it can act on them: after its current tool calls settle, before its next  assistant turn. Until then a queued action can be removed and the agent never  learns about it."""
+
+    metadata: OperationMetadata
+    objective_id: str
+    data: ObjectiveQueuedActionData
+    state: ObjectiveQueuedActionState
+    sent_at: Optional[datetime] = None
+    objective_event_id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveQueuedAction":
+        return ObjectiveQueuedAction(
+            metadata=None if _req(data, "ObjectiveQueuedAction", "metadata") is None else OperationMetadata._from_json(_req(data, "ObjectiveQueuedAction", "metadata")),
+            objective_id=_req(data, "ObjectiveQueuedAction", "objectiveId"),
+            data=None if _req(data, "ObjectiveQueuedAction", "data") is None else _decode_ObjectiveQueuedActionData(_req(data, "ObjectiveQueuedAction", "data")),
+            state=_req(data, "ObjectiveQueuedAction", "state"),
+            sent_at=None if data.get("sentAt") is None else parse_datetime(data.get("sentAt")),
+            objective_event_id=data.get("objectiveEventId"),
+        )
+
+ObjectiveQueuedActionData = Union["ObjectiveQueuedActionData_UserMessage", "ObjectiveQueuedActionData_Compaction"]
+
+
+def _decode_ObjectiveQueuedActionData(data: Any) -> Any:
+    if data is None:
+        return None
+    tag = data.get("type")
+    if not tag:
+        return None
+    if tag == "userMessage":
+        return ObjectiveQueuedActionData_UserMessage._from_json(data)
+    if tag == "compaction":
+        return ObjectiveQueuedActionData_Compaction._from_json(data)
+    raise ValueError(f"ObjectiveQueuedActionData: unknown type {tag!r}")
+
+ObjectiveStateChangedFromState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT", "OBJECTIVE_STATE_INTERRUPTING"]
+
+ObjectiveStateChangedToState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT", "OBJECTIVE_STATE_INTERRUPTING"]
 
 
 @dataclass
@@ -3000,7 +3158,7 @@ class ObjectiveTool:
 
 ObjectiveToolCallStatus = Literal["TOOL_CALL_STATUS_UNSPECIFIED", "TOOL_CALL_STATUS_AUTO_APPROVED", "TOOL_CALL_STATUS_WAITING_FOR_APPROVAL", "TOOL_CALL_STATUS_APPROVED", "TOOL_CALL_STATUS_DENIED"]
 
-ObjectiveToolCallExecutionStatus = Literal["TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED", "TOOL_CALL_EXECUTION_STATUS_PENDING", "TOOL_CALL_EXECUTION_STATUS_RUNNING", "TOOL_CALL_EXECUTION_STATUS_COMPLETED", "TOOL_CALL_EXECUTION_STATUS_ERRORED", "TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT"]
+ObjectiveToolCallExecutionStatus = Literal["TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED", "TOOL_CALL_EXECUTION_STATUS_PENDING", "TOOL_CALL_EXECUTION_STATUS_RUNNING", "TOOL_CALL_EXECUTION_STATUS_COMPLETED", "TOOL_CALL_EXECUTION_STATUS_ERRORED", "TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT", "TOOL_CALL_EXECUTION_STATUS_INTERRUPTED"]
 
 
 @dataclass
@@ -3138,7 +3296,7 @@ class ObjectiveToolCallResult_TextBlock:
 
 ObjectiveToolCallWithResultStatus = Literal["TOOL_CALL_STATUS_UNSPECIFIED", "TOOL_CALL_STATUS_AUTO_APPROVED", "TOOL_CALL_STATUS_WAITING_FOR_APPROVAL", "TOOL_CALL_STATUS_APPROVED", "TOOL_CALL_STATUS_DENIED"]
 
-ObjectiveToolCallWithResultExecutionStatus = Literal["TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED", "TOOL_CALL_EXECUTION_STATUS_PENDING", "TOOL_CALL_EXECUTION_STATUS_RUNNING", "TOOL_CALL_EXECUTION_STATUS_COMPLETED", "TOOL_CALL_EXECUTION_STATUS_ERRORED", "TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT"]
+ObjectiveToolCallWithResultExecutionStatus = Literal["TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED", "TOOL_CALL_EXECUTION_STATUS_PENDING", "TOOL_CALL_EXECUTION_STATUS_RUNNING", "TOOL_CALL_EXECUTION_STATUS_COMPLETED", "TOOL_CALL_EXECUTION_STATUS_ERRORED", "TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT", "TOOL_CALL_EXECUTION_STATUS_INTERRUPTED"]
 
 
 @dataclass
@@ -3387,6 +3545,32 @@ class PublishAgentRequest:
 
 
 @dataclass
+class QueuedCompaction:
+    """QueuedCompaction is a compaction waiting to run."""
+
+    compaction_config: Optional[AgentVariationSpec_CompactionConfig] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "QueuedCompaction":
+        return QueuedCompaction(
+            compaction_config=None if data.get("compactionConfig") is None else AgentVariationSpec_CompactionConfig._from_json(data.get("compactionConfig")),
+        )
+
+
+@dataclass
+class QueuedUserMessage:
+    """QueuedUserMessage is a user message waiting to join the conversation."""
+
+    content: str
+
+    @staticmethod
+    def _from_json(data: Any) -> "QueuedUserMessage":
+        return QueuedUserMessage(
+            content=_req(data, "QueuedUserMessage", "content"),
+        )
+
+
+@dataclass
 class Reasoning:
     """Reasoning carries the human-readable reasoning text a model produced while  working on an iteration — extended thinking (Anthropic, Gemini) or reasoning  summaries (OpenAI). It is emitted alongside the assistant message from the  same model response and is purely informational: the text shown here is  never sent back to the model."""
 
@@ -3434,6 +3618,21 @@ class RemoveAgentVariationMemoryLayerRequest:
             agent_id=data.get("agentId"),
             variation_id=data.get("variationId"),
             memory_layer_id=_req(data, "RemoveAgentVariationMemoryLayerRequest", "memoryLayerId"),
+        )
+
+
+@dataclass
+class RemoveObjectiveQueuedActionRequest:
+    workspace_id: Optional[str] = None
+    objective_id: Optional[str] = None
+    queued_action_id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "RemoveObjectiveQueuedActionRequest":
+        return RemoveObjectiveQueuedActionRequest(
+            workspace_id=data.get("workspaceId"),
+            objective_id=data.get("objectiveId"),
+            queued_action_id=data.get("queuedActionId"),
         )
 
 ResolvedSecretSource = Literal["RESOLVED_SECRET_SOURCE_UNSPECIFIED", "RESOLVED_SECRET_SOURCE_WORKSPACE", "RESOLVED_SECRET_SOURCE_TOOLSET", "RESOLVED_SECRET_SOURCE_OBJECTIVE"]
@@ -4555,6 +4754,7 @@ class ToolSetSpec:
     adapter: ToolSetAdapter
     description: Optional[str] = None
     overlays: Optional[List[ToolOverlay]] = None
+    secrets: Optional[List[ToolSetSpec_Secret]] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ToolSetSpec":
@@ -4562,6 +4762,22 @@ class ToolSetSpec:
             description=data.get("description"),
             adapter=None if _req(data, "ToolSetSpec", "adapter") is None else _decode_ToolSetAdapter(_req(data, "ToolSetSpec", "adapter")),
             overlays=None if data.get("overlays") is None else [ToolOverlay._from_json(item) for item in (data.get("overlays"))],
+            secrets=None if data.get("secrets") is None else [ToolSetSpec_Secret._from_json(item) for item in (data.get("secrets"))],
+        )
+
+
+@dataclass
+class ToolSetSpec_Secret:
+    """A secret scoped to this tool set. Adapter headers and tool configuration  reference it as `{{ secrets.NAME }}`. The same secrets are managed one at  a time through the tool set secret operations."""
+
+    name: str
+    value: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolSetSpec_Secret":
+        return ToolSetSpec_Secret(
+            name=_req(data, "ToolSetSpec_Secret", "name"),
+            value=data.get("value"),
         )
 
 
@@ -4905,7 +5121,7 @@ class UpdateMemoryLayerRequest:
 
 @dataclass
 class UpdateModelRequest:
-    """Update model request. update_mask must list leaf paths: metadata.name,  metadata.external_id, metadata.labels, spec.provider_model_id,  spec.provider, spec.family, spec.max_input_tokens, spec.max_output_tokens,  spec.capabilities, pricing_override.input_price_per_million_tokens, and  pricing_override.output_price_per_million_tokens. Synced models  (PROVENANCE_SYNCED_FROM_PROVIDER) reject metadata.name and spec.* paths.  spec price fields are never writable; price changes go through  pricing_override, where a masked-but-absent field clears the override.  Metadata and spec must be present when their respective paths are masked."""
+    """Update model request. update_mask must list leaf paths: metadata.name,  metadata.external_id, metadata.labels, spec.provider_model_id,  spec.provider, spec.family, spec.max_input_tokens, spec.max_output_tokens,  spec.capabilities, pricing_override.input_price_per_million_tokens,  pricing_override.output_price_per_million_tokens, and  pricing_override.cached_input_price_per_million_tokens. Synced models  (PROVENANCE_SYNCED_FROM_PROVIDER) reject metadata.name and spec.* paths.  spec price fields are never writable; price changes go through  pricing_override, where a masked-but-absent field clears the override.  Metadata and spec must be present when their respective paths are masked."""
 
     workspace_id: Optional[str] = None
     id: Optional[str] = None
@@ -5186,7 +5402,7 @@ class WebhookDelivery:
 
 WebhookDeliveryDataStatus = Literal["WEBHOOK_DELIVERY_STATUS_UNSPECIFIED", "WEBHOOK_DELIVERY_STATUS_PENDING", "WEBHOOK_DELIVERY_STATUS_COMPLETED", "WEBHOOK_DELIVERY_STATUS_FAILED", "WEBHOOK_DELIVERY_STATUS_DISABLED"]
 
-WebhookDeliveryDataEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED", "OBJECTIVE_EVENT_TYPE_HEARTBEAT"]
+WebhookDeliveryDataEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED", "OBJECTIVE_EVENT_TYPE_HEARTBEAT", "OBJECTIVE_EVENT_TYPE_INTERRUPTED"]
 
 
 @dataclass
@@ -5223,6 +5439,21 @@ class WebhookDeliveryData:
             event_type=_req(data, "WebhookDeliveryData", "eventType"),
             response_headers=_req(data, "WebhookDeliveryData", "responseHeaders"),
             response_content_length=_req(data, "WebhookDeliveryData", "responseContentLength"),
+        )
+
+
+@dataclass
+class WhoamiResponse:
+    """WhoamiResponse describes the authenticated caller."""
+
+    profile: Profile
+    default_workspace: Optional[AccountResourceMetadata] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "WhoamiResponse":
+        return WhoamiResponse(
+            profile=None if _req(data, "WhoamiResponse", "profile") is None else Profile._from_json(_req(data, "WhoamiResponse", "profile")),
+            default_workspace=None if data.get("defaultWorkspace") is None else AccountResourceMetadata._from_json(data.get("defaultWorkspace")),
         )
 
 WidgetState = Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_ARCHIVED"]
@@ -6274,6 +6505,19 @@ class ObjectiveEventData_Heartbeat:
 
 
 @dataclass
+class ObjectiveEventData_Interrupted:
+    type: Literal["interrupted"]
+    interrupted: ObjectiveInterrupted
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveEventData_Interrupted":
+        return ObjectiveEventData_Interrupted(
+            type=_req(data, "ObjectiveEventData_Interrupted", "type"),
+            interrupted=None if _req(data, "ObjectiveEventData_Interrupted", "interrupted") is None else ObjectiveInterrupted._from_json(_req(data, "ObjectiveEventData_Interrupted", "interrupted")),
+        )
+
+
+@dataclass
 class CallableTool_Tool:
     type: Literal["tool"]
     tool: ResourceMetadata
@@ -6356,6 +6600,58 @@ class MemoryEntryCreateSpec_UploadId:
             upload_id=_req(data, "MemoryEntryCreateSpec_UploadId", "uploadId"),
             key=_req(data, "MemoryEntryCreateSpec_UploadId", "key"),
             description=data.get("description"),
+        )
+
+
+@dataclass
+class ObjectiveQueuedActionData_UserMessage:
+    type: Literal["userMessage"]
+    user_message: QueuedUserMessage
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveQueuedActionData_UserMessage":
+        return ObjectiveQueuedActionData_UserMessage(
+            type=_req(data, "ObjectiveQueuedActionData_UserMessage", "type"),
+            user_message=None if _req(data, "ObjectiveQueuedActionData_UserMessage", "userMessage") is None else QueuedUserMessage._from_json(_req(data, "ObjectiveQueuedActionData_UserMessage", "userMessage")),
+        )
+
+
+@dataclass
+class ObjectiveQueuedActionData_Compaction:
+    type: Literal["compaction"]
+    compaction: QueuedCompaction
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveQueuedActionData_Compaction":
+        return ObjectiveQueuedActionData_Compaction(
+            type=_req(data, "ObjectiveQueuedActionData_Compaction", "type"),
+            compaction=None if _req(data, "ObjectiveQueuedActionData_Compaction", "compaction") is None else QueuedCompaction._from_json(_req(data, "ObjectiveQueuedActionData_Compaction", "compaction")),
+        )
+
+
+@dataclass
+class ContinueObjectiveResponse_Event:
+    type: Literal["event"]
+    event: ObjectiveEvent
+
+    @staticmethod
+    def _from_json(data: Any) -> "ContinueObjectiveResponse_Event":
+        return ContinueObjectiveResponse_Event(
+            type=_req(data, "ContinueObjectiveResponse_Event", "type"),
+            event=None if _req(data, "ContinueObjectiveResponse_Event", "event") is None else ObjectiveEvent._from_json(_req(data, "ContinueObjectiveResponse_Event", "event")),
+        )
+
+
+@dataclass
+class ContinueObjectiveResponse_QueuedAction:
+    type: Literal["queuedAction"]
+    queued_action: ObjectiveQueuedAction
+
+    @staticmethod
+    def _from_json(data: Any) -> "ContinueObjectiveResponse_QueuedAction":
+        return ContinueObjectiveResponse_QueuedAction(
+            type=_req(data, "ContinueObjectiveResponse_QueuedAction", "type"),
+            queued_action=None if _req(data, "ContinueObjectiveResponse_QueuedAction", "queuedAction") is None else ObjectiveQueuedAction._from_json(_req(data, "ContinueObjectiveResponse_QueuedAction", "queuedAction")),
         )
 
 
@@ -6757,6 +7053,32 @@ class ModelSpec_Capability_Caching:
             caching=None if _req(data, "ModelSpec_Capability_Caching", "caching") is None else Capability_Caching._from_json(_req(data, "ModelSpec_Capability_Caching", "caching")),
         )
 
+
+@dataclass
+class CreateAndStreamObjectiveResponse_Objective:
+    type: Literal["objective"]
+    objective: Objective
+
+    @staticmethod
+    def _from_json(data: Any) -> "CreateAndStreamObjectiveResponse_Objective":
+        return CreateAndStreamObjectiveResponse_Objective(
+            type=_req(data, "CreateAndStreamObjectiveResponse_Objective", "type"),
+            objective=None if _req(data, "CreateAndStreamObjectiveResponse_Objective", "objective") is None else Objective._from_json(_req(data, "CreateAndStreamObjectiveResponse_Objective", "objective")),
+        )
+
+
+@dataclass
+class CreateAndStreamObjectiveResponse_Event:
+    type: Literal["event"]
+    event: ObjectiveEvent
+
+    @staticmethod
+    def _from_json(data: Any) -> "CreateAndStreamObjectiveResponse_Event":
+        return CreateAndStreamObjectiveResponse_Event(
+            type=_req(data, "CreateAndStreamObjectiveResponse_Event", "type"),
+            event=None if _req(data, "CreateAndStreamObjectiveResponse_Event", "event") is None else ObjectiveEvent._from_json(_req(data, "CreateAndStreamObjectiveResponse_Event", "event")),
+        )
+
 WidgetSessionErrorReason = Literal["TOKEN_EXPIRED", "SESSION_REVOKED", "SESSION_EXPIRED", "SESSION_EXHAUSTED"]
 
 
@@ -6786,17 +7108,19 @@ AgentServiceListAgentsVariationSelectionMode = Literal["VARIATION_SELECTION_MODE
 
 AgentServiceListAgentFeedbackSentiment = Literal["FEEDBACK_SENTIMENT_UNSPECIFIED", "FEEDBACK_SENTIMENT_POSITIVE", "FEEDBACK_SENTIMENT_NEGATIVE"]
 
-AgentServiceListAgentWebhookDeliveriesEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED", "OBJECTIVE_EVENT_TYPE_HEARTBEAT"]
+AgentServiceListAgentWebhookDeliveriesEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED", "OBJECTIVE_EVENT_TYPE_HEARTBEAT", "OBJECTIVE_EVENT_TYPE_INTERRUPTED"]
 
 MemoryServiceListMemoryLayersType = Literal["MEMORY_LAYER_TYPE_UNSPECIFIED", "MEMORY_LAYER_TYPE_EPISODIC", "MEMORY_LAYER_TYPE_SKILLS"]
 
 ModelServiceListModelsState = Literal["STATE_UNSPECIFIED", "STATE_ENABLED", "STATE_DISABLED"]
 
-ObjectiveServiceListObjectivesState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT"]
+ObjectiveServiceListObjectivesState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT", "OBJECTIVE_STATE_INTERRUPTING"]
+
+ObjectiveServiceListObjectiveQueuedActionsState = Literal["STATE_UNSPECIFIED", "STATE_QUEUED", "STATE_SENT", "STATE_REMOVED", "STATE_DISCARDED"]
 
 ObjectiveServiceListObjectiveToolCallsStatus = Literal["TOOL_CALL_STATUS_UNSPECIFIED", "TOOL_CALL_STATUS_AUTO_APPROVED", "TOOL_CALL_STATUS_WAITING_FOR_APPROVAL", "TOOL_CALL_STATUS_APPROVED", "TOOL_CALL_STATUS_DENIED"]
 
-ObjectiveServiceListObjectiveToolCallsExecutionStatus = Literal["TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED", "TOOL_CALL_EXECUTION_STATUS_PENDING", "TOOL_CALL_EXECUTION_STATUS_RUNNING", "TOOL_CALL_EXECUTION_STATUS_COMPLETED", "TOOL_CALL_EXECUTION_STATUS_ERRORED", "TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT"]
+ObjectiveServiceListObjectiveToolCallsExecutionStatus = Literal["TOOL_CALL_EXECUTION_STATUS_UNSPECIFIED", "TOOL_CALL_EXECUTION_STATUS_PENDING", "TOOL_CALL_EXECUTION_STATUS_RUNNING", "TOOL_CALL_EXECUTION_STATUS_COMPLETED", "TOOL_CALL_EXECUTION_STATUS_ERRORED", "TOOL_CALL_EXECUTION_STATUS_WAITING_FOR_CONTENT", "TOOL_CALL_EXECUTION_STATUS_INTERRUPTED"]
 
 ToolServiceListToolSetsState = Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_ARCHIVED"]
 
@@ -6947,6 +7271,10 @@ CreateAgentVariationRequestParam = TypedDict("CreateAgentVariationRequestParam",
     "metadata": Required["CreateResourceMetadataParam"],
     "spec": Required["AgentVariationSpecParam"],
 }, total=False)
+CreateAndStreamObjectiveRequest_MetadataParam = TypedDict("CreateAndStreamObjectiveRequest_MetadataParam", {
+    "labels": Dict[str, str],
+    "external_id": Required[str],
+}, total=False)
 CreateObjectiveRequest_SecretParam = TypedDict("CreateObjectiveRequest_SecretParam", {
     "name": str,
     "value": str,
@@ -7003,6 +7331,7 @@ MemoryReferenceParam = TypedDict("MemoryReferenceParam", {
 ModelPricingOverrideParam = TypedDict("ModelPricingOverrideParam", {
     "input_price_per_million_tokens": str,
     "output_price_per_million_tokens": str,
+    "cached_input_price_per_million_tokens": str,
 }, total=False)
 ModelSpecParam = TypedDict("ModelSpecParam", {
     "provider": Required[str],
@@ -7011,6 +7340,7 @@ ModelSpecParam = TypedDict("ModelSpecParam", {
     "max_output_tokens": Required[int],
     "input_price_per_million_tokens": Required[str],
     "output_price_per_million_tokens": Required[str],
+    "cached_input_price_per_million_tokens": str,
     "capabilities": Required[List["ModelSpec_CapabilityParam"]],
     "provider_model_id": Required[str],
 }, total=False)
@@ -7155,6 +7485,11 @@ ToolSetSpecParam = TypedDict("ToolSetSpecParam", {
     "description": str,
     "adapter": Required["ToolSetAdapterParam"],
     "overlays": List["ToolOverlayParam"],
+    "secrets": List["ToolSetSpec_SecretParam"],
+}, total=False)
+ToolSetSpec_SecretParam = TypedDict("ToolSetSpec_SecretParam", {
+    "name": Required[str],
+    "value": str,
 }, total=False)
 ToolSpecParam = TypedDict("ToolSpecParam", {
     "description": Required[str],
@@ -7800,6 +8135,15 @@ _DROP_CreateAgentVariationRequest = frozenset(("agentId", "agent_id", "workspace
 def _encode_CreateAgentVariationRequest(data: Any) -> Any:
     return _encode_fields(_FIELDS_CreateAgentVariationRequest, data, _DROP_CreateAgentVariationRequest)
 
+_FIELDS_CreateAndStreamObjectiveRequest_Metadata: Dict[str, Any] = {
+    "labels": ("labels", None),
+    "external_id": ("externalId", None),
+    "externalId": ("externalId", None),
+}
+
+def _encode_CreateAndStreamObjectiveRequest_Metadata(data: Any) -> Any:
+    return _encode_fields(_FIELDS_CreateAndStreamObjectiveRequest_Metadata, data)
+
 _FIELDS_CreateObjectiveRequest_Secret: Dict[str, Any] = {
     "name": ("name", None),
     "value": ("value", None),
@@ -7929,6 +8273,8 @@ _FIELDS_ModelPricingOverride: Dict[str, Any] = {
     "inputPricePerMillionTokens": ("inputPricePerMillionTokens", None),
     "output_price_per_million_tokens": ("outputPricePerMillionTokens", None),
     "outputPricePerMillionTokens": ("outputPricePerMillionTokens", None),
+    "cached_input_price_per_million_tokens": ("cachedInputPricePerMillionTokens", None),
+    "cachedInputPricePerMillionTokens": ("cachedInputPricePerMillionTokens", None),
 }
 
 def _encode_ModelPricingOverride(data: Any) -> Any:
@@ -7945,6 +8291,8 @@ _FIELDS_ModelSpec: Dict[str, Any] = {
     "inputPricePerMillionTokens": ("inputPricePerMillionTokens", None),
     "output_price_per_million_tokens": ("outputPricePerMillionTokens", None),
     "outputPricePerMillionTokens": ("outputPricePerMillionTokens", None),
+    "cached_input_price_per_million_tokens": ("cachedInputPricePerMillionTokens", None),
+    "cachedInputPricePerMillionTokens": ("cachedInputPricePerMillionTokens", None),
     "capabilities": ("capabilities", (lambda _v: [((lambda _v: _encode_ModelSpec_Capability(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
     "provider_model_id": ("providerModelId", None),
     "providerModelId": ("providerModelId", None),
@@ -8359,10 +8707,19 @@ _FIELDS_ToolSetSpec: Dict[str, Any] = {
     "description": ("description", None),
     "adapter": ("adapter", (lambda _v: _encode_ToolSetAdapter(_v))),
     "overlays": ("overlays", (lambda _v: [((lambda _v: _encode_ToolOverlay(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "secrets": ("secrets", (lambda _v: [((lambda _v: _encode_ToolSetSpec_Secret(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
 }
 
 def _encode_ToolSetSpec(data: Any) -> Any:
     return _encode_fields(_FIELDS_ToolSetSpec, data)
+
+_FIELDS_ToolSetSpec_Secret: Dict[str, Any] = {
+    "name": ("name", None),
+    "value": ("value", None),
+}
+
+def _encode_ToolSetSpec_Secret(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ToolSetSpec_Secret, data)
 
 _FIELDS_ToolSpec: Dict[str, Any] = {
     "description": ("description", None),
