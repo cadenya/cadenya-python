@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/cadenya/cadenya-python/compare/v1.6.0...v1.7.0) (2026-09-28)
+
+
+### Features
+
+* default workspace in whoami, objective queued actions and interrupts ([30c645f](https://github.com/cadenya/cadenya-python/commit/30c645f4381116b211a92a57862bc5deddd202b5))
+
 ## [1.6.0](https://github.com/cadenya/cadenya-python/compare/v1.5.0...v1.6.0) (2026-09-18)
 
 
