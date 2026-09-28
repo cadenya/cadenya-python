@@ -136,7 +136,7 @@ client.workspace_admin.remove_member(profile_id: str, *, workspace_id=None) -> N
 Retrieves the profile for the credentials accessing the API
 
 ```python
-client.profiles.whoami() -> Profile
+client.profiles.whoami() -> WhoamiResponse
 ```
 
 ## client.workspaces
@@ -481,7 +481,7 @@ client.objectives.list(*, workspace_id=None, limit=None, cursor=None, agent_id=N
 Create a new objective
 
 ```python
-client.objectives.create(*, workspace_id=None, agent_id, variation_id=None, metadata=None, system_prompt_data, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None) -> Objective
+client.objectives.create(*, workspace_id=None, agent_id, variation_id=None, metadata=None, system_prompt_data=None, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None) -> Objective
 ```
 Get an objective by ID
 
@@ -517,6 +517,16 @@ Submit feedback for an objective
 
 ```python
 client.objectives.create_feedback(objective_id: str, *, workspace_id=None, metadata, data) -> ObjectiveFeedback
+```
+List objective queued actions
+
+```python
+client.objectives.list_queued_actions(objective_id: str, *, workspace_id=None, limit=None, cursor=None, state=None) -> SyncPage[ObjectiveQueuedAction]
+```
+Remove a queued action
+
+```python
+client.objectives.remove_queued_action(objective_id: str, *, workspace_id=None, queued_action_id) -> ObjectiveQueuedAction
 ```
 List objective tool calls
 
@@ -556,12 +566,22 @@ client.objectives.cancel(objective_id: str, *, workspace_id=None, reason=None) -
 Compact an objective
 
 ```python
-client.objectives.compact(objective_id: str, *, workspace_id=None, compaction_config=None) -> CompactObjectiveResponse
+client.objectives.compact(objective_id: str, *, workspace_id=None, compaction_config=None) -> ObjectiveQueuedAction
 ```
 Continue an objective
 
 ```python
-client.objectives.continue_(objective_id: str, *, workspace_id=None, message, enqueue=None) -> ObjectiveEvent
+client.objectives.continue_(objective_id: str, *, workspace_id=None, message, enqueue=None) -> ContinueObjectiveResponse
+```
+Interrupt an objective
+
+```python
+client.objectives.interrupt(objective_id: str, *, workspace_id=None) -> ObjectiveEvent
+```
+Create an objective and stream its events
+
+```python
+client.objectives.create_and_stream(*, workspace_id=None, agent_id, variation_id=None, metadata, system_prompt_data=None, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None, last_event_id=None) -> Stream[CreateAndStreamObjectiveResponse]
 ```
 
 ## client.tool_search

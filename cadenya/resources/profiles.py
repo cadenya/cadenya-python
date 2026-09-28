@@ -18,8 +18,8 @@ class Profiles:
         self,
         *,
         request_options: Optional[RequestOptions] = None,
-    ) -> types.Profile:
+    ) -> types.WhoamiResponse:
         """Retrieves the profile for the credentials accessing the API"""
         _path = "/v1/whoami"
         _data = self._core.request("GET", _path, request_options=request_options)
-        return decode_response("profiles.whoami", _data, lambda _d: types.Profile._from_json(_d))
+        return decode_response("profiles.whoami", _data, lambda _d: types.WhoamiResponse._from_json(_d))

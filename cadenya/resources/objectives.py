@@ -66,10 +66,10 @@ class Objectives:
         self,
         *,
         agent_id: str,
-        system_prompt_data: Dict[str, Any],
         workspace_id: Optional[str] = None,
         variation_id: Optional[str] = None,
         metadata: Optional[types.CreateOperationMetadataParam] = None,
+        system_prompt_data: Optional[Dict[str, Any]] = None,
         first_user_message: Optional[str] = None,
         secrets: Optional[List[types.CreateObjectiveRequest_SecretParam]] = None,
         memory_cascade: Optional[List[types.MemoryReferenceParam]] = None,
@@ -254,6 +254,47 @@ class Objectives:
         _data = self._core.request("POST", _path, body=_body, request_options=request_options)
         return decode_response("objectives.create_feedback", _data, lambda _d: types.ObjectiveFeedback._from_json(_d))
 
+    def list_queued_actions(
+        self,
+        objective_id: str,
+        *,
+        workspace_id: Optional[str] = None,
+        limit: Optional[int] = None,
+        cursor: Optional[str] = None,
+        state: Optional[types.ObjectiveServiceListObjectiveQueuedActionsState] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> SyncPage[types.ObjectiveQueuedAction]:
+        """List objective queued actions"""
+        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/objectives/{path_param('objectiveId', objective_id)}/queued_actions"
+        _query = {
+            "limit": limit,
+            "cursor": cursor,
+            "state": state,
+        }
+        _data = self._core.request("GET", _path, query=_query, request_options=request_options) or {}
+        _items = decode_response("objectives.list_queued_actions", _data, lambda _d: [types.ObjectiveQueuedAction._from_json(item) for item in (_d.get("items") or [])])
+        _next_cursor = (((_data).get("pagination") or {})).get("nextCursor") or ""
+
+        def _fetch(_cursor: str) -> SyncPage[types.ObjectiveQueuedAction]:
+            return self.list_queued_actions(objective_id, workspace_id=workspace_id, limit=limit, cursor=_cursor, state=state, request_options=request_options)
+
+        return SyncPage(_items, _next_cursor, _fetch)
+
+    def remove_queued_action(
+        self,
+        objective_id: str,
+        *,
+        queued_action_id: str,
+        workspace_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> types.ObjectiveQueuedAction:
+        """Remove a queued action"""
+        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/objectives/{path_param('objectiveId', objective_id)}/queued_actions/{path_param('queuedActionId', queued_action_id)}:remove"
+        _data = self._core.request("POST", _path, request_options=request_options)
+        return decode_response("objectives.remove_queued_action", _data, lambda _d: types.ObjectiveQueuedAction._from_json(_d))
+
     def list_tool_calls(
         self,
         objective_id: str,
@@ -403,7 +444,7 @@ class Objectives:
         workspace_id: Optional[str] = None,
         compaction_config: Optional[types.AgentVariationSpec_CompactionConfigParam] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> types.CompactObjectiveResponse:
+    ) -> types.ObjectiveQueuedAction:
         """Compact an objective"""
         workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
         _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/objectives/{path_param('objectiveId', objective_id)}:compact"
@@ -412,7 +453,7 @@ class Objectives:
         }
         _body = {_k: _v for _k, _v in _body.items() if _v is not None}
         _data = self._core.request("POST", _path, body=_body, request_options=request_options)
-        return decode_response("objectives.compact", _data, lambda _d: types.CompactObjectiveResponse._from_json(_d))
+        return decode_response("objectives.compact", _data, lambda _d: types.ObjectiveQueuedAction._from_json(_d))
 
     def continue_(
         self,
@@ -422,7 +463,7 @@ class Objectives:
         workspace_id: Optional[str] = None,
         enqueue: Optional[bool] = None,
         request_options: Optional[RequestOptions] = None,
-    ) -> types.ObjectiveEvent:
+    ) -> types.ContinueObjectiveResponse:
         """Continue an objective"""
         workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
         _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/objectives/{path_param('objectiveId', objective_id)}:continue"
@@ -432,4 +473,59 @@ class Objectives:
         }
         _body = {_k: _v for _k, _v in _body.items() if _v is not None}
         _data = self._core.request("POST", _path, body=_body, request_options=request_options)
-        return decode_response("objectives.continue_", _data, lambda _d: types.ObjectiveEvent._from_json(_d))
+        return decode_response("objectives.continue_", _data, lambda _d: types._decode_ContinueObjectiveResponse(_d))
+
+    def interrupt(
+        self,
+        objective_id: str,
+        *,
+        workspace_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> types.ObjectiveEvent:
+        """Interrupt an objective"""
+        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/objectives/{path_param('objectiveId', objective_id)}:interrupt"
+        _data = self._core.request("POST", _path, request_options=request_options)
+        return decode_response("objectives.interrupt", _data, lambda _d: types.ObjectiveEvent._from_json(_d))
+
+    def create_and_stream(
+        self,
+        *,
+        agent_id: str,
+        metadata: types.CreateAndStreamObjectiveRequest_MetadataParam,
+        workspace_id: Optional[str] = None,
+        variation_id: Optional[str] = None,
+        system_prompt_data: Optional[Dict[str, Any]] = None,
+        first_user_message: Optional[str] = None,
+        secrets: Optional[List[types.CreateObjectiveRequest_SecretParam]] = None,
+        memory_cascade: Optional[List[types.MemoryReferenceParam]] = None,
+        first_user_message_data: Optional[Dict[str, Any]] = None,
+        episodic_memory: Optional[types.ObjectiveEpisodicConfigParam] = None,
+        tenant: Optional[types.TenantAssertionParam] = None,
+        subject: Optional[types.SubjectAssertionParam] = None,
+        pinned_parameters: Optional[Dict[str, str]] = None,
+        last_event_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> Stream[types.CreateAndStreamObjectiveResponse]:
+        """Create an objective and stream its events"""
+        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/objectives:stream"
+        _body = {
+            "agentId": agent_id,
+            "variationId": variation_id,
+            "metadata": (lambda _v: types._encode_CreateAndStreamObjectiveRequest_Metadata(_v))(metadata),
+            "systemPromptData": system_prompt_data,
+            "firstUserMessage": first_user_message,
+            "secrets": (lambda _v: [((lambda _v: types._encode_CreateObjectiveRequest_Secret(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)(secrets),
+            "memoryCascade": (lambda _v: [((lambda _v: types._encode_MemoryReference(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)(memory_cascade),
+            "firstUserMessageData": first_user_message_data,
+            "episodicMemory": (lambda _v: types._encode_ObjectiveEpisodicConfig(_v))(episodic_memory),
+            "tenant": (lambda _v: types._encode_TenantAssertion(_v))(tenant),
+            "subject": (lambda _v: types._encode_SubjectAssertion(_v))(subject),
+            "pinnedParameters": pinned_parameters,
+        }
+        _body = {_k: _v for _k, _v in _body.items() if _v is not None}
+        _headers = {"Last-Event-ID": last_event_id} if last_event_id else None
+        _response = self._core.raw("POST", _path, body=_body, headers=_headers, request_options=request_options)
+        _reconnect = None if (request_options is not None and request_options.reconnect is False) else (lambda _rid: self._core.raw("POST", _path, body=_body, headers=({"Last-Event-ID": _rid} if _rid else None), request_options=request_options))
+        return Stream(_response, lambda event: decode_response("objectives.create_and_stream", event, lambda _d: types._decode_CreateAndStreamObjectiveResponse(_d)), last_event_id=last_event_id, skip_events=("ping", "open",), reconnect=_reconnect)
