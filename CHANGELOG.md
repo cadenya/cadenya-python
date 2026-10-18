@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/cadenya/cadenya-python/compare/v1.7.0...v1.8.0) (2026-10-18)
+
+
+### Features
+
+* trusted endpoints, API key workspace management, remove global API key service ([#33](https://github.com/cadenya/cadenya-python/issues/33)) ([6a7c35e](https://github.com/cadenya/cadenya-python/commit/6a7c35e866bd5693bf147cd69061779477efbb8b))
+
 ## [1.7.0](https://github.com/cadenya/cadenya-python/compare/v1.6.0...v1.7.0) (2026-09-28)
 
 
