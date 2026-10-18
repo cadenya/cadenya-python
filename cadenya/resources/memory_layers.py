@@ -29,6 +29,8 @@ class MemoryLayers:
         agent_id: Optional[str] = None,
         episodic_key_prefix: Optional[str] = None,
         labels: Optional[str] = None,
+        tenant_id: Optional[str] = None,
+        subject_id: Optional[str] = None,
         sort_order: Optional[str] = None,
         include_info: Optional[bool] = None,
         request_options: Optional[RequestOptions] = None,
@@ -45,6 +47,8 @@ class MemoryLayers:
             "agentId": agent_id,
             "episodicKeyPrefix": episodic_key_prefix,
             "labels": labels,
+            "tenantId": tenant_id,
+            "subjectId": subject_id,
             "sortOrder": sort_order,
             "includeInfo": include_info,
         }
@@ -53,7 +57,7 @@ class MemoryLayers:
         _next_cursor = (((_data).get("pagination") or {})).get("nextCursor") or ""
 
         def _fetch(_cursor: str) -> SyncPage[types.MemoryLayer]:
-            return self.list(workspace_id=workspace_id, limit=limit, cursor=_cursor, prefix=prefix, query=query, type=type, agent_id=agent_id, episodic_key_prefix=episodic_key_prefix, labels=labels, sort_order=sort_order, include_info=include_info, request_options=request_options)
+            return self.list(workspace_id=workspace_id, limit=limit, cursor=_cursor, prefix=prefix, query=query, type=type, agent_id=agent_id, episodic_key_prefix=episodic_key_prefix, labels=labels, tenant_id=tenant_id, subject_id=subject_id, sort_order=sort_order, include_info=include_info, request_options=request_options)
 
         return SyncPage(_items, _next_cursor, _fetch)
 
@@ -63,6 +67,8 @@ class MemoryLayers:
         metadata: types.CreateResourceMetadataParam,
         spec: types.MemoryLayerSpecParam,
         workspace_id: Optional[str] = None,
+        tenant: Optional[types.TenantAssertionParam] = None,
+        subject: Optional[types.SubjectAssertionParam] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.MemoryLayer:
         """Create a new memory layer"""
@@ -71,6 +77,8 @@ class MemoryLayers:
         _body = {
             "metadata": (lambda _v: types._encode_CreateResourceMetadata(_v))(metadata),
             "spec": (lambda _v: types._encode_MemoryLayerSpec(_v))(spec),
+            "tenant": (lambda _v: types._encode_TenantAssertion(_v))(tenant),
+            "subject": (lambda _v: types._encode_SubjectAssertion(_v))(subject),
         }
         _body = {_k: _v for _k, _v in _body.items() if _v is not None}
         _data = self._core.request("POST", _path, body=_body, request_options=request_options)

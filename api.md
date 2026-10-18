@@ -22,26 +22,6 @@ client.accounts.rotate_webhook_signing_key() -> RotateWebhookEventsHmacSecretRes
 
 ## client.api_keys
 
-Get the global API key
-
-```python
-client.api_keys.retrieve_global() -> APIKey
-```
-Disable the global API key
-
-```python
-client.api_keys.disable_global() -> APIKey
-```
-Enable the global API key
-
-```python
-client.api_keys.enable_global() -> APIKey
-```
-Rotate the global API key
-
-```python
-client.api_keys.rotate_global() -> APIKey
-```
 List API keys
 
 ```python
@@ -50,37 +30,52 @@ client.api_keys.list(*, workspace_id=None, limit=None, cursor=None, prefix=None,
 Create a new API key
 
 ```python
-client.api_keys.create(*, workspace_id=None, metadata, spec) -> APIKey
+client.api_keys.create(*, metadata, spec) -> APIKey
 ```
 Get an API key by ID
 
 ```python
-client.api_keys.retrieve(id: str, *, workspace_id=None) -> APIKey
+client.api_keys.retrieve(id: str) -> APIKey
 ```
 Delete an API key
 
 ```python
-client.api_keys.delete(id: str, *, workspace_id=None) -> None
+client.api_keys.delete(id: str) -> None
 ```
 Update an API key
 
 ```python
-client.api_keys.update(id: str, *, workspace_id=None, metadata=None, spec=None, update_mask=None) -> APIKey
+client.api_keys.update(id: str, *, metadata=None, spec=None, update_mask=None) -> APIKey
+```
+Assign a workspace to an API key
+
+```python
+client.api_keys.add_workspace(id: str, *, workspace_id) -> APIKey
 ```
 Disable an API key
 
 ```python
-client.api_keys.disable(id: str, *, workspace_id=None) -> APIKey
+client.api_keys.disable(id: str) -> APIKey
 ```
 Enable an API key
 
 ```python
-client.api_keys.enable(id: str, *, workspace_id=None) -> APIKey
+client.api_keys.enable(id: str) -> APIKey
+```
+Remove a workspace from an API key
+
+```python
+client.api_keys.remove_workspace(id: str, *, workspace_id) -> APIKey
+```
+Reveal an API key's token
+
+```python
+client.api_keys.reveal(id: str) -> APIKey
 ```
 Rotate an API key
 
 ```python
-client.api_keys.rotate(id: str, *, workspace_id=None) -> APIKey
+client.api_keys.rotate(id: str) -> APIKey
 ```
 
 ## client.workspace_admin
@@ -129,6 +124,34 @@ Remove a member from a workspace
 
 ```python
 client.workspace_admin.remove_member(profile_id: str, *, workspace_id=None) -> None
+```
+
+## client.trusted_endpoints
+
+List trusted endpoints
+
+```python
+client.trusted_endpoints.list(*, limit=None, cursor=None, labels=None) -> SyncPage[TrustedEndpoint]
+```
+Create a trusted endpoint
+
+```python
+client.trusted_endpoints.create(*, metadata, spec) -> TrustedEndpoint
+```
+Get a trusted endpoint by ID
+
+```python
+client.trusted_endpoints.retrieve(id: str) -> TrustedEndpoint
+```
+Delete a trusted endpoint
+
+```python
+client.trusted_endpoints.delete(id: str) -> None
+```
+Verify a URL against the trusted endpoints
+
+```python
+client.trusted_endpoints.verify(*, url) -> VerifyTrustedEndpointResponse
 ```
 
 ## client.profiles
@@ -420,12 +443,12 @@ client.models.swap_on_variations(*, workspace_id=None, model_swaps=None) -> None
 List memory layers
 
 ```python
-client.memory_layers.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, type=None, agent_id=None, episodic_key_prefix=None, labels=None, sort_order=None, include_info=None) -> SyncPage[MemoryLayer]
+client.memory_layers.list(*, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, type=None, agent_id=None, episodic_key_prefix=None, labels=None, tenant_id=None, subject_id=None, sort_order=None, include_info=None) -> SyncPage[MemoryLayer]
 ```
 Create a new memory layer
 
 ```python
-client.memory_layers.create(*, workspace_id=None, metadata, spec) -> MemoryLayer
+client.memory_layers.create(*, workspace_id=None, metadata, spec, tenant=None, subject=None) -> MemoryLayer
 ```
 Get a memory layer by ID
 
