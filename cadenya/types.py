@@ -174,7 +174,7 @@ ApiKeyState = Literal["STATE_UNSPECIFIED", "STATE_ENABLED", "STATE_DISABLED"]
 
 @dataclass
 class APIKey:
-    """An API key. Every key belongs to exactly one workspace and is managed via  the workspace-scoped API key routes. The only exception is the  system-managed global account key, which spans all workspaces and is  managed via the account global_api_key routes."""
+    """An API key. Keys belong to the account and are managed by account  administrators. A key reaches the workspaces it is assigned to, or every  workspace (present and future) when all_workspaces is set. Its scopes are  the same in every workspace it reaches."""
 
     metadata: AccountResourceMetadata
     spec: APIKeySpec
@@ -194,11 +194,13 @@ class APIKey:
 @dataclass
 class APIKeyInfo:
     created_by: Optional[Profile] = None
+    workspaces: Optional[List[AccountResourceMetadata]] = None
 
     @staticmethod
     def _from_json(data: Any) -> "APIKeyInfo":
         return APIKeyInfo(
             created_by=None if data.get("createdBy") is None else Profile._from_json(data.get("createdBy")),
+            workspaces=None if data.get("workspaces") is None else [AccountResourceMetadata._from_json(item) for item in (data.get("workspaces"))],
         )
 
 
@@ -207,7 +209,9 @@ class APIKeySpec:
     """Configuration for an API key."""
 
     token: str
-    system: bool
+    all_workspaces: bool
+    workspace_assignments: List[APIKeyWorkspaceAssignment]
+    default: bool
     description: Optional[str] = None
     permissions: Optional[List[str]] = None
 
@@ -217,7 +221,22 @@ class APIKeySpec:
             token=_req(data, "APIKeySpec", "token"),
             description=data.get("description"),
             permissions=data.get("permissions"),
-            system=_req(data, "APIKeySpec", "system"),
+            all_workspaces=_req(data, "APIKeySpec", "allWorkspaces"),
+            workspace_assignments=None if _req(data, "APIKeySpec", "workspaceAssignments") is None else [APIKeyWorkspaceAssignment._from_json(item) for item in (_req(data, "APIKeySpec", "workspaceAssignments"))],
+            default=_req(data, "APIKeySpec", "default"),
+        )
+
+
+@dataclass
+class APIKeyWorkspaceAssignment:
+    """A workspace an API key is assigned to. The same shape is accepted in a spec  and returned on reads."""
+
+    workspace_id: str
+
+    @staticmethod
+    def _from_json(data: Any) -> "APIKeyWorkspaceAssignment":
+        return APIKeyWorkspaceAssignment(
+            workspace_id=_req(data, "APIKeyWorkspaceAssignment", "workspaceId"),
         )
 
 
@@ -309,6 +328,19 @@ class ActivateAgentPoolRequest:
         return ActivateAgentPoolRequest(
             workspace_id=data.get("workspaceId"),
             id=data.get("id"),
+        )
+
+
+@dataclass
+class AddAPIKeyWorkspaceRequest:
+    workspace_id: str
+    id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "AddAPIKeyWorkspaceRequest":
+        return AddAPIKeyWorkspaceRequest(
+            id=data.get("id"),
+            workspace_id=_req(data, "AddAPIKeyWorkspaceRequest", "workspaceId"),
         )
 
 AddAgentVariationAssignmentRequest = Union["AddAgentVariationAssignmentRequest_ToolId", "AddAgentVariationAssignmentRequest_ToolSetId", "AddAgentVariationAssignmentRequest_SubAgentId", "AddAgentVariationAssignmentRequest_AgentPoolId"]
@@ -593,6 +625,7 @@ class AgentSpec:
     output_definition: Optional[Dict[str, Any]] = None
     enable_episodic_memory: Optional[bool] = None
     episodic_memory_ttl: Optional[int] = None
+    always_include_subject_memories: Optional[bool] = None
 
     @staticmethod
     def _from_json(data: Any) -> "AgentSpec":
@@ -604,6 +637,7 @@ class AgentSpec:
             output_definition=data.get("outputDefinition"),
             enable_episodic_memory=data.get("enableEpisodicMemory"),
             episodic_memory_ttl=data.get("episodicMemoryTtl"),
+            always_include_subject_memories=data.get("alwaysIncludeSubjectMemories"),
         )
 
 
@@ -858,12 +892,16 @@ class ArchiveWidgetRequest:
 class AssistantMessage:
     tool_calls: List[AssistantToolCall]
     content: Optional[str] = None
+    usage: Optional[TokenUsage] = None
+    model: Optional[ResourceMetadata] = None
 
     @staticmethod
     def _from_json(data: Any) -> "AssistantMessage":
         return AssistantMessage(
             content=data.get("content"),
             tool_calls=None if _req(data, "AssistantMessage", "toolCalls") is None else [AssistantToolCall._from_json(item) for item in (_req(data, "AssistantMessage", "toolCalls"))],
+            usage=None if data.get("usage") is None else TokenUsage._from_json(data.get("usage")),
+            model=None if data.get("model") is None else ResourceMetadata._from_json(data.get("model")),
         )
 
 
@@ -872,6 +910,7 @@ class AssistantToolCall:
     arguments: str
     function_name: str
     tool: Optional[CallableTool] = None
+    tool_call_id: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "AssistantToolCall":
@@ -879,6 +918,41 @@ class AssistantToolCall:
             tool=None if data.get("tool") is None else _decode_CallableTool(data.get("tool")),
             arguments=_req(data, "AssistantToolCall", "arguments"),
             function_name=_req(data, "AssistantToolCall", "functionName"),
+            tool_call_id=data.get("toolCallId"),
+        )
+
+AutoModeConfigPassingMode = Literal["PASSING_MODE_UNSPECIFIED", "PASSING_MODE_ALL", "PASSING_MODE_NONE", "PASSING_MODE_MOST"]
+
+
+@dataclass
+class AutoModeConfig:
+    """AutoModeConfig configures the questions and passing mode for automatic approval."""
+
+    questions: List[AutoModeQuestion]
+    passing_mode: AutoModeConfigPassingMode
+    failure_message: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "AutoModeConfig":
+        return AutoModeConfig(
+            questions=None if _req(data, "AutoModeConfig", "questions") is None else [AutoModeQuestion._from_json(item) for item in (_req(data, "AutoModeConfig", "questions"))],
+            passing_mode=_req(data, "AutoModeConfig", "passingMode"),
+            failure_message=data.get("failureMessage"),
+        )
+
+
+@dataclass
+class AutoModeQuestion:
+    """AutoModeQuestion defines a question and confidence threshold for automatic approval."""
+
+    question: str
+    threshold: float
+
+    @staticmethod
+    def _from_json(data: Any) -> "AutoModeQuestion":
+        return AutoModeQuestion(
+            question=_req(data, "AutoModeQuestion", "question"),
+            threshold=_req(data, "AutoModeQuestion", "threshold"),
         )
 
 
@@ -1121,12 +1195,14 @@ class Config_MCP:
 class Config_OpenAPI:
     path: Optional[str] = None
     method: Optional[str] = None
+    server_url: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "Config_OpenAPI":
         return Config_OpenAPI(
             path=data.get("path"),
             method=data.get("method"),
+            server_url=data.get("serverUrl"),
         )
 
 
@@ -1225,14 +1301,12 @@ class CreateAIProviderKeyRequest:
 class CreateAPIKeyRequest:
     metadata: CreateAccountResourceMetadata
     spec: APIKeySpec
-    workspace_id: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "CreateAPIKeyRequest":
         return CreateAPIKeyRequest(
             metadata=None if _req(data, "CreateAPIKeyRequest", "metadata") is None else CreateAccountResourceMetadata._from_json(_req(data, "CreateAPIKeyRequest", "metadata")),
             spec=None if _req(data, "CreateAPIKeyRequest", "spec") is None else APIKeySpec._from_json(_req(data, "CreateAPIKeyRequest", "spec")),
-            workspace_id=data.get("workspaceId"),
         )
 
 
@@ -1416,6 +1490,8 @@ class CreateMemoryLayerRequest:
     metadata: CreateResourceMetadata
     spec: MemoryLayerSpec
     workspace_id: Optional[str] = None
+    tenant: Optional[TenantAssertion] = None
+    subject: Optional[SubjectAssertion] = None
 
     @staticmethod
     def _from_json(data: Any) -> "CreateMemoryLayerRequest":
@@ -1423,6 +1499,8 @@ class CreateMemoryLayerRequest:
             workspace_id=data.get("workspaceId"),
             metadata=None if _req(data, "CreateMemoryLayerRequest", "metadata") is None else CreateResourceMetadata._from_json(_req(data, "CreateMemoryLayerRequest", "metadata")),
             spec=None if _req(data, "CreateMemoryLayerRequest", "spec") is None else MemoryLayerSpec._from_json(_req(data, "CreateMemoryLayerRequest", "spec")),
+            tenant=None if data.get("tenant") is None else TenantAssertion._from_json(data.get("tenant")),
+            subject=None if data.get("subject") is None else SubjectAssertion._from_json(data.get("subject")),
         )
 
 
@@ -1590,6 +1668,19 @@ class CreateToolSetSecretRequest:
             tool_set_id=data.get("toolSetId"),
             metadata=None if _req(data, "CreateToolSetSecretRequest", "metadata") is None else CreateResourceMetadata._from_json(_req(data, "CreateToolSetSecretRequest", "metadata")),
             spec=None if _req(data, "CreateToolSetSecretRequest", "spec") is None else ToolSetSecretSpec._from_json(_req(data, "CreateToolSetSecretRequest", "spec")),
+        )
+
+
+@dataclass
+class CreateTrustedEndpointRequest:
+    metadata: CreateAccountResourceMetadata
+    spec: TrustedEndpointSpec
+
+    @staticmethod
+    def _from_json(data: Any) -> "CreateTrustedEndpointRequest":
+        return CreateTrustedEndpointRequest(
+            metadata=None if _req(data, "CreateTrustedEndpointRequest", "metadata") is None else CreateAccountResourceMetadata._from_json(_req(data, "CreateTrustedEndpointRequest", "metadata")),
+            spec=None if _req(data, "CreateTrustedEndpointRequest", "spec") is None else TrustedEndpointSpec._from_json(_req(data, "CreateTrustedEndpointRequest", "spec")),
         )
 
 
@@ -1792,13 +1883,11 @@ class DenyToolCallRequest:
 
 @dataclass
 class DisableAPIKeyRequest:
-    workspace_id: Optional[str] = None
     id: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "DisableAPIKeyRequest":
         return DisableAPIKeyRequest(
-            workspace_id=data.get("workspaceId"),
             id=data.get("id"),
         )
 
@@ -1820,13 +1909,11 @@ class DisableModelRequest:
 
 @dataclass
 class EnableAPIKeyRequest:
-    workspace_id: Optional[str] = None
     id: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "EnableAPIKeyRequest":
         return EnableAPIKeyRequest(
-            workspace_id=data.get("workspaceId"),
             id=data.get("id"),
         )
 
@@ -2268,6 +2355,19 @@ class ListToolsResponse:
 
 
 @dataclass
+class ListTrustedEndpointsResponse:
+    items: List[TrustedEndpoint]
+    pagination: Optional[Page] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ListTrustedEndpointsResponse":
+        return ListTrustedEndpointsResponse(
+            items=None if _req(data, "ListTrustedEndpointsResponse", "items") is None else [TrustedEndpoint._from_json(item) for item in (_req(data, "ListTrustedEndpointsResponse", "items"))],
+            pagination=None if data.get("pagination") is None else Page._from_json(data.get("pagination")),
+        )
+
+
+@dataclass
 class ListWidgetSessionsResponse:
     """List widget sessions response."""
 
@@ -2478,6 +2578,8 @@ class MemoryLayerInfo:
     created_by: Optional[Profile] = None
     last_used_at: Optional[datetime] = None
     agent: Optional[ResourceMetadata] = None
+    tenant: Optional[TenantReference] = None
+    subject: Optional[SubjectReference] = None
 
     @staticmethod
     def _from_json(data: Any) -> "MemoryLayerInfo":
@@ -2486,6 +2588,8 @@ class MemoryLayerInfo:
             created_by=None if data.get("createdBy") is None else Profile._from_json(data.get("createdBy")),
             last_used_at=None if data.get("lastUsedAt") is None else parse_datetime(data.get("lastUsedAt")),
             agent=None if data.get("agent") is None else ResourceMetadata._from_json(data.get("agent")),
+            tenant=None if data.get("tenant") is None else TenantReference._from_json(data.get("tenant")),
+            subject=None if data.get("subject") is None else SubjectReference._from_json(data.get("subject")),
         )
 
 MemoryLayerSpecType = Literal["MEMORY_LAYER_TYPE_UNSPECIFIED", "MEMORY_LAYER_TYPE_EPISODIC", "MEMORY_LAYER_TYPE_SKILLS"]
@@ -2499,6 +2603,8 @@ class MemoryLayerSpec:
     episodic_key: str
     description: Optional[str] = None
     expires_at: Optional[datetime] = None
+    tenant_id: Optional[str] = None
+    subject_id: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "MemoryLayerSpec":
@@ -2509,6 +2615,8 @@ class MemoryLayerSpec:
             expires_at=None if data.get("expiresAt") is None else parse_datetime(data.get("expiresAt")),
             agent_id=_req(data, "MemoryLayerSpec", "agentId"),
             episodic_key=_req(data, "MemoryLayerSpec", "episodicKey"),
+            tenant_id=data.get("tenantId"),
+            subject_id=data.get("subjectId"),
         )
 
 
@@ -2838,12 +2946,14 @@ class ObjectiveEpisodicConfig:
 
     key: str
     memory_layer_id: str
+    included_memory_layer_ids: Optional[List[str]] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ObjectiveEpisodicConfig":
         return ObjectiveEpisodicConfig(
             key=_req(data, "ObjectiveEpisodicConfig", "key"),
             memory_layer_id=_req(data, "ObjectiveEpisodicConfig", "memoryLayerId"),
+            included_memory_layer_ids=data.get("includedMemoryLayerIds"),
         )
 
 
@@ -3189,6 +3299,7 @@ class ObjectiveToolCallData:
     resolved_secrets: List[ResolvedSecret]
     memo: Optional[str] = None
     status_changed_by: Optional[Profile] = None
+    decision_scores: Optional[ToolCallDecisionScores] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ObjectiveToolCallData":
@@ -3198,6 +3309,7 @@ class ObjectiveToolCallData:
             memo=data.get("memo"),
             status_changed_by=None if data.get("statusChangedBy") is None else Profile._from_json(data.get("statusChangedBy")),
             resolved_secrets=None if _req(data, "ObjectiveToolCallData", "resolvedSecrets") is None else [ResolvedSecret._from_json(item) for item in (_req(data, "ObjectiveToolCallData", "resolvedSecrets"))],
+            decision_scores=None if data.get("decisionScores") is None else ToolCallDecisionScores._from_json(data.get("decisionScores")),
         )
 
 
@@ -3582,6 +3694,19 @@ class Reasoning:
             content=_req(data, "Reasoning", "content"),
         )
 
+
+@dataclass
+class RemoveAPIKeyWorkspaceRequest:
+    workspace_id: str
+    id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "RemoveAPIKeyWorkspaceRequest":
+        return RemoveAPIKeyWorkspaceRequest(
+            id=data.get("id"),
+            workspace_id=_req(data, "RemoveAPIKeyWorkspaceRequest", "workspaceId"),
+        )
+
 RemoveAgentVariationAssignmentRequest = Union["RemoveAgentVariationAssignmentRequest_ToolId", "RemoveAgentVariationAssignmentRequest_ToolSetId", "RemoveAgentVariationAssignmentRequest_SubAgentId", "RemoveAgentVariationAssignmentRequest_AgentPoolId"]
 
 
@@ -3736,6 +3861,17 @@ class ResumeAgentScheduleRequest:
 
 
 @dataclass
+class RevealAPIKeyRequest:
+    id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "RevealAPIKeyRequest":
+        return RevealAPIKeyRequest(
+            id=data.get("id"),
+        )
+
+
+@dataclass
 class RevokeWidgetSessionRequest:
     """Revoke widget session request."""
 
@@ -3752,13 +3888,11 @@ class RevokeWidgetSessionRequest:
 
 @dataclass
 class RotateAPIKeyRequest:
-    workspace_id: Optional[str] = None
     id: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "RotateAPIKeyRequest":
         return RotateAPIKeyRequest(
-            workspace_id=data.get("workspaceId"),
             id=data.get("id"),
         )
 
@@ -4240,6 +4374,27 @@ class TenantReference:
             name=data.get("name"),
         )
 
+
+@dataclass
+class TokenUsage:
+    """TokenUsage reports the tokens one LLM completion consumed, as the model's  provider reported them."""
+
+    input_tokens: int
+    output_tokens: int
+    cache_read_input_tokens: Optional[int] = None
+    cache_write_input_tokens: Optional[int] = None
+    reasoning_output_tokens: Optional[int] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "TokenUsage":
+        return TokenUsage(
+            input_tokens=_req(data, "TokenUsage", "inputTokens"),
+            cache_read_input_tokens=data.get("cacheReadInputTokens"),
+            cache_write_input_tokens=data.get("cacheWriteInputTokens"),
+            output_tokens=_req(data, "TokenUsage", "outputTokens"),
+            reasoning_output_tokens=data.get("reasoningOutputTokens"),
+        )
+
 ToolState = Literal["STATE_UNSPECIFIED", "STATE_AVAILABLE", "STATE_OMITTED", "STATE_ARCHIVED"]
 
 
@@ -4279,6 +4434,38 @@ class ToolApproved:
     def _from_json(data: Any) -> "ToolApproved":
         return ToolApproved(
             tool_call_id=_req(data, "ToolApproved", "toolCallId"),
+        )
+
+
+@dataclass
+class ToolCallDecisionScore:
+    """ToolCallDecisionScore records a confidence score and its threshold result."""
+
+    score: float
+    passed: bool
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolCallDecisionScore":
+        return ToolCallDecisionScore(
+            score=_req(data, "ToolCallDecisionScore", "score"),
+            passed=_req(data, "ToolCallDecisionScore", "passed"),
+        )
+
+
+@dataclass
+class ToolCallDecisionScores:
+    """ToolCallDecisionScores records a completed automatic approval evaluation."""
+
+    auto_mode: AutoModeConfig
+    scores: List[ToolCallDecisionScore]
+    approved: bool
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolCallDecisionScores":
+        return ToolCallDecisionScores(
+            auto_mode=None if _req(data, "ToolCallDecisionScores", "autoMode") is None else AutoModeConfig._from_json(_req(data, "ToolCallDecisionScores", "autoMode")),
+            scores=None if _req(data, "ToolCallDecisionScores", "scores") is None else [ToolCallDecisionScore._from_json(item) for item in (_req(data, "ToolCallDecisionScores", "scores"))],
+            approved=_req(data, "ToolCallDecisionScores", "approved"),
         )
 
 
@@ -4356,6 +4543,7 @@ class ToolOverlay:
     parameter_actions: Optional[List[ToolOverlay_ParameterAction]] = None
     result_actions: Optional[List[ToolOverlay_ResultAction]] = None
     widget_argument_exposure: Optional[ToolOverlay_WidgetArgumentExposure] = None
+    auto_mode: Optional[AutoModeConfig] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ToolOverlay":
@@ -4366,6 +4554,7 @@ class ToolOverlay:
             result_actions=None if data.get("resultActions") is None else [_decode_ToolOverlay_ResultAction(item) for item in (data.get("resultActions"))],
             disabled=_req(data, "ToolOverlay", "disabled"),
             widget_argument_exposure=None if data.get("widgetArgumentExposure") is None else ToolOverlay_WidgetArgumentExposure._from_json(data.get("widgetArgumentExposure")),
+            auto_mode=None if data.get("autoMode") is None else AutoModeConfig._from_json(data.get("autoMode")),
         )
 
 ToolOverlay_ParameterAction = Union["ToolOverlay_ParameterAction_Remove", "ToolOverlay_ParameterAction_Set", "ToolOverlay_ParameterAction_Pin"]
@@ -4839,6 +5028,45 @@ def _decode_ToolSpec_Config(data: Any) -> Any:
 
 
 @dataclass
+class TrustedEndpoint:
+    """A host that tool sets in the account may send requests to.   Tool sets attach their configured credentials, such as secrets rendered  into headers, to every request they make. Every outbound tool set request  (source validation, sync, preview and tool calls, including redirects) is  checked against the account's trusted endpoints after all templates are  resolved, and a request to any other host is refused. This keeps a tool  set or a pinned parameter from pointing those credentials at a host the  account never chose."""
+
+    metadata: AccountResourceMetadata
+    spec: TrustedEndpointSpec
+    info: Optional[TrustedEndpointInfo] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "TrustedEndpoint":
+        return TrustedEndpoint(
+            metadata=None if _req(data, "TrustedEndpoint", "metadata") is None else AccountResourceMetadata._from_json(_req(data, "TrustedEndpoint", "metadata")),
+            spec=None if _req(data, "TrustedEndpoint", "spec") is None else TrustedEndpointSpec._from_json(_req(data, "TrustedEndpoint", "spec")),
+            info=None if data.get("info") is None else TrustedEndpointInfo._from_json(data.get("info")),
+        )
+
+
+@dataclass
+class TrustedEndpointInfo:
+    created_by: Optional[Profile] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "TrustedEndpointInfo":
+        return TrustedEndpointInfo(
+            created_by=None if data.get("createdBy") is None else Profile._from_json(data.get("createdBy")),
+        )
+
+
+@dataclass
+class TrustedEndpointSpec:
+    host: str
+
+    @staticmethod
+    def _from_json(data: Any) -> "TrustedEndpointSpec":
+        return TrustedEndpointSpec(
+            host=_req(data, "TrustedEndpointSpec", "host"),
+        )
+
+
+@dataclass
 class UnarchiveAgentPoolRequest:
     """Restore an archived pool to INACTIVE; activate it separately to route requests."""
 
@@ -4936,7 +5164,6 @@ class UpdateAIProviderKeyRequest:
 
 @dataclass
 class UpdateAPIKeyRequest:
-    workspace_id: Optional[str] = None
     id: Optional[str] = None
     metadata: Optional[UpdateAccountResourceMetadata] = None
     spec: Optional[APIKeySpec] = None
@@ -4945,7 +5172,6 @@ class UpdateAPIKeyRequest:
     @staticmethod
     def _from_json(data: Any) -> "UpdateAPIKeyRequest":
         return UpdateAPIKeyRequest(
-            workspace_id=data.get("workspaceId"),
             id=data.get("id"),
             metadata=None if data.get("metadata") is None else UpdateAccountResourceMetadata._from_json(data.get("metadata")),
             spec=None if data.get("spec") is None else APIKeySpec._from_json(data.get("spec")),
@@ -5370,6 +5596,34 @@ class VariationMemoryLayerAssignment:
         return VariationMemoryLayerAssignment(
             memory_layer_id=_req(data, "VariationMemoryLayerAssignment", "memoryLayerId"),
             position=_req(data, "VariationMemoryLayerAssignment", "position"),
+        )
+
+
+@dataclass
+class VerifyTrustedEndpointRequest:
+    url: str
+
+    @staticmethod
+    def _from_json(data: Any) -> "VerifyTrustedEndpointRequest":
+        return VerifyTrustedEndpointRequest(
+            url=_req(data, "VerifyTrustedEndpointRequest", "url"),
+        )
+
+VerifyTrustedEndpointResponseResult = Literal["RESULT_UNSPECIFIED", "RESULT_TRUSTED", "RESULT_UNTRUSTED", "RESULT_TEMPLATED"]
+
+
+@dataclass
+class VerifyTrustedEndpointResponse:
+    result: VerifyTrustedEndpointResponseResult
+    host: str
+    trusted_endpoint: Optional[TrustedEndpoint] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "VerifyTrustedEndpointResponse":
+        return VerifyTrustedEndpointResponse(
+            result=_req(data, "VerifyTrustedEndpointResponse", "result"),
+            host=_req(data, "VerifyTrustedEndpointResponse", "host"),
+            trusted_endpoint=None if data.get("trustedEndpoint") is None else TrustedEndpoint._from_json(data.get("trustedEndpoint")),
         )
 
 
@@ -7145,6 +7399,11 @@ AIProviderKeySpecParam = TypedDict("AIProviderKeySpecParam", {
 APIKeySpecParam = TypedDict("APIKeySpecParam", {
     "description": str,
     "permissions": List[str],
+    "all_workspaces": Required[bool],
+    "workspace_assignments": Required[List["APIKeyWorkspaceAssignmentParam"]],
+}, total=False)
+APIKeyWorkspaceAssignmentParam = TypedDict("APIKeyWorkspaceAssignmentParam", {
+    "workspace_id": Required[str],
 }, total=False)
 AddAgentVariationAssignmentRequestParam = Union["AddAgentVariationAssignmentRequest_ToolIdParam", "AddAgentVariationAssignmentRequest_ToolSetIdParam", "AddAgentVariationAssignmentRequest_SubAgentIdParam", "AddAgentVariationAssignmentRequest_AgentPoolIdParam"]
 AgentPoolAssignmentParam = TypedDict("AgentPoolAssignmentParam", {
@@ -7183,6 +7442,7 @@ AgentSpecParam = TypedDict("AgentSpecParam", {
     "output_definition": Dict[str, Any],
     "enable_episodic_memory": bool,
     "episodic_memory_ttl": int,
+    "always_include_subject_memories": bool,
 }, total=False)
 AgentVariationSpecParam = TypedDict("AgentVariationSpecParam", {
     "system_prompt_template": str,
@@ -7218,6 +7478,15 @@ AgentVariationSpec_ModelConfigParam = TypedDict("AgentVariationSpec_ModelConfigP
 AgentVariationSpec_ProgressiveDiscoveryParam = TypedDict("AgentVariationSpec_ProgressiveDiscoveryParam", {
     "max_tools": int,
     "hints": List[str],
+}, total=False)
+AutoModeConfigParam = TypedDict("AutoModeConfigParam", {
+    "questions": Required[List["AutoModeQuestionParam"]],
+    "passing_mode": Required["AutoModeConfigPassingMode"],
+    "failure_message": str,
+}, total=False)
+AutoModeQuestionParam = TypedDict("AutoModeQuestionParam", {
+    "question": Required[str],
+    "threshold": Required[float],
 }, total=False)
 BedrockConfigParam = TypedDict("BedrockConfigParam", {
     "region": str,
@@ -7434,6 +7703,7 @@ ToolOverlayParam = TypedDict("ToolOverlayParam", {
     "result_actions": List["ToolOverlay_ResultActionParam"],
     "disabled": Required[bool],
     "widget_argument_exposure": "ToolOverlay_WidgetArgumentExposureParam",
+    "auto_mode": "AutoModeConfigParam",
 }, total=False)
 ToolOverlay_ParameterActionParam = Union["ToolOverlay_ParameterAction_RemoveParam", "ToolOverlay_ParameterAction_SetParam", "ToolOverlay_ParameterAction_PinParam"]
 ToolOverlay_ParameterPathParam = TypedDict("ToolOverlay_ParameterPathParam", {
@@ -7499,6 +7769,9 @@ ToolSpecParam = TypedDict("ToolSpecParam", {
     "llm_tool_name": str,
 }, total=False)
 ToolSpec_ConfigParam = Union["ToolSpec_Config_HttpParam", "ToolSpec_Config_McpParam", "ToolSpec_Config_OpenapiParam", "ToolSpec_Config_BareParam"]
+TrustedEndpointSpecParam = TypedDict("TrustedEndpointSpecParam", {
+    "host": Required[str],
+}, total=False)
 UpdateAccountResourceMetadataParam = TypedDict("UpdateAccountResourceMetadataParam", {
     "name": Required[str],
     "external_id": str,
@@ -7875,11 +8148,23 @@ def _encode_AIProviderKeySpec(data: Any) -> Any:
 _FIELDS_APIKeySpec: Dict[str, Any] = {
     "description": ("description", None),
     "permissions": ("permissions", None),
+    "all_workspaces": ("allWorkspaces", None),
+    "allWorkspaces": ("allWorkspaces", None),
+    "workspace_assignments": ("workspaceAssignments", (lambda _v: [((lambda _v: _encode_APIKeyWorkspaceAssignment(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "workspaceAssignments": ("workspaceAssignments", (lambda _v: [((lambda _v: _encode_APIKeyWorkspaceAssignment(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
 }
 
-_DROP_APIKeySpec = frozenset(("system", "token",))
+_DROP_APIKeySpec = frozenset(("default", "token",))
 def _encode_APIKeySpec(data: Any) -> Any:
     return _encode_fields(_FIELDS_APIKeySpec, data, _DROP_APIKeySpec)
+
+_FIELDS_APIKeyWorkspaceAssignment: Dict[str, Any] = {
+    "workspace_id": ("workspaceId", None),
+    "workspaceId": ("workspaceId", None),
+}
+
+def _encode_APIKeyWorkspaceAssignment(data: Any) -> Any:
+    return _encode_fields(_FIELDS_APIKeyWorkspaceAssignment, data)
 
 def _encode_AddAgentVariationAssignmentRequest(data: Any) -> Any:
     if not isinstance(data, dict):
@@ -7963,6 +8248,8 @@ _FIELDS_AgentSpec: Dict[str, Any] = {
     "enableEpisodicMemory": ("enableEpisodicMemory", None),
     "episodic_memory_ttl": ("episodicMemoryTtl", None),
     "episodicMemoryTtl": ("episodicMemoryTtl", None),
+    "always_include_subject_memories": ("alwaysIncludeSubjectMemories", None),
+    "alwaysIncludeSubjectMemories": ("alwaysIncludeSubjectMemories", None),
 }
 
 def _encode_AgentSpec(data: Any) -> Any:
@@ -8042,6 +8329,25 @@ _FIELDS_AgentVariationSpec_ProgressiveDiscovery: Dict[str, Any] = {
 def _encode_AgentVariationSpec_ProgressiveDiscovery(data: Any) -> Any:
     return _encode_fields(_FIELDS_AgentVariationSpec_ProgressiveDiscovery, data)
 
+_FIELDS_AutoModeConfig: Dict[str, Any] = {
+    "questions": ("questions", (lambda _v: [((lambda _v: _encode_AutoModeQuestion(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "passing_mode": ("passingMode", None),
+    "passingMode": ("passingMode", None),
+    "failure_message": ("failureMessage", None),
+    "failureMessage": ("failureMessage", None),
+}
+
+def _encode_AutoModeConfig(data: Any) -> Any:
+    return _encode_fields(_FIELDS_AutoModeConfig, data)
+
+_FIELDS_AutoModeQuestion: Dict[str, Any] = {
+    "question": ("question", None),
+    "threshold": ("threshold", None),
+}
+
+def _encode_AutoModeQuestion(data: Any) -> Any:
+    return _encode_fields(_FIELDS_AutoModeQuestion, data)
+
 _FIELDS_BedrockConfig: Dict[str, Any] = {
     "region": ("region", None),
 }
@@ -8113,8 +8419,9 @@ _FIELDS_Config_OpenAPI: Dict[str, Any] = {
     "method": ("method", None),
 }
 
+_DROP_Config_OpenAPI = frozenset(("serverUrl", "server_url",))
 def _encode_Config_OpenAPI(data: Any) -> Any:
-    return _encode_fields(_FIELDS_Config_OpenAPI, data)
+    return _encode_fields(_FIELDS_Config_OpenAPI, data, _DROP_Config_OpenAPI)
 
 _FIELDS_CreateAccountResourceMetadata: Dict[str, Any] = {
     "name": ("name", None),
@@ -8254,7 +8561,7 @@ _FIELDS_MemoryLayerSpec: Dict[str, Any] = {
     "description": ("description", None),
 }
 
-_DROP_MemoryLayerSpec = frozenset(("agentId", "agent_id", "episodicKey", "episodic_key", "expiresAt", "expires_at", "systemManaged", "system_managed",))
+_DROP_MemoryLayerSpec = frozenset(("agentId", "agent_id", "episodicKey", "episodic_key", "expiresAt", "expires_at", "subjectId", "subject_id", "systemManaged", "system_managed", "tenantId", "tenant_id",))
 def _encode_MemoryLayerSpec(data: Any) -> Any:
     return _encode_fields(_FIELDS_MemoryLayerSpec, data, _DROP_MemoryLayerSpec)
 
@@ -8325,7 +8632,7 @@ _FIELDS_ObjectiveEpisodicConfig: Dict[str, Any] = {
     "key": ("key", None),
 }
 
-_DROP_ObjectiveEpisodicConfig = frozenset(("memoryLayerId", "memory_layer_id",))
+_DROP_ObjectiveEpisodicConfig = frozenset(("includedMemoryLayerIds", "included_memory_layer_ids", "memoryLayerId", "memory_layer_id",))
 def _encode_ObjectiveEpisodicConfig(data: Any) -> Any:
     return _encode_fields(_FIELDS_ObjectiveEpisodicConfig, data, _DROP_ObjectiveEpisodicConfig)
 
@@ -8541,6 +8848,8 @@ _FIELDS_ToolOverlay: Dict[str, Any] = {
     "disabled": ("disabled", None),
     "widget_argument_exposure": ("widgetArgumentExposure", (lambda _v: _encode_ToolOverlay_WidgetArgumentExposure(_v))),
     "widgetArgumentExposure": ("widgetArgumentExposure", (lambda _v: _encode_ToolOverlay_WidgetArgumentExposure(_v))),
+    "auto_mode": ("autoMode", (lambda _v: _encode_AutoModeConfig(_v))),
+    "autoMode": ("autoMode", (lambda _v: _encode_AutoModeConfig(_v))),
 }
 
 def _encode_ToolOverlay(data: Any) -> Any:
@@ -8747,6 +9056,13 @@ def _encode_ToolSpec_Config(data: Any) -> Any:
     if tag == "bare":
         return (lambda _v: _encode_ToolSpec_Config_Bare(_v))(data)
     return data
+
+_FIELDS_TrustedEndpointSpec: Dict[str, Any] = {
+    "host": ("host", None),
+}
+
+def _encode_TrustedEndpointSpec(data: Any) -> Any:
+    return _encode_fields(_FIELDS_TrustedEndpointSpec, data)
 
 _FIELDS_UpdateAccountResourceMetadata: Dict[str, Any] = {
     "name": ("name", None),

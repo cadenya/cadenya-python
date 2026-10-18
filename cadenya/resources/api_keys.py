@@ -14,46 +14,6 @@ class ApiKeys:
     def __init__(self, core: Core) -> None:
         self._core = core
 
-    def retrieve_global(
-        self,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> types.APIKey:
-        """Get the global API key"""
-        _path = "/v1/account/global_api_key"
-        _data = self._core.request("GET", _path, request_options=request_options)
-        return decode_response("api_keys.retrieve_global", _data, lambda _d: types.APIKey._from_json(_d))
-
-    def disable_global(
-        self,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> types.APIKey:
-        """Disable the global API key"""
-        _path = "/v1/account/global_api_key:disable"
-        _data = self._core.request("POST", _path, request_options=request_options)
-        return decode_response("api_keys.disable_global", _data, lambda _d: types.APIKey._from_json(_d))
-
-    def enable_global(
-        self,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> types.APIKey:
-        """Enable the global API key"""
-        _path = "/v1/account/global_api_key:enable"
-        _data = self._core.request("POST", _path, request_options=request_options)
-        return decode_response("api_keys.enable_global", _data, lambda _d: types.APIKey._from_json(_d))
-
-    def rotate_global(
-        self,
-        *,
-        request_options: Optional[RequestOptions] = None,
-    ) -> types.APIKey:
-        """Rotate the global API key"""
-        _path = "/v1/account/global_api_key:rotate"
-        _data = self._core.request("POST", _path, request_options=request_options)
-        return decode_response("api_keys.rotate_global", _data, lambda _d: types.APIKey._from_json(_d))
-
     def list(
         self,
         *,
@@ -69,8 +29,9 @@ class ApiKeys:
     ) -> SyncPage[types.APIKey]:
         """List API keys"""
         workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/api_keys"
+        _path = "/v1/account/api_keys"
         _query = {
+            "workspaceId": workspace_id,
             "limit": limit,
             "cursor": cursor,
             "prefix": prefix,
@@ -93,12 +54,10 @@ class ApiKeys:
         *,
         metadata: types.CreateAccountResourceMetadataParam,
         spec: types.APIKeySpecParam,
-        workspace_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.APIKey:
         """Create a new API key"""
-        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/api_keys"
+        _path = "/v1/account/api_keys"
         _body = {
             "metadata": (lambda _v: types._encode_CreateAccountResourceMetadata(_v))(metadata),
             "spec": (lambda _v: types._encode_APIKeySpec(_v))(spec),
@@ -111,12 +70,10 @@ class ApiKeys:
         self,
         id: str,
         *,
-        workspace_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.APIKey:
         """Get an API key by ID"""
-        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/api_keys/{path_param('id', id)}"
+        _path = f"/v1/account/api_keys/{path_param('id', id)}"
         _data = self._core.request("GET", _path, request_options=request_options)
         return decode_response("api_keys.retrieve", _data, lambda _d: types.APIKey._from_json(_d))
 
@@ -124,12 +81,10 @@ class ApiKeys:
         self,
         id: str,
         *,
-        workspace_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> None:
         """Delete an API key"""
-        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/api_keys/{path_param('id', id)}"
+        _path = f"/v1/account/api_keys/{path_param('id', id)}"
         self._core.request("DELETE", _path, expects_body=False, request_options=request_options)
         return None
 
@@ -137,15 +92,13 @@ class ApiKeys:
         self,
         id: str,
         *,
-        workspace_id: Optional[str] = None,
         metadata: Optional[types.UpdateAccountResourceMetadataParam] = None,
         spec: Optional[types.APIKeySpecParam] = None,
         update_mask: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.APIKey:
         """Update an API key"""
-        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/api_keys/{path_param('id', id)}"
+        _path = f"/v1/account/api_keys/{path_param('id', id)}"
         _body = {
             "metadata": (lambda _v: types._encode_UpdateAccountResourceMetadata(_v))(metadata),
             "spec": (lambda _v: types._encode_APIKeySpec(_v))(spec),
@@ -155,16 +108,30 @@ class ApiKeys:
         _data = self._core.request("PATCH", _path, body=_body, request_options=request_options)
         return decode_response("api_keys.update", _data, lambda _d: types.APIKey._from_json(_d))
 
+    def add_workspace(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        request_options: Optional[RequestOptions] = None,
+    ) -> types.APIKey:
+        """Assign a workspace to an API key"""
+        _path = f"/v1/account/api_keys/{path_param('id', id)}:addWorkspace"
+        _body = {
+            "workspaceId": workspace_id,
+        }
+        _body = {_k: _v for _k, _v in _body.items() if _v is not None}
+        _data = self._core.request("POST", _path, body=_body, request_options=request_options)
+        return decode_response("api_keys.add_workspace", _data, lambda _d: types.APIKey._from_json(_d))
+
     def disable(
         self,
         id: str,
         *,
-        workspace_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.APIKey:
         """Disable an API key"""
-        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/api_keys/{path_param('id', id)}:disable"
+        _path = f"/v1/account/api_keys/{path_param('id', id)}:disable"
         _data = self._core.request("POST", _path, request_options=request_options)
         return decode_response("api_keys.disable", _data, lambda _d: types.APIKey._from_json(_d))
 
@@ -172,24 +139,47 @@ class ApiKeys:
         self,
         id: str,
         *,
-        workspace_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.APIKey:
         """Enable an API key"""
-        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/api_keys/{path_param('id', id)}:enable"
+        _path = f"/v1/account/api_keys/{path_param('id', id)}:enable"
         _data = self._core.request("POST", _path, request_options=request_options)
         return decode_response("api_keys.enable", _data, lambda _d: types.APIKey._from_json(_d))
+
+    def remove_workspace(
+        self,
+        id: str,
+        *,
+        workspace_id: str,
+        request_options: Optional[RequestOptions] = None,
+    ) -> types.APIKey:
+        """Remove a workspace from an API key"""
+        _path = f"/v1/account/api_keys/{path_param('id', id)}:removeWorkspace"
+        _body = {
+            "workspaceId": workspace_id,
+        }
+        _body = {_k: _v for _k, _v in _body.items() if _v is not None}
+        _data = self._core.request("POST", _path, body=_body, request_options=request_options)
+        return decode_response("api_keys.remove_workspace", _data, lambda _d: types.APIKey._from_json(_d))
+
+    def reveal(
+        self,
+        id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> types.APIKey:
+        """Reveal an API key's token"""
+        _path = f"/v1/account/api_keys/{path_param('id', id)}:reveal"
+        _data = self._core.request("POST", _path, request_options=request_options)
+        return decode_response("api_keys.reveal", _data, lambda _d: types.APIKey._from_json(_d))
 
     def rotate(
         self,
         id: str,
         *,
-        workspace_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.APIKey:
         """Rotate an API key"""
-        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
-        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/api_keys/{path_param('id', id)}:rotate"
+        _path = f"/v1/account/api_keys/{path_param('id', id)}:rotate"
         _data = self._core.request("POST", _path, request_options=request_options)
         return decode_response("api_keys.rotate", _data, lambda _d: types.APIKey._from_json(_d))

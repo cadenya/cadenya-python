@@ -14,6 +14,7 @@ from .resources import (
     Accounts,
     ApiKeys,
     WorkspaceAdmin,
+    TrustedEndpoints,
     Profiles,
     Workspaces,
     AgentPools,
@@ -70,12 +71,13 @@ class Cadenya:
             http_client=http_client,
             max_retries=max_retries,
             defaults=defaults,
-            user_agent="cadenya-python/1.5.0 (api 1.0)",
+            user_agent="cadenya-python/1.7.0 (api 1.0)",
         )
         self._core = core
         self.accounts = Accounts(core)
         self.api_keys = ApiKeys(core)
         self.workspace_admin = WorkspaceAdmin(core)
+        self.trusted_endpoints = TrustedEndpoints(core)
         self.profiles = Profiles(core)
         self.workspaces = Workspaces(core)
         self.agent_pools = AgentPools(core)

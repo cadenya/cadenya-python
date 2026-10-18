@@ -2,6 +2,7 @@
 from .accounts import Accounts
 from .api_keys import ApiKeys
 from .workspace_admin import WorkspaceAdmin
+from .trusted_endpoints import TrustedEndpoints
 from .profiles import Profiles
 from .workspaces import Workspaces
 from .agent_pools import AgentPools
