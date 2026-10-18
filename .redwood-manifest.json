@@ -26,6 +26,7 @@
   "cadenya/resources/tool_set_secrets.py",
   "cadenya/resources/tool_sets.py",
   "cadenya/resources/tools.py",
+  "cadenya/resources/trusted_endpoints.py",
   "cadenya/resources/uploads.py",
   "cadenya/resources/widget_sessions.py",
   "cadenya/resources/widgets.py",
