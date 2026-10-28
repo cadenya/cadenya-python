@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/cadenya/cadenya-python/compare/v1.8.0...v1.9.0) (2026-10-28)
+
+
+### Features
+
+* accept client tools when an objective is created ([ff1ed1f](https://github.com/cadenya/cadenya-python/commit/ff1ed1f87a0669cde044cb737977893369753dc8))
+
 ## [1.8.0](https://github.com/cadenya/cadenya-python/compare/v1.7.0...v1.8.0) (2026-10-18)
 
 
