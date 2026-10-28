@@ -78,6 +78,7 @@ class Objectives:
         tenant: Optional[types.TenantAssertionParam] = None,
         subject: Optional[types.SubjectAssertionParam] = None,
         pinned_parameters: Optional[Dict[str, str]] = None,
+        client_tools: Optional[types.ClientToolsParam] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.Objective:
         """Create a new objective"""
@@ -96,6 +97,7 @@ class Objectives:
             "tenant": (lambda _v: types._encode_TenantAssertion(_v))(tenant),
             "subject": (lambda _v: types._encode_SubjectAssertion(_v))(subject),
             "pinnedParameters": pinned_parameters,
+            "clientTools": (lambda _v: types._encode_ClientTools(_v))(client_tools),
         }
         _body = {_k: _v for _k, _v in _body.items() if _v is not None}
         _data = self._core.request("POST", _path, body=_body, request_options=request_options)
@@ -196,15 +198,19 @@ class Objectives:
         objective_id: str,
         *,
         workspace_id: Optional[str] = None,
+        include_deltas: Optional[bool] = None,
         last_event_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Stream[types.ObjectiveEvent]:
         """Stream objective events"""
         workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
         _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/objectives/{path_param('objectiveId', objective_id)}/events:stream"
+        _query = {
+            "includeDeltas": include_deltas,
+        }
         _headers = {"Last-Event-ID": last_event_id} if last_event_id else None
-        _response = self._core.raw("GET", _path, headers=_headers, request_options=request_options)
-        _reconnect = None if (request_options is not None and request_options.reconnect is False) else (lambda _rid: self._core.raw("GET", _path, headers=({"Last-Event-ID": _rid} if _rid else None), request_options=request_options))
+        _response = self._core.raw("GET", _path, query=_query, headers=_headers, request_options=request_options)
+        _reconnect = None if (request_options is not None and request_options.reconnect is False) else (lambda _rid: self._core.raw("GET", _path, query=_query, headers=({"Last-Event-ID": _rid} if _rid else None), request_options=request_options))
         return Stream(_response, lambda event: decode_response("objectives.stream_events", event, lambda _d: types.ObjectiveEvent._from_json(_d)), last_event_id=last_event_id, skip_events=("ping", "open",), reconnect=_reconnect)
 
     def list_feedback(
@@ -504,6 +510,8 @@ class Objectives:
         tenant: Optional[types.TenantAssertionParam] = None,
         subject: Optional[types.SubjectAssertionParam] = None,
         pinned_parameters: Optional[Dict[str, str]] = None,
+        client_tools: Optional[types.ClientToolsParam] = None,
+        include_deltas: Optional[bool] = None,
         last_event_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> Stream[types.CreateAndStreamObjectiveResponse]:
@@ -523,6 +531,8 @@ class Objectives:
             "tenant": (lambda _v: types._encode_TenantAssertion(_v))(tenant),
             "subject": (lambda _v: types._encode_SubjectAssertion(_v))(subject),
             "pinnedParameters": pinned_parameters,
+            "clientTools": (lambda _v: types._encode_ClientTools(_v))(client_tools),
+            "includeDeltas": include_deltas,
         }
         _body = {_k: _v for _k, _v in _body.items() if _v is not None}
         _headers = {"Last-Event-ID": last_event_id} if last_event_id else None

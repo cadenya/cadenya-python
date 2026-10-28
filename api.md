@@ -504,7 +504,7 @@ client.objectives.list(*, workspace_id=None, limit=None, cursor=None, agent_id=N
 Create a new objective
 
 ```python
-client.objectives.create(*, workspace_id=None, agent_id, variation_id=None, metadata=None, system_prompt_data=None, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None) -> Objective
+client.objectives.create(*, workspace_id=None, agent_id, variation_id=None, metadata=None, system_prompt_data=None, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None, client_tools=None) -> Objective
 ```
 Get an objective by ID
 
@@ -529,7 +529,7 @@ client.objectives.list_events(objective_id: str, *, workspace_id=None, limit=Non
 Stream objective events
 
 ```python
-client.objectives.stream_events(objective_id: str, *, workspace_id=None, last_event_id=None) -> Stream[ObjectiveEvent]
+client.objectives.stream_events(objective_id: str, *, workspace_id=None, include_deltas=None, last_event_id=None) -> Stream[ObjectiveEvent]
 ```
 List feedback for an objective
 
@@ -604,7 +604,7 @@ client.objectives.interrupt(objective_id: str, *, workspace_id=None) -> Objectiv
 Create an objective and stream its events
 
 ```python
-client.objectives.create_and_stream(*, workspace_id=None, agent_id, variation_id=None, metadata, system_prompt_data=None, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None, last_event_id=None) -> Stream[CreateAndStreamObjectiveResponse]
+client.objectives.create_and_stream(*, workspace_id=None, agent_id, variation_id=None, metadata, system_prompt_data=None, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None, client_tools=None, include_deltas=None, last_event_id=None) -> Stream[CreateAndStreamObjectiveResponse]
 ```
 
 ## client.tool_search

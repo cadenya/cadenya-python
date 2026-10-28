@@ -766,6 +766,7 @@ class AgentVariationSpec_ModelConfig:
     max_output_tokens: Optional[int] = None
     reasoning_effort: Optional[AgentVariationSpecModelConfigReasoningEffort] = None
     caching_enabled: Optional[bool] = None
+    streaming_enabled: Optional[bool] = None
 
     @staticmethod
     def _from_json(data: Any) -> "AgentVariationSpec_ModelConfig":
@@ -778,6 +779,7 @@ class AgentVariationSpec_ModelConfig:
             max_output_tokens=data.get("maxOutputTokens"),
             reasoning_effort=data.get("reasoningEffort"),
             caching_enabled=data.get("cachingEnabled"),
+            streaming_enabled=data.get("streamingEnabled"),
         )
 
 
@@ -894,6 +896,7 @@ class AssistantMessage:
     content: Optional[str] = None
     usage: Optional[TokenUsage] = None
     model: Optional[ResourceMetadata] = None
+    completion_id: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "AssistantMessage":
@@ -902,6 +905,26 @@ class AssistantMessage:
             tool_calls=None if _req(data, "AssistantMessage", "toolCalls") is None else [AssistantToolCall._from_json(item) for item in (_req(data, "AssistantMessage", "toolCalls"))],
             usage=None if data.get("usage") is None else TokenUsage._from_json(data.get("usage")),
             model=None if data.get("model") is None else ResourceMetadata._from_json(data.get("model")),
+            completion_id=data.get("completionId"),
+        )
+
+
+@dataclass
+class AssistantMessageDelta:
+    """AssistantMessageDelta is a fragment of assistant text as the model generates  it. It is transient: delivered only on live streams that opt in with  includeDeltas, never stored in event history or delivered to webhooks, and  its dlt_ event ID is not a reconnect cursor.   A stream delivers a completion's fragments only when it can deliver all of  them: it must receive the first fragment (offset 0), and once a fragment is  missing it sends no more for that completion. A client that connects in the  middle of a completion therefore sees no fragments for it and renders the  durable AssistantMessage when it arrives. Fragments always arrive after the  event whose sequence is after_sequence.   Concatenate the fragments that share a completion_id in arrival order. The  durable AssistantMessage that follows carries the same completion_id and is  authoritative: replace the accumulated text with it. A retried completion  gets a new completion_id, so drop fragments whose completion_id never  receives a final message."""
+
+    completion_id: str
+    text: str
+    after_sequence: int
+    offset: int
+
+    @staticmethod
+    def _from_json(data: Any) -> "AssistantMessageDelta":
+        return AssistantMessageDelta(
+            completion_id=_req(data, "AssistantMessageDelta", "completionId"),
+            text=_req(data, "AssistantMessageDelta", "text"),
+            after_sequence=_req(data, "AssistantMessageDelta", "afterSequence"),
+            offset=_req(data, "AssistantMessageDelta", "offset"),
         )
 
 
@@ -1069,6 +1092,17 @@ class Capability_StopSequences:
 
 
 @dataclass
+class Capability_Streaming:
+    """Token streaming (ModelConfig.streaming_enabled). Advertised only where  Cadenya streams completions for the model's provider. When the  capability is present, streaming defaults to ON — a variation opts out  by setting streaming_enabled to false."""
+
+    pass
+
+    @staticmethod
+    def _from_json(data: Any) -> "Capability_Streaming":
+        return Capability_Streaming()
+
+
+@dataclass
 class Capability_Temperature:
     """Sampling temperature (ModelConfig.temperature)."""
 
@@ -1099,6 +1133,38 @@ class Capability_TopP:
     @staticmethod
     def _from_json(data: Any) -> "Capability_TopP":
         return Capability_TopP()
+
+
+@dataclass
+class ClientToolDefinition:
+    """A tool defined by the caller when an objective is created and executed by  the caller. Cadenya stores it as a bare tool in the agent's client tools  tool set and hands each call back over the event stream (a ToolCalled  event with the call waiting for content); the caller reports the result  with SetToolCallContent. Only the client tools sent with a create request  are loaded into that objective."""
+
+    name: str
+    description: Optional[str] = None
+    parameters: Optional[Dict[str, Any]] = None
+    requires_approval: Optional[bool] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ClientToolDefinition":
+        return ClientToolDefinition(
+            name=_req(data, "ClientToolDefinition", "name"),
+            description=data.get("description"),
+            parameters=data.get("parameters"),
+            requires_approval=data.get("requiresApproval"),
+        )
+
+
+@dataclass
+class ClientTools:
+    """The tools a caller defines and executes for one objective, and the  settings that apply to them."""
+
+    definitions: List[ClientToolDefinition]
+
+    @staticmethod
+    def _from_json(data: Any) -> "ClientTools":
+        return ClientTools(
+            definitions=None if _req(data, "ClientTools", "definitions") is None else [ClientToolDefinition._from_json(item) for item in (_req(data, "ClientTools", "definitions"))],
+        )
 
 
 @dataclass
@@ -1403,7 +1469,7 @@ class CreateAgentVariationRequest:
 
 @dataclass
 class CreateAndStreamObjectiveRequest:
-    """The request body for creating an objective and streaming its events.  Accepts everything Create objective accepts, and additionally requires  `metadata.externalId`, which is the idempotency key for the stream."""
+    """The request body for creating an objective and streaming its events.  Accepts everything Create objective accepts, and additionally requires  `metadata.externalId`, which is the idempotency key for the stream, and  accepts the stream-only `includeDeltas` flag."""
 
     workspace_id: str
     agent_id: str
@@ -1418,6 +1484,8 @@ class CreateAndStreamObjectiveRequest:
     tenant: Optional[TenantAssertion] = None
     subject: Optional[SubjectAssertion] = None
     pinned_parameters: Optional[Dict[str, str]] = None
+    client_tools: Optional[ClientTools] = None
+    include_deltas: Optional[bool] = None
 
     @staticmethod
     def _from_json(data: Any) -> "CreateAndStreamObjectiveRequest":
@@ -1435,6 +1503,8 @@ class CreateAndStreamObjectiveRequest:
             tenant=None if data.get("tenant") is None else TenantAssertion._from_json(data.get("tenant")),
             subject=None if data.get("subject") is None else SubjectAssertion._from_json(data.get("subject")),
             pinned_parameters=data.get("pinnedParameters"),
+            client_tools=None if data.get("clientTools") is None else ClientTools._from_json(data.get("clientTools")),
+            include_deltas=data.get("includeDeltas"),
         )
 
 
@@ -1557,6 +1627,7 @@ class CreateObjectiveRequest:
     tenant: Optional[TenantAssertion] = None
     subject: Optional[SubjectAssertion] = None
     pinned_parameters: Optional[Dict[str, str]] = None
+    client_tools: Optional[ClientTools] = None
 
     @staticmethod
     def _from_json(data: Any) -> "CreateObjectiveRequest":
@@ -1574,6 +1645,7 @@ class CreateObjectiveRequest:
             tenant=None if data.get("tenant") is None else TenantAssertion._from_json(data.get("tenant")),
             subject=None if data.get("subject") is None else SubjectAssertion._from_json(data.get("subject")),
             pinned_parameters=data.get("pinnedParameters"),
+            client_tools=None if data.get("clientTools") is None else ClientTools._from_json(data.get("clientTools")),
         )
 
 
@@ -2756,7 +2828,7 @@ class ModelSpec:
             provider_model_id=_req(data, "ModelSpec", "providerModelId"),
         )
 
-ModelSpec_Capability = Union["ModelSpec_Capability_Temperature", "ModelSpec_Capability_TopP", "ModelSpec_Capability_TopK", "ModelSpec_Capability_StopSequences", "ModelSpec_Capability_MaxOutputTokens", "ModelSpec_Capability_Reasoning", "ModelSpec_Capability_Caching"]
+ModelSpec_Capability = Union["ModelSpec_Capability_Temperature", "ModelSpec_Capability_TopP", "ModelSpec_Capability_TopK", "ModelSpec_Capability_StopSequences", "ModelSpec_Capability_MaxOutputTokens", "ModelSpec_Capability_Reasoning", "ModelSpec_Capability_Caching", "ModelSpec_Capability_Streaming"]
 
 
 def _decode_ModelSpec_Capability(data: Any) -> Any:
@@ -2779,6 +2851,8 @@ def _decode_ModelSpec_Capability(data: Any) -> Any:
         return ModelSpec_Capability_Reasoning._from_json(data)
     if tag == "caching":
         return ModelSpec_Capability_Caching._from_json(data)
+    if tag == "streaming":
+        return ModelSpec_Capability_Streaming._from_json(data)
     raise ValueError(f"ModelSpec_Capability: unknown type {tag!r}")
 
 NoticeLevel = Literal["LEVEL_UNSPECIFIED", "LEVEL_INFO", "LEVEL_WARN"]
@@ -2978,6 +3052,7 @@ class ObjectiveEvent:
     info: Optional[ObjectiveEventInfo] = None
     duration: Optional[str] = None
     started_at: Optional[datetime] = None
+    sequence: Optional[int] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ObjectiveEvent":
@@ -2988,9 +3063,10 @@ class ObjectiveEvent:
             info=None if data.get("info") is None else ObjectiveEventInfo._from_json(data.get("info")),
             duration=data.get("duration"),
             started_at=None if data.get("startedAt") is None else parse_datetime(data.get("startedAt")),
+            sequence=data.get("sequence"),
         )
 
-ObjectiveEventData = Union["ObjectiveEventData_UserMessage", "ObjectiveEventData_ToolApprovalRequested", "ObjectiveEventData_ToolApproved", "ObjectiveEventData_ToolDenied", "ObjectiveEventData_ToolCalled", "ObjectiveEventData_Error", "ObjectiveEventData_AssistantMessage", "ObjectiveEventData_ToolResult", "ObjectiveEventData_ToolError", "ObjectiveEventData_ContextWindowCompacted", "ObjectiveEventData_MemoryRead", "ObjectiveEventData_Cancelled", "ObjectiveEventData_SubAgentSpawned", "ObjectiveEventData_SubAgentUpdated", "ObjectiveEventData_Finalized", "ObjectiveEventData_Notice", "ObjectiveEventData_TimedOut", "ObjectiveEventData_Reasoning", "ObjectiveEventData_StateChanged", "ObjectiveEventData_Heartbeat", "ObjectiveEventData_Interrupted"]
+ObjectiveEventData = Union["ObjectiveEventData_UserMessage", "ObjectiveEventData_ToolApprovalRequested", "ObjectiveEventData_ToolApproved", "ObjectiveEventData_ToolDenied", "ObjectiveEventData_ToolCalled", "ObjectiveEventData_Error", "ObjectiveEventData_AssistantMessage", "ObjectiveEventData_ToolResult", "ObjectiveEventData_ToolError", "ObjectiveEventData_ContextWindowCompacted", "ObjectiveEventData_MemoryRead", "ObjectiveEventData_Cancelled", "ObjectiveEventData_SubAgentSpawned", "ObjectiveEventData_SubAgentUpdated", "ObjectiveEventData_Finalized", "ObjectiveEventData_Notice", "ObjectiveEventData_TimedOut", "ObjectiveEventData_Reasoning", "ObjectiveEventData_StateChanged", "ObjectiveEventData_Heartbeat", "ObjectiveEventData_Interrupted", "ObjectiveEventData_AssistantMessageDelta", "ObjectiveEventData_ReasoningDelta"]
 
 
 def _decode_ObjectiveEventData(data: Any) -> Any:
@@ -3041,6 +3117,10 @@ def _decode_ObjectiveEventData(data: Any) -> Any:
         return ObjectiveEventData_Heartbeat._from_json(data)
     if tag == "interrupted":
         return ObjectiveEventData_Interrupted._from_json(data)
+    if tag == "assistantMessageDelta":
+        return ObjectiveEventData_AssistantMessageDelta._from_json(data)
+    if tag == "reasoningDelta":
+        return ObjectiveEventData_ReasoningDelta._from_json(data)
     raise ValueError(f"ObjectiveEventData: unknown type {tag!r}")
 
 
@@ -3119,11 +3199,13 @@ class ObjectiveFinalized:
 class ObjectiveHeartbeat:
     """ObjectiveHeartbeat reports recent execution liveness. It is transient:  delivered only on live streams, never stored in event history or delivered  to webhooks. Its hb_ event ID is not a reconnect cursor. Heartbeats do not  change objective state or promise progress from the model."""
 
-    pass
+    last_sequence: Optional[int] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ObjectiveHeartbeat":
-        return ObjectiveHeartbeat()
+        return ObjectiveHeartbeat(
+            last_sequence=data.get("lastSequence"),
+        )
 
 
 @dataclass
@@ -3202,7 +3284,7 @@ class ObjectiveQueuedAction:
             objective_event_id=data.get("objectiveEventId"),
         )
 
-ObjectiveQueuedActionData = Union["ObjectiveQueuedActionData_UserMessage", "ObjectiveQueuedActionData_Compaction"]
+ObjectiveQueuedActionData = Union["ObjectiveQueuedActionData_UserMessage", "ObjectiveQueuedActionData_Compaction", "ObjectiveQueuedActionData_SubAgentUpdated"]
 
 
 def _decode_ObjectiveQueuedActionData(data: Any) -> Any:
@@ -3215,6 +3297,8 @@ def _decode_ObjectiveQueuedActionData(data: Any) -> Any:
         return ObjectiveQueuedActionData_UserMessage._from_json(data)
     if tag == "compaction":
         return ObjectiveQueuedActionData_Compaction._from_json(data)
+    if tag == "subAgentUpdated":
+        return ObjectiveQueuedActionData_SubAgentUpdated._from_json(data)
     raise ValueError(f"ObjectiveQueuedActionData: unknown type {tag!r}")
 
 ObjectiveStateChangedFromState = Literal["OBJECTIVE_STATE_UNSPECIFIED", "OBJECTIVE_STATE_PENDING", "OBJECTIVE_STATE_RUNNING", "OBJECTIVE_STATE_WAITING", "OBJECTIVE_STATE_FAILED", "OBJECTIVE_STATE_CANCELLED", "OBJECTIVE_STATE_FINALIZED", "OBJECTIVE_STATE_TIMED_OUT", "OBJECTIVE_STATE_INTERRUPTING"]
@@ -3687,11 +3771,32 @@ class Reasoning:
     """Reasoning carries the human-readable reasoning text a model produced while  working on an iteration — extended thinking (Anthropic, Gemini) or reasoning  summaries (OpenAI). It is emitted alongside the assistant message from the  same model response and is purely informational: the text shown here is  never sent back to the model."""
 
     content: str
+    completion_id: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "Reasoning":
         return Reasoning(
             content=_req(data, "Reasoning", "content"),
+            completion_id=data.get("completionId"),
+        )
+
+
+@dataclass
+class ReasoningDelta:
+    """ReasoningDelta is a fragment of reasoning text as the model generates it.  It follows the same transient delivery rules as AssistantMessageDelta; the  durable Reasoning event with the same completion_id is authoritative."""
+
+    completion_id: str
+    text: str
+    after_sequence: int
+    offset: int
+
+    @staticmethod
+    def _from_json(data: Any) -> "ReasoningDelta":
+        return ReasoningDelta(
+            completion_id=_req(data, "ReasoningDelta", "completionId"),
+            text=_req(data, "ReasoningDelta", "text"),
+            after_sequence=_req(data, "ReasoningDelta", "afterSequence"),
+            offset=_req(data, "ReasoningDelta", "offset"),
         )
 
 
@@ -4139,7 +4244,7 @@ class SubAgentSpawned:
             task=_req(data, "SubAgentSpawned", "task"),
         )
 
-SubAgentUpdatedStatus = Literal["STATUS_UNSPECIFIED", "STATUS_PENDING", "STATUS_RUNNING", "STATUS_COMPLETED", "STATUS_FAILED", "STATUS_CANCELLED"]
+SubAgentUpdatedStatus = Literal["STATUS_UNSPECIFIED", "STATUS_PENDING", "STATUS_RUNNING", "STATUS_COMPLETED", "STATUS_FAILED", "STATUS_CANCELLED", "STATUS_WAITING", "STATUS_TIMED_OUT"]
 
 
 @dataclass
@@ -4418,22 +4523,32 @@ class Tool:
 @dataclass
 class ToolApprovalRequested:
     tool_call_id: str
+    llm_tool_name: str
+    tool: Optional[CallableTool] = None
+    arguments: Optional[Dict[str, Any]] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ToolApprovalRequested":
         return ToolApprovalRequested(
             tool_call_id=_req(data, "ToolApprovalRequested", "toolCallId"),
+            tool=None if data.get("tool") is None else _decode_CallableTool(data.get("tool")),
+            llm_tool_name=_req(data, "ToolApprovalRequested", "llmToolName"),
+            arguments=data.get("arguments"),
         )
 
 
 @dataclass
 class ToolApproved:
     tool_call_id: str
+    llm_tool_name: str
+    tool: Optional[CallableTool] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ToolApproved":
         return ToolApproved(
             tool_call_id=_req(data, "ToolApproved", "toolCallId"),
+            tool=None if data.get("tool") is None else _decode_CallableTool(data.get("tool")),
+            llm_tool_name=_req(data, "ToolApproved", "llmToolName"),
         )
 
 
@@ -4472,6 +4587,7 @@ class ToolCallDecisionScores:
 @dataclass
 class ToolCalled:
     tool_call_id: str
+    llm_tool_name: str
     tool: Optional[CallableTool] = None
     config: Optional[ToolSpec_Config] = None
     arguments: Optional[Dict[str, Any]] = None
@@ -4485,6 +4601,7 @@ class ToolCalled:
             config=None if data.get("config") is None else _decode_ToolSpec_Config(data.get("config")),
             arguments=data.get("arguments"),
             arguments_exposed_in_widgets=data.get("argumentsExposedInWidgets"),
+            llm_tool_name=_req(data, "ToolCalled", "llmToolName"),
         )
 
 
@@ -4492,12 +4609,16 @@ class ToolCalled:
 class ToolDenied:
     tool_call_id: str
     memo: str
+    llm_tool_name: str
+    tool: Optional[CallableTool] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ToolDenied":
         return ToolDenied(
             tool_call_id=_req(data, "ToolDenied", "toolCallId"),
             memo=_req(data, "ToolDenied", "memo"),
+            tool=None if data.get("tool") is None else _decode_CallableTool(data.get("tool")),
+            llm_tool_name=_req(data, "ToolDenied", "llmToolName"),
         )
 
 
@@ -4505,12 +4626,16 @@ class ToolDenied:
 class ToolError:
     tool_call_id: str
     message: str
+    llm_tool_name: str
+    tool: Optional[CallableTool] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ToolError":
         return ToolError(
             tool_call_id=_req(data, "ToolError", "toolCallId"),
             message=_req(data, "ToolError", "message"),
+            tool=None if data.get("tool") is None else _decode_CallableTool(data.get("tool")),
+            llm_tool_name=_req(data, "ToolError", "llmToolName"),
         )
 
 
@@ -4635,12 +4760,16 @@ class ToolOverlay_WidgetArgumentExposure:
 class ToolResult:
     tool_call_id: str
     result: ObjectiveToolCallResult
+    llm_tool_name: str
+    tool: Optional[CallableTool] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ToolResult":
         return ToolResult(
             tool_call_id=_req(data, "ToolResult", "toolCallId"),
             result=None if _req(data, "ToolResult", "result") is None else ObjectiveToolCallResult._from_json(_req(data, "ToolResult", "result")),
+            tool=None if data.get("tool") is None else _decode_CallableTool(data.get("tool")),
+            llm_tool_name=_req(data, "ToolResult", "llmToolName"),
         )
 
 ToolSetState = Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_ARCHIVED"]
@@ -4652,6 +4781,7 @@ class ToolSet:
     spec: ToolSetSpec
     state: ToolSetState
     info: Optional[ToolSetInfo] = None
+    client_tools_agent_id: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ToolSet":
@@ -4660,6 +4790,7 @@ class ToolSet:
             spec=None if _req(data, "ToolSet", "spec") is None else ToolSetSpec._from_json(_req(data, "ToolSet", "spec")),
             info=None if data.get("info") is None else ToolSetInfo._from_json(data.get("info")),
             state=_req(data, "ToolSet", "state"),
+            client_tools_agent_id=data.get("clientToolsAgentId"),
         )
 
 ToolSetAdapter = Union["ToolSetAdapter_McpVariant", "ToolSetAdapter_HttpVariant", "ToolSetAdapter_OpenapiVariant", "ToolSetAdapter_BareVariant"]
@@ -5656,7 +5787,7 @@ class WebhookDelivery:
 
 WebhookDeliveryDataStatus = Literal["WEBHOOK_DELIVERY_STATUS_UNSPECIFIED", "WEBHOOK_DELIVERY_STATUS_PENDING", "WEBHOOK_DELIVERY_STATUS_COMPLETED", "WEBHOOK_DELIVERY_STATUS_FAILED", "WEBHOOK_DELIVERY_STATUS_DISABLED"]
 
-WebhookDeliveryDataEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED", "OBJECTIVE_EVENT_TYPE_HEARTBEAT", "OBJECTIVE_EVENT_TYPE_INTERRUPTED"]
+WebhookDeliveryDataEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED", "OBJECTIVE_EVENT_TYPE_HEARTBEAT", "OBJECTIVE_EVENT_TYPE_INTERRUPTED", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE_DELTA", "OBJECTIVE_EVENT_TYPE_REASONING_DELTA"]
 
 
 @dataclass
@@ -6772,15 +6903,43 @@ class ObjectiveEventData_Interrupted:
 
 
 @dataclass
+class ObjectiveEventData_AssistantMessageDelta:
+    type: Literal["assistantMessageDelta"]
+    assistant_message_delta: AssistantMessageDelta
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveEventData_AssistantMessageDelta":
+        return ObjectiveEventData_AssistantMessageDelta(
+            type=_req(data, "ObjectiveEventData_AssistantMessageDelta", "type"),
+            assistant_message_delta=None if _req(data, "ObjectiveEventData_AssistantMessageDelta", "assistantMessageDelta") is None else AssistantMessageDelta._from_json(_req(data, "ObjectiveEventData_AssistantMessageDelta", "assistantMessageDelta")),
+        )
+
+
+@dataclass
+class ObjectiveEventData_ReasoningDelta:
+    type: Literal["reasoningDelta"]
+    reasoning_delta: ReasoningDelta
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveEventData_ReasoningDelta":
+        return ObjectiveEventData_ReasoningDelta(
+            type=_req(data, "ObjectiveEventData_ReasoningDelta", "type"),
+            reasoning_delta=None if _req(data, "ObjectiveEventData_ReasoningDelta", "reasoningDelta") is None else ReasoningDelta._from_json(_req(data, "ObjectiveEventData_ReasoningDelta", "reasoningDelta")),
+        )
+
+
+@dataclass
 class CallableTool_Tool:
     type: Literal["tool"]
     tool: ResourceMetadata
+    client_tool: Optional[bool] = None
 
     @staticmethod
     def _from_json(data: Any) -> "CallableTool_Tool":
         return CallableTool_Tool(
             type=_req(data, "CallableTool_Tool", "type"),
             tool=None if _req(data, "CallableTool_Tool", "tool") is None else ResourceMetadata._from_json(_req(data, "CallableTool_Tool", "tool")),
+            client_tool=data.get("clientTool"),
         )
 
 
@@ -6788,12 +6947,14 @@ class CallableTool_Tool:
 class CallableTool_Agent:
     type: Literal["agent"]
     agent: ResourceMetadata
+    client_tool: Optional[bool] = None
 
     @staticmethod
     def _from_json(data: Any) -> "CallableTool_Agent":
         return CallableTool_Agent(
             type=_req(data, "CallableTool_Agent", "type"),
             agent=None if _req(data, "CallableTool_Agent", "agent") is None else ResourceMetadata._from_json(_req(data, "CallableTool_Agent", "agent")),
+            client_tool=data.get("clientTool"),
         )
 
 
@@ -6801,12 +6962,14 @@ class CallableTool_Agent:
 class CallableTool_CadenyaProvidedTool:
     type: Literal["cadenyaProvidedTool"]
     cadenya_provided_tool: ResourceMetadata
+    client_tool: Optional[bool] = None
 
     @staticmethod
     def _from_json(data: Any) -> "CallableTool_CadenyaProvidedTool":
         return CallableTool_CadenyaProvidedTool(
             type=_req(data, "CallableTool_CadenyaProvidedTool", "type"),
             cadenya_provided_tool=None if _req(data, "CallableTool_CadenyaProvidedTool", "cadenyaProvidedTool") is None else ResourceMetadata._from_json(_req(data, "CallableTool_CadenyaProvidedTool", "cadenyaProvidedTool")),
+            client_tool=data.get("clientTool"),
         )
 
 
@@ -6814,12 +6977,14 @@ class CallableTool_CadenyaProvidedTool:
 class CallableTool_AgentPool:
     type: Literal["agentPool"]
     agent_pool: ResourceMetadata
+    client_tool: Optional[bool] = None
 
     @staticmethod
     def _from_json(data: Any) -> "CallableTool_AgentPool":
         return CallableTool_AgentPool(
             type=_req(data, "CallableTool_AgentPool", "type"),
             agent_pool=None if _req(data, "CallableTool_AgentPool", "agentPool") is None else ResourceMetadata._from_json(_req(data, "CallableTool_AgentPool", "agentPool")),
+            client_tool=data.get("clientTool"),
         )
 
 
@@ -6880,6 +7045,19 @@ class ObjectiveQueuedActionData_Compaction:
         return ObjectiveQueuedActionData_Compaction(
             type=_req(data, "ObjectiveQueuedActionData_Compaction", "type"),
             compaction=None if _req(data, "ObjectiveQueuedActionData_Compaction", "compaction") is None else QueuedCompaction._from_json(_req(data, "ObjectiveQueuedActionData_Compaction", "compaction")),
+        )
+
+
+@dataclass
+class ObjectiveQueuedActionData_SubAgentUpdated:
+    type: Literal["subAgentUpdated"]
+    sub_agent_updated: SubAgentUpdated
+
+    @staticmethod
+    def _from_json(data: Any) -> "ObjectiveQueuedActionData_SubAgentUpdated":
+        return ObjectiveQueuedActionData_SubAgentUpdated(
+            type=_req(data, "ObjectiveQueuedActionData_SubAgentUpdated", "type"),
+            sub_agent_updated=None if _req(data, "ObjectiveQueuedActionData_SubAgentUpdated", "subAgentUpdated") is None else SubAgentUpdated._from_json(_req(data, "ObjectiveQueuedActionData_SubAgentUpdated", "subAgentUpdated")),
         )
 
 
@@ -7309,6 +7487,19 @@ class ModelSpec_Capability_Caching:
 
 
 @dataclass
+class ModelSpec_Capability_Streaming:
+    type: Literal["streaming"]
+    streaming: Capability_Streaming
+
+    @staticmethod
+    def _from_json(data: Any) -> "ModelSpec_Capability_Streaming":
+        return ModelSpec_Capability_Streaming(
+            type=_req(data, "ModelSpec_Capability_Streaming", "type"),
+            streaming=None if _req(data, "ModelSpec_Capability_Streaming", "streaming") is None else Capability_Streaming._from_json(_req(data, "ModelSpec_Capability_Streaming", "streaming")),
+        )
+
+
+@dataclass
 class CreateAndStreamObjectiveResponse_Objective:
     type: Literal["objective"]
     objective: Objective
@@ -7362,7 +7553,7 @@ AgentServiceListAgentsVariationSelectionMode = Literal["VARIATION_SELECTION_MODE
 
 AgentServiceListAgentFeedbackSentiment = Literal["FEEDBACK_SENTIMENT_UNSPECIFIED", "FEEDBACK_SENTIMENT_POSITIVE", "FEEDBACK_SENTIMENT_NEGATIVE"]
 
-AgentServiceListAgentWebhookDeliveriesEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED", "OBJECTIVE_EVENT_TYPE_HEARTBEAT", "OBJECTIVE_EVENT_TYPE_INTERRUPTED"]
+AgentServiceListAgentWebhookDeliveriesEventType = Literal["OBJECTIVE_EVENT_TYPE_UNSPECIFIED", "OBJECTIVE_EVENT_TYPE_USER_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVAL_REQUESTED", "OBJECTIVE_EVENT_TYPE_TOOL_APPROVED", "OBJECTIVE_EVENT_TYPE_TOOL_DENIED", "OBJECTIVE_EVENT_TYPE_TOOL_CALLED", "OBJECTIVE_EVENT_TYPE_ERROR", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE", "OBJECTIVE_EVENT_TYPE_TOOL_RESULT", "OBJECTIVE_EVENT_TYPE_TOOL_ERROR", "OBJECTIVE_EVENT_TYPE_CONTEXT_WINDOW_COMPACTED", "OBJECTIVE_EVENT_TYPE_MEMORY_READ", "OBJECTIVE_EVENT_TYPE_CANCELLED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_SPAWNED", "OBJECTIVE_EVENT_TYPE_SUB_AGENT_UPDATED", "OBJECTIVE_EVENT_TYPE_FINALIZED", "OBJECTIVE_EVENT_TYPE_NOTICE", "OBJECTIVE_EVENT_TYPE_TIMED_OUT", "OBJECTIVE_EVENT_TYPE_REASONING", "OBJECTIVE_EVENT_TYPE_STATE_CHANGED", "OBJECTIVE_EVENT_TYPE_HEARTBEAT", "OBJECTIVE_EVENT_TYPE_INTERRUPTED", "OBJECTIVE_EVENT_TYPE_ASSISTANT_MESSAGE_DELTA", "OBJECTIVE_EVENT_TYPE_REASONING_DELTA"]
 
 MemoryServiceListMemoryLayersType = Literal["MEMORY_LAYER_TYPE_UNSPECIFIED", "MEMORY_LAYER_TYPE_EPISODIC", "MEMORY_LAYER_TYPE_SKILLS"]
 
@@ -7474,6 +7665,7 @@ AgentVariationSpec_ModelConfigParam = TypedDict("AgentVariationSpec_ModelConfigP
     "max_output_tokens": int,
     "reasoning_effort": "AgentVariationSpecModelConfigReasoningEffort",
     "caching_enabled": bool,
+    "streaming_enabled": bool,
 }, total=False)
 AgentVariationSpec_ProgressiveDiscoveryParam = TypedDict("AgentVariationSpec_ProgressiveDiscoveryParam", {
     "max_tools": int,
@@ -7501,11 +7693,22 @@ Capability_ReasoningParam = TypedDict("Capability_ReasoningParam", {
 Capability_StopSequencesParam = TypedDict("Capability_StopSequencesParam", {
     "limit": Required[int],
 }, total=False)
+Capability_StreamingParam = TypedDict("Capability_StreamingParam", {
+}, total=False)
 Capability_TemperatureParam = TypedDict("Capability_TemperatureParam", {
 }, total=False)
 Capability_TopKParam = TypedDict("Capability_TopKParam", {
 }, total=False)
 Capability_TopPParam = TypedDict("Capability_TopPParam", {
+}, total=False)
+ClientToolDefinitionParam = TypedDict("ClientToolDefinitionParam", {
+    "name": Required[str],
+    "description": str,
+    "parameters": Dict[str, Any],
+    "requires_approval": bool,
+}, total=False)
+ClientToolsParam = TypedDict("ClientToolsParam", {
+    "definitions": Required[List["ClientToolDefinitionParam"]],
 }, total=False)
 CompactionConfig_SummarizationStrategyParam = TypedDict("CompactionConfig_SummarizationStrategyParam", {
     "instructions": str,
@@ -7613,7 +7816,7 @@ ModelSpecParam = TypedDict("ModelSpecParam", {
     "capabilities": Required[List["ModelSpec_CapabilityParam"]],
     "provider_model_id": Required[str],
 }, total=False)
-ModelSpec_CapabilityParam = Union["ModelSpec_Capability_TemperatureParam", "ModelSpec_Capability_TopPParam", "ModelSpec_Capability_TopKParam", "ModelSpec_Capability_StopSequencesParam", "ModelSpec_Capability_MaxOutputTokensParam", "ModelSpec_Capability_ReasoningParam", "ModelSpec_Capability_CachingParam"]
+ModelSpec_CapabilityParam = Union["ModelSpec_Capability_TemperatureParam", "ModelSpec_Capability_TopPParam", "ModelSpec_Capability_TopKParam", "ModelSpec_Capability_StopSequencesParam", "ModelSpec_Capability_MaxOutputTokensParam", "ModelSpec_Capability_ReasoningParam", "ModelSpec_Capability_CachingParam", "ModelSpec_Capability_StreamingParam"]
 ObjectiveEpisodicConfigParam = TypedDict("ObjectiveEpisodicConfigParam", {
     "key": Required[str],
 }, total=False)
@@ -8063,6 +8266,10 @@ ModelSpec_Capability_CachingParam = TypedDict("ModelSpec_Capability_CachingParam
     "type": Required[Literal["caching"]],
     "caching": Required["Capability_CachingParam"],
 }, total=False)
+ModelSpec_Capability_StreamingParam = TypedDict("ModelSpec_Capability_StreamingParam", {
+    "type": Required[Literal["streaming"]],
+    "streaming": Required["Capability_StreamingParam"],
+}, total=False)
 
 # ---- request encoders (snake_case -> wire keys) ----
 
@@ -8315,6 +8522,8 @@ _FIELDS_AgentVariationSpec_ModelConfig: Dict[str, Any] = {
     "reasoningEffort": ("reasoningEffort", None),
     "caching_enabled": ("cachingEnabled", None),
     "cachingEnabled": ("cachingEnabled", None),
+    "streaming_enabled": ("streamingEnabled", None),
+    "streamingEnabled": ("streamingEnabled", None),
 }
 
 def _encode_AgentVariationSpec_ModelConfig(data: Any) -> Any:
@@ -8368,6 +8577,24 @@ _FIELDS_Capability_StopSequences: Dict[str, Any] = {
 
 def _encode_Capability_StopSequences(data: Any) -> Any:
     return _encode_fields(_FIELDS_Capability_StopSequences, data)
+
+_FIELDS_ClientToolDefinition: Dict[str, Any] = {
+    "name": ("name", None),
+    "description": ("description", None),
+    "parameters": ("parameters", None),
+    "requires_approval": ("requiresApproval", None),
+    "requiresApproval": ("requiresApproval", None),
+}
+
+def _encode_ClientToolDefinition(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ClientToolDefinition, data)
+
+_FIELDS_ClientTools: Dict[str, Any] = {
+    "definitions": ("definitions", (lambda _v: [((lambda _v: _encode_ClientToolDefinition(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+}
+
+def _encode_ClientTools(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ClientTools, data)
 
 _FIELDS_CompactionConfig_SummarizationStrategy: Dict[str, Any] = {
     "instructions": ("instructions", None),
@@ -8626,6 +8853,8 @@ def _encode_ModelSpec_Capability(data: Any) -> Any:
         return (lambda _v: _encode_ModelSpec_Capability_Reasoning(_v))(data)
     if tag == "caching":
         return (lambda _v: _encode_ModelSpec_Capability_Caching(_v))(data)
+    if tag == "streaming":
+        return (lambda _v: _encode_ModelSpec_Capability_Streaming(_v))(data)
     return data
 
 _FIELDS_ObjectiveEpisodicConfig: Dict[str, Any] = {
@@ -9692,4 +9921,12 @@ _FIELDS_ModelSpec_Capability_Caching: Dict[str, Any] = {
 
 def _encode_ModelSpec_Capability_Caching(data: Any) -> Any:
     return _encode_fields(_FIELDS_ModelSpec_Capability_Caching, data)
+
+_FIELDS_ModelSpec_Capability_Streaming: Dict[str, Any] = {
+    "type": ("type", None),
+    "streaming": ("streaming", None),
+}
+
+def _encode_ModelSpec_Capability_Streaming(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ModelSpec_Capability_Streaming, data)
 
