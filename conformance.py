@@ -65,6 +65,7 @@ run("TrustedEndpointService_DeleteTrustedEndpoint", lambda: client.trusted_endpo
 run("TrustedEndpointService_VerifyTrustedEndpoint", lambda: client.trusted_endpoints.verify(url="sample"))
 run("ProfilesService_Whoami", lambda: client.profiles.whoami())
 run("WorkspaceService_ListWorkspaces", lambda: check_page(client.workspaces.list(limit=1, cursor="sample", sort_order="sample", include_info=True, labels="sample")))
+run("WorkspaceService_GetTemporaryWorkspace", lambda: client.workspaces.retrieve_temporary("sample"))
 run("AgentPoolService_ListAgentPools", lambda: check_page(client.agent_pools.list(workspace_id="sample", limit=1, cursor="sample", prefix="sample", query="sample", state="AGENT_POOL_STATE_ACTIVE", labels="sample", sort_order="sample", include_info=True)))
 run("AgentPoolService_CreateAgentPool", lambda: client.agent_pools.create(workspace_id="sample", metadata={"name": "sample"}, spec={"assignments": [{"agent_id": "sample"}], "description": "sample"}))
 run("AgentPoolService_GetAgentPool", lambda: client.agent_pools.retrieve("sample", workspace_id="sample"))

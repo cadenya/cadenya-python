@@ -41,3 +41,14 @@ class Workspaces:
             return self.list(limit=limit, cursor=_cursor, sort_order=sort_order, include_info=include_info, labels=labels, request_options=request_options)
 
         return SyncPage(_items, _next_cursor, _fetch)
+
+    def retrieve_temporary(
+        self,
+        workspace_id: str,
+        *,
+        request_options: Optional[RequestOptions] = None,
+    ) -> types.TemporaryWorkspace:
+        """Get temporary workspace claim status"""
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/temporary"
+        _data = self._core.request("GET", _path, request_options=request_options)
+        return decode_response("workspaces.retrieve_temporary", _data, lambda _d: types.TemporaryWorkspace._from_json(_d))
