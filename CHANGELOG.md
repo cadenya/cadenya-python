@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/cadenya/cadenya-python/compare/v1.9.0...v1.10.0) (2026-11-08)
+
+
+### Features
+
+* temporary workspace claim status, duration fields typed as strings ([#37](https://github.com/cadenya/cadenya-python/issues/37)) ([6fc7d84](https://github.com/cadenya/cadenya-python/commit/6fc7d8417ea013140981bf6936292e5b4836f584))
+
 ## [1.9.0](https://github.com/cadenya/cadenya-python/compare/v1.8.0...v1.9.0) (2026-10-28)
 
 
