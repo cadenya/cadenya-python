@@ -169,6 +169,11 @@ List workspaces
 ```python
 client.workspaces.list(*, limit=None, cursor=None, sort_order=None, include_info=None, labels=None) -> SyncPage[Workspace]
 ```
+Get temporary workspace claim status
+
+```python
+client.workspaces.retrieve_temporary(workspace_id: str) -> TemporaryWorkspace
+```
 
 ## client.agent_pools
 
