@@ -152,7 +152,7 @@ class AIProviderKeyInfo:
             model_management=_req(data, "AIProviderKeyInfo", "modelManagement"),
         )
 
-AiProviderKeySpecProvider = Literal["AI_PROVIDER_UNSPECIFIED", "AI_PROVIDER_OPENROUTER", "AI_PROVIDER_OPENAI", "AI_PROVIDER_ANTHROPIC", "AI_PROVIDER_GEMINI", "AI_PROVIDER_OPENAI_COMPATIBLE", "AI_PROVIDER_VERTEX", "AI_PROVIDER_BEDROCK"]
+AiProviderKeySpecProvider = Literal["AI_PROVIDER_UNSPECIFIED", "AI_PROVIDER_OPENROUTER", "AI_PROVIDER_OPENAI", "AI_PROVIDER_ANTHROPIC", "AI_PROVIDER_GEMINI", "AI_PROVIDER_OPENAI_COMPATIBLE", "AI_PROVIDER_VERTEX", "AI_PROVIDER_BEDROCK", "AI_PROVIDER_DEMO"]
 
 
 @dataclass
@@ -624,7 +624,7 @@ class AgentSpec:
     system_prompt_data_schema: Optional[Dict[str, Any]] = None
     output_definition: Optional[Dict[str, Any]] = None
     enable_episodic_memory: Optional[bool] = None
-    episodic_memory_ttl: Optional[int] = None
+    episodic_memory_ttl: Optional[str] = None
     always_include_subject_memories: Optional[bool] = None
 
     @staticmethod
@@ -4411,6 +4411,29 @@ class SyncStarted:
             message=_req(data, "SyncStarted", "message"),
         )
 
+TemporaryWorkspaceState = Literal["STATE_UNSPECIFIED", "STATE_UNCLAIMED", "STATE_PENDING", "STATE_CLAIMED", "STATE_EXPIRED"]
+
+
+@dataclass
+class TemporaryWorkspace:
+    """TemporaryWorkspace is the claim status of a workspace created without an  account. A temporary workspace is permanently deleted at expires_at unless  a person claims it first."""
+
+    workspace_id: str
+    state: TemporaryWorkspaceState
+    poll_interval: str
+    expires_at: Optional[datetime] = None
+    claimed_at: Optional[datetime] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "TemporaryWorkspace":
+        return TemporaryWorkspace(
+            workspace_id=_req(data, "TemporaryWorkspace", "workspaceId"),
+            state=_req(data, "TemporaryWorkspace", "state"),
+            expires_at=None if data.get("expiresAt") is None else parse_datetime(data.get("expiresAt")),
+            claimed_at=None if data.get("claimedAt") is None else parse_datetime(data.get("claimedAt")),
+            poll_interval=_req(data, "TemporaryWorkspace", "pollInterval"),
+        )
+
 TenantState = Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_ERASING"]
 
 
@@ -4849,7 +4872,7 @@ class ToolSetAdapter_AttributeFilter:
 class ToolSetAdapter_Bare:
     """Bare tool sets define tools without an execution adapter. A bare tool  call doesn't fire anything: the objective's workflow pauses and waits  for an external API consumer to set the tool call's content (e.g.  human-in-the-loop tools, or a reverse harness that polls for pending  tool calls, executes locally, and reports results back via  SetToolCallContent)."""
 
-    content_timeout: Optional[int] = None
+    content_timeout: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ToolSetAdapter_Bare":
@@ -6016,6 +6039,7 @@ class Workspace:
     spec: WorkspaceSpec
     status: WorkspaceStatus
     info: Optional[WorkspaceInfo] = None
+    expires_at: Optional[datetime] = None
 
     @staticmethod
     def _from_json(data: Any) -> "Workspace":
@@ -6024,6 +6048,7 @@ class Workspace:
             spec=None if _req(data, "Workspace", "spec") is None else WorkspaceSpec._from_json(_req(data, "Workspace", "spec")),
             status=_req(data, "Workspace", "status"),
             info=None if data.get("info") is None else WorkspaceInfo._from_json(data.get("info")),
+            expires_at=None if data.get("expiresAt") is None else parse_datetime(data.get("expiresAt")),
         )
 
 
@@ -7632,7 +7657,7 @@ AgentSpecParam = TypedDict("AgentSpecParam", {
     "system_prompt_data_schema": Dict[str, Any],
     "output_definition": Dict[str, Any],
     "enable_episodic_memory": bool,
-    "episodic_memory_ttl": int,
+    "episodic_memory_ttl": str,
     "always_include_subject_memories": bool,
 }, total=False)
 AgentVariationSpecParam = TypedDict("AgentVariationSpecParam", {
@@ -7927,7 +7952,7 @@ ToolSetAdapter_AttributeFilterParam = TypedDict("ToolSetAdapter_AttributeFilterP
     "matcher": "ToolSetAdapter_StringMatcherParam",
 }, total=False)
 ToolSetAdapter_BareParam = TypedDict("ToolSetAdapter_BareParam", {
-    "content_timeout": int,
+    "content_timeout": str,
 }, total=False)
 ToolSetAdapter_HTTPParam = TypedDict("ToolSetAdapter_HTTPParam", {
     "base_url": str,
