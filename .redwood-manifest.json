@@ -23,6 +23,7 @@
   "cadenya/resources/profiles.py",
   "cadenya/resources/tenants.py",
   "cadenya/resources/tool_search.py",
+  "cadenya/resources/tool_set_rules.py",
   "cadenya/resources/tool_set_secrets.py",
   "cadenya/resources/tool_sets.py",
   "cadenya/resources/tools.py",

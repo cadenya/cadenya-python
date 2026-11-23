@@ -509,7 +509,7 @@ client.objectives.list(*, workspace_id=None, limit=None, cursor=None, agent_id=N
 Create a new objective
 
 ```python
-client.objectives.create(*, workspace_id=None, agent_id, variation_id=None, metadata=None, system_prompt_data=None, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None, client_tools=None) -> Objective
+client.objectives.create(*, workspace_id=None, agent_id, variation_id=None, metadata=None, system_prompt_data=None, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None, client_tools=None, system_prompt=None) -> Objective
 ```
 Get an objective by ID
 
@@ -609,7 +609,7 @@ client.objectives.interrupt(objective_id: str, *, workspace_id=None) -> Objectiv
 Create an objective and stream its events
 
 ```python
-client.objectives.create_and_stream(*, workspace_id=None, agent_id, variation_id=None, metadata, system_prompt_data=None, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None, client_tools=None, include_deltas=None, last_event_id=None) -> Stream[CreateAndStreamObjectiveResponse]
+client.objectives.create_and_stream(*, workspace_id=None, agent_id, variation_id=None, metadata, system_prompt_data=None, first_user_message=None, secrets=None, memory_cascade=None, first_user_message_data=None, episodic_memory=None, tenant=None, subject=None, pinned_parameters=None, client_tools=None, system_prompt=None, include_deltas=None, last_event_id=None) -> Stream[CreateAndStreamObjectiveResponse]
 ```
 
 ## client.tool_search
@@ -675,6 +675,11 @@ Archive a tool set
 ```python
 client.tool_sets.archive(id: str, *, workspace_id=None) -> ToolSet
 ```
+Sync a tool set
+
+```python
+client.tool_sets.sync(id: str, *, workspace_id=None) -> None
+```
 Unarchive a tool set
 
 ```python
@@ -694,6 +699,34 @@ List tool set usage
 
 ```python
 client.tool_sets.list_usage(tool_set_id: str, *, workspace_id=None, tool_id=None, limit=None, cursor=None, sort_order=None) -> SyncPage[ToolSetUsage]
+```
+
+## client.tool_sets.rules
+
+List tool set rules
+
+```python
+client.tool_sets.rules.list(tool_set_id: str, *, workspace_id=None) -> ListToolSetRulesResponse
+```
+Create a tool set rule
+
+```python
+client.tool_sets.rules.create(tool_set_id: str, *, workspace_id=None, name, description=None, when=None, actions=None, disabled=None, position=None) -> ToolRule
+```
+Get a tool set rule by ID
+
+```python
+client.tool_sets.rules.retrieve(tool_set_id: str, id: str, *, workspace_id=None) -> ToolRule
+```
+Delete a tool set rule
+
+```python
+client.tool_sets.rules.delete(tool_set_id: str, id: str, *, workspace_id=None) -> None
+```
+Update a tool set rule
+
+```python
+client.tool_sets.rules.update(tool_set_id: str, id: str, *, workspace_id=None, name=None, description=None, when=None, actions=None, disabled=None, position=None, update_mask=None) -> ToolRule
 ```
 
 ## client.tool_sets.secrets
@@ -729,7 +762,7 @@ client.tool_sets.secrets.update(tool_set_id: str, id: str, *, workspace_id=None,
 List tools
 
 ```python
-client.tool_sets.tools.list(tool_set_id: str, *, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, names=None, states=None, requires_approval=None, overlays=None, labels=None, sort_order=None, include_info=None) -> SyncPage[Tool]
+client.tool_sets.tools.list(tool_set_id: str, *, workspace_id=None, limit=None, cursor=None, prefix=None, query=None, names=None, states=None, requires_approval=None, labels=None, sort_order=None, include_info=None) -> SyncPage[Tool]
 ```
 Create a new tool
 

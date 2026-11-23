@@ -1485,6 +1485,7 @@ class CreateAndStreamObjectiveRequest:
     subject: Optional[SubjectAssertion] = None
     pinned_parameters: Optional[Dict[str, str]] = None
     client_tools: Optional[ClientTools] = None
+    system_prompt: Optional[str] = None
     include_deltas: Optional[bool] = None
 
     @staticmethod
@@ -1504,6 +1505,7 @@ class CreateAndStreamObjectiveRequest:
             subject=None if data.get("subject") is None else SubjectAssertion._from_json(data.get("subject")),
             pinned_parameters=data.get("pinnedParameters"),
             client_tools=None if data.get("clientTools") is None else ClientTools._from_json(data.get("clientTools")),
+            system_prompt=data.get("systemPrompt"),
             include_deltas=data.get("includeDeltas"),
         )
 
@@ -1628,6 +1630,7 @@ class CreateObjectiveRequest:
     subject: Optional[SubjectAssertion] = None
     pinned_parameters: Optional[Dict[str, str]] = None
     client_tools: Optional[ClientTools] = None
+    system_prompt: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "CreateObjectiveRequest":
@@ -1646,6 +1649,7 @@ class CreateObjectiveRequest:
             subject=None if data.get("subject") is None else SubjectAssertion._from_json(data.get("subject")),
             pinned_parameters=data.get("pinnedParameters"),
             client_tools=None if data.get("clientTools") is None else ClientTools._from_json(data.get("clientTools")),
+            system_prompt=data.get("systemPrompt"),
         )
 
 
@@ -1723,6 +1727,31 @@ class CreateToolSetRequest:
             workspace_id=data.get("workspaceId"),
             metadata=None if _req(data, "CreateToolSetRequest", "metadata") is None else CreateResourceMetadata._from_json(_req(data, "CreateToolSetRequest", "metadata")),
             spec=None if _req(data, "CreateToolSetRequest", "spec") is None else ToolSetSpec._from_json(_req(data, "CreateToolSetRequest", "spec")),
+        )
+
+
+@dataclass
+class CreateToolSetRuleRequest:
+    name: str
+    workspace_id: Optional[str] = None
+    tool_set_id: Optional[str] = None
+    description: Optional[str] = None
+    when: Optional[str] = None
+    actions: Optional[ToolActions] = None
+    disabled: Optional[bool] = None
+    position: Optional[int] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "CreateToolSetRuleRequest":
+        return CreateToolSetRuleRequest(
+            workspace_id=data.get("workspaceId"),
+            tool_set_id=data.get("toolSetId"),
+            name=_req(data, "CreateToolSetRuleRequest", "name"),
+            description=data.get("description"),
+            when=data.get("when"),
+            actions=None if data.get("actions") is None else ToolActions._from_json(data.get("actions")),
+            disabled=data.get("disabled"),
+            position=data.get("position"),
         )
 
 
@@ -2375,6 +2404,21 @@ class ListToolSetEventsResponse:
 
 
 @dataclass
+class ListToolSetRulesResponse:
+    """A tool set holds a small, capped number of rules, so the list is returned  whole, in evaluation order."""
+
+    items: List[ToolRule]
+    pagination: Optional[Page] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ListToolSetRulesResponse":
+        return ListToolSetRulesResponse(
+            items=None if _req(data, "ListToolSetRulesResponse", "items") is None else [ToolRule._from_json(item) for item in (_req(data, "ListToolSetRulesResponse", "items"))],
+            pagination=None if data.get("pagination") is None else Page._from_json(data.get("pagination")),
+        )
+
+
+@dataclass
 class ListToolSetSecretsResponse:
     items: List[ToolSetSecret]
     pagination: Optional[Page] = None
@@ -2891,6 +2935,7 @@ class Objective:
     secrets: List[Objective_Secret]
     memory_cascade: List[MemoryReference]
     pinned_parameters: Dict[str, str]
+    system_prompt_overridden: bool
     info: Optional[ObjectiveInfo] = None
     system_prompt_data: Optional[Dict[str, Any]] = None
     output: Optional[Dict[str, Any]] = None
@@ -2915,6 +2960,7 @@ class Objective:
             first_user_message_data=data.get("firstUserMessageData"),
             episodic_memory=None if data.get("episodicMemory") is None else ObjectiveEpisodicConfig._from_json(data.get("episodicMemory")),
             pinned_parameters=_req(data, "Objective", "pinnedParameters"),
+            system_prompt_overridden=_req(data, "Objective", "systemPromptOverridden"),
         )
 
 
@@ -3053,6 +3099,7 @@ class ObjectiveEvent:
     duration: Optional[str] = None
     started_at: Optional[datetime] = None
     sequence: Optional[int] = None
+    iteration_id: Optional[str] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ObjectiveEvent":
@@ -3064,6 +3111,7 @@ class ObjectiveEvent:
             duration=data.get("duration"),
             started_at=None if data.get("startedAt") is None else parse_datetime(data.get("startedAt")),
             sequence=data.get("sequence"),
+            iteration_id=data.get("iterationId"),
         )
 
 ObjectiveEventData = Union["ObjectiveEventData_UserMessage", "ObjectiveEventData_ToolApprovalRequested", "ObjectiveEventData_ToolApproved", "ObjectiveEventData_ToolDenied", "ObjectiveEventData_ToolCalled", "ObjectiveEventData_Error", "ObjectiveEventData_AssistantMessage", "ObjectiveEventData_ToolResult", "ObjectiveEventData_ToolError", "ObjectiveEventData_ContextWindowCompacted", "ObjectiveEventData_MemoryRead", "ObjectiveEventData_Cancelled", "ObjectiveEventData_SubAgentSpawned", "ObjectiveEventData_SubAgentUpdated", "ObjectiveEventData_Finalized", "ObjectiveEventData_Notice", "ObjectiveEventData_TimedOut", "ObjectiveEventData_Reasoning", "ObjectiveEventData_StateChanged", "ObjectiveEventData_Heartbeat", "ObjectiveEventData_Interrupted", "ObjectiveEventData_AssistantMessageDelta", "ObjectiveEventData_ReasoningDelta"]
@@ -3626,53 +3674,6 @@ class Page:
             next_cursor=_req(data, "Page", "nextCursor"),
         )
 
-ParameterActionPinOnMissing = Literal["ON_MISSING_UNSPECIFIED", "ON_MISSING_FAIL", "ON_MISSING_SKIP"]
-
-
-@dataclass
-class ParameterAction_Pin:
-    """Bind the parameter to one of the objective's pinned parameters. It is  deleted from the schema (including any `required` entry), and on every  call the pinned value is written into the arguments, overwriting  anything the model supplied.  This is the authoritative-value action: the model never sees the  parameter and cannot influence it.   `pin` differs from `set` with `{{ pinned_parameters.key }}` only in  how a missing key is handled (see `on_missing`) and in intent —  reading the tool set config, `pin` says 'this comes from the caller'."""
-
-    path: str
-    pinned_parameter: str
-    on_missing: ParameterActionPinOnMissing
-
-    @staticmethod
-    def _from_json(data: Any) -> "ParameterAction_Pin":
-        return ParameterAction_Pin(
-            path=_req(data, "ParameterAction_Pin", "path"),
-            pinned_parameter=_req(data, "ParameterAction_Pin", "pinnedParameter"),
-            on_missing=_req(data, "ParameterAction_Pin", "onMissing"),
-        )
-
-
-@dataclass
-class ParameterAction_Remove:
-    """Remove the parameter entirely. It is deleted from the schema  (including any `required` entry) and stripped from the arguments if  the model supplies it anyway. The tool receives no value for it — the  upstream default, if any, applies. Use this to save context on  parameters the model has no business setting (pagination cursors,  expansion flags, debug toggles)."""
-
-    path: str
-
-    @staticmethod
-    def _from_json(data: Any) -> "ParameterAction_Remove":
-        return ParameterAction_Remove(
-            path=_req(data, "ParameterAction_Remove", "path"),
-        )
-
-
-@dataclass
-class ParameterAction_Set:
-    """Force the parameter to a value. It is deleted from the schema  (including any `required` entry), and on every call the rendered  value is written into the arguments, overwriting anything the model  supplied.   `value_template` is a Liquid template rendered against the objective:     {{ pinned_parameters.<key> }}  the objective's pinned parameters    {{ objective.id }}             the objective's id    {{ objective.external_id }}    the objective's external id    {{ objective.labels.<key> }}   the objective's labels   Templates render with strict variables: referencing a pinned  parameter or label that does not exist fails the call rather than  rendering an empty value.   Tool set secrets are intentionally not exposed here: overlay-set  values are recorded as tool call arguments in events and tool call  history, and would leak. Use adapter headers for credentials.   The rendered string is coerced to the parameter's declared schema  type: for a non-string parameter (integer, number, boolean, object,  array) the output is parsed as JSON. A value that fails to parse  errors the tool call. Prefer `pin` when the value is simply a pinned  parameter — it fails loudly when the key is absent instead of  rendering an empty string."""
-
-    path: str
-    value_template: str
-
-    @staticmethod
-    def _from_json(data: Any) -> "ParameterAction_Set":
-        return ParameterAction_Set(
-            path=_req(data, "ParameterAction_Set", "path"),
-            value_template=_req(data, "ParameterAction_Set", "valueTemplate"),
-        )
-
 
 @dataclass
 class PauseAgentScheduleRequest:
@@ -3928,25 +3929,6 @@ class RestoreToolRequest:
             id=data.get("id"),
         )
 
-ResultActionTransformOnError = Literal["ON_ERROR_UNSPECIFIED", "ON_ERROR_RAW_CONTENT", "ON_ERROR_FAIL"]
-
-
-@dataclass
-class ResultAction_Transform:
-    """Replace the result's text content with a rendered Liquid template.  Used to compact verbose responses to the fields the model actually  needs, or to rewrite a JSON response into a smaller JSON document.   `content_template` is rendered against the call:     {{ result.text }}        the result's text content (text blocks                             joined with newlines)    {{ result.json }}        result.text parsed as JSON — objects and                             arrays are navigable (`result.json.items`,                             `| map: 'id'`); absent when the text is not                             valid JSON    {{ result.blocks }}      every content block: [{type, text?,                             mime_type?, size_bytes?}]    {{ parameters }}         the arguments the tool was called with,                             after parameter actions were applied    {{ tool.name }}          the tool's metadata.name    {{ tool.llm_tool_name }} the name the model called it by    {{ pinned_parameters }}  the objective's pinned parameters    {{ objective.id }} / {{ objective.external_id }} /    {{ objective.labels.<key> }}   Templates render with strict variables: referencing `result.json` on  a non-JSON result, or any other undefined variable, is a render error  and `on_error` decides the outcome. The `json` filter pretty-prints a  value as JSON; `sanitized_json` emits it compact and escaped for  embedding.   Transforms are text-only. `result.text` and `result.json` are built  from the result's text blocks; media blocks (images, audio) are opaque  to the template and pass through unchanged. The rendered text replaces  the text blocks as a single text block. A result with no text blocks  at all (an image-only or audio-only result) is out of scope: the  transform is skipped, the result is recorded as returned, and the  skip is noted in the tool call's debug log — this is not an `on_error`  case, nothing was attempted. The one exception is `expect_json`, where  a result with no text is a violated precondition and `on_error`  applies."""
-
-    content_template: str
-    on_error: ResultActionTransformOnError
-    expect_json: bool
-
-    @staticmethod
-    def _from_json(data: Any) -> "ResultAction_Transform":
-        return ResultAction_Transform(
-            content_template=_req(data, "ResultAction_Transform", "contentTemplate"),
-            on_error=_req(data, "ResultAction_Transform", "onError"),
-            expect_json=_req(data, "ResultAction_Transform", "expectJson"),
-        )
-
 
 @dataclass
 class ResumeAgentScheduleRequest:
@@ -4099,36 +4081,6 @@ class SearchToolsOrToolSetsResponse:
             agents=None if _req(data, "SearchToolsOrToolSetsResponse", "agents") is None else [Agent._from_json(item) for item in (_req(data, "SearchToolsOrToolSetsResponse", "agents"))],
         )
 
-Selector_Condition = Union["Selector_Condition_Attribute", "Selector_Condition_HasParameter", "Selector_Condition_Tools"]
-
-
-def _decode_Selector_Condition(data: Any) -> Any:
-    if data is None:
-        return None
-    tag = data.get("type")
-    if not tag:
-        return None
-    if tag == "attribute":
-        return Selector_Condition_Attribute._from_json(data)
-    if tag == "hasParameter":
-        return Selector_Condition_HasParameter._from_json(data)
-    if tag == "tools":
-        return Selector_Condition_Tools._from_json(data)
-    raise ValueError(f"Selector_Condition: unknown type {tag!r}")
-
-
-@dataclass
-class Selector_ToolNames:
-    """An explicit list of tools, matched on spec.llm_tool_name — the name  the model calls the tool by. It identifies a tool across versions:  just-in-time MCP sets keep one tool per signature and every version  shares the LLM name, so the condition keeps matching as the source  evolves. Any name in the list matches (OR). Names of tools not (or  not yet) present in the set are allowed and match nothing."""
-
-    names: Optional[List[str]] = None
-
-    @staticmethod
-    def _from_json(data: Any) -> "Selector_ToolNames":
-        return Selector_ToolNames(
-            names=data.get("names"),
-        )
-
 
 @dataclass
 class SetToolCallContentRequest:
@@ -4201,6 +4153,32 @@ class SetToolCallContentRequest_TextBlock:
         return SetToolCallContentRequest_TextBlock(
             text=_req(data, "SetToolCallContentRequest_TextBlock", "text"),
         )
+
+
+@dataclass
+class Source_Rule:
+    """A rule on the tool's tool set."""
+
+    id: str
+    name: str
+
+    @staticmethod
+    def _from_json(data: Any) -> "Source_Rule":
+        return Source_Rule(
+            id=_req(data, "Source_Rule", "id"),
+            name=_req(data, "Source_Rule", "name"),
+        )
+
+
+@dataclass
+class Source_Tool:
+    """The tool's own `spec.actions`."""
+
+    pass
+
+    @staticmethod
+    def _from_json(data: Any) -> "Source_Tool":
+        return Source_Tool()
 
 StatusDetails = Union["WidgetSessionErrorInfo", "GoogleProtobufAny"]
 
@@ -4383,6 +4361,19 @@ class SyncCompleted:
 
 
 @dataclass
+class SyncDisabled:
+    """Emitted when automatic syncing stops after 24 consecutive failures."""
+
+    message: str
+
+    @staticmethod
+    def _from_json(data: Any) -> "SyncDisabled":
+        return SyncDisabled(
+            message=_req(data, "SyncDisabled", "message"),
+        )
+
+
+@dataclass
 class SyncFailed:
     """Emitted when a tool set sync operation fails."""
 
@@ -4409,6 +4400,21 @@ class SyncStarted:
     def _from_json(data: Any) -> "SyncStarted":
         return SyncStarted(
             message=_req(data, "SyncStarted", "message"),
+        )
+
+
+@dataclass
+class SyncToolSetRequest:
+    """Queue a sync of an active, syncable tool set."""
+
+    workspace_id: Optional[str] = None
+    id: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "SyncToolSetRequest":
+        return SyncToolSetRequest(
+            workspace_id=data.get("workspaceId"),
+            id=data.get("id"),
         )
 
 TemporaryWorkspaceState = Literal["STATE_UNSPECIFIED", "STATE_UNCLAIMED", "STATE_PENDING", "STATE_CLAIMED", "STATE_EXPIRED"]
@@ -4544,6 +4550,25 @@ class Tool:
 
 
 @dataclass
+class ToolActions:
+    """ToolActions is everything a rule can do to the tools it applies to, and  everything a tool can do to itself through its own `spec.actions`."""
+
+    parameter_actions: Optional[List[ToolParameterAction]] = None
+    result_actions: Optional[List[ToolResultAction]] = None
+    widget_argument_exposure: Optional[ToolWidgetArgumentExposure] = None
+    auto_mode: Optional[AutoModeConfig] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolActions":
+        return ToolActions(
+            parameter_actions=None if data.get("parameterActions") is None else [_decode_ToolParameterAction(item) for item in (data.get("parameterActions"))],
+            result_actions=None if data.get("resultActions") is None else [_decode_ToolResultAction(item) for item in (data.get("resultActions"))],
+            widget_argument_exposure=None if data.get("widgetArgumentExposure") is None else ToolWidgetArgumentExposure._from_json(data.get("widgetArgumentExposure")),
+            auto_mode=None if data.get("autoMode") is None else AutoModeConfig._from_json(data.get("autoMode")),
+        )
+
+
+@dataclass
 class ToolApprovalRequested:
     tool_call_id: str
     llm_tool_name: str
@@ -4646,6 +4671,115 @@ class ToolDenied:
 
 
 @dataclass
+class ToolEffective:
+    """ToolEffective is what a tool comes to once its tool set's rules and its own  actions are applied: the schema the model is shown and every action in  effect, each with where it came from. It is worked out on every read from  the tool and the tool set's current rules; nothing here is stored on the  tool. Pin actions are treated as satisfied, since a read has no objective."""
+
+    parameter_actions: List[ToolEffective_ParameterAction]
+    result_actions: List[ToolEffective_ResultAction]
+    requires_approval: bool
+    rule_errors: List[ToolEffective_RuleError]
+    parameters: Optional[Dict[str, Any]] = None
+    auto_mode: Optional[ToolEffective_AutoMode] = None
+    widget_argument_exposure: Optional[ToolEffective_WidgetArgumentExposure] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolEffective":
+        return ToolEffective(
+            parameters=data.get("parameters"),
+            parameter_actions=None if _req(data, "ToolEffective", "parameterActions") is None else [ToolEffective_ParameterAction._from_json(item) for item in (_req(data, "ToolEffective", "parameterActions"))],
+            result_actions=None if _req(data, "ToolEffective", "resultActions") is None else [ToolEffective_ResultAction._from_json(item) for item in (_req(data, "ToolEffective", "resultActions"))],
+            auto_mode=None if data.get("autoMode") is None else ToolEffective_AutoMode._from_json(data.get("autoMode")),
+            widget_argument_exposure=None if data.get("widgetArgumentExposure") is None else ToolEffective_WidgetArgumentExposure._from_json(data.get("widgetArgumentExposure")),
+            requires_approval=_req(data, "ToolEffective", "requiresApproval"),
+            rule_errors=None if _req(data, "ToolEffective", "ruleErrors") is None else [ToolEffective_RuleError._from_json(item) for item in (_req(data, "ToolEffective", "ruleErrors"))],
+        )
+
+
+@dataclass
+class ToolEffective_AutoMode:
+    config: AutoModeConfig
+    source: ToolEffective_Source
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolEffective_AutoMode":
+        return ToolEffective_AutoMode(
+            config=None if _req(data, "ToolEffective_AutoMode", "config") is None else AutoModeConfig._from_json(_req(data, "ToolEffective_AutoMode", "config")),
+            source=None if _req(data, "ToolEffective_AutoMode", "source") is None else _decode_ToolEffective_Source(_req(data, "ToolEffective_AutoMode", "source")),
+        )
+
+
+@dataclass
+class ToolEffective_ParameterAction:
+    action: ToolParameterAction
+    source: ToolEffective_Source
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolEffective_ParameterAction":
+        return ToolEffective_ParameterAction(
+            action=None if _req(data, "ToolEffective_ParameterAction", "action") is None else _decode_ToolParameterAction(_req(data, "ToolEffective_ParameterAction", "action")),
+            source=None if _req(data, "ToolEffective_ParameterAction", "source") is None else _decode_ToolEffective_Source(_req(data, "ToolEffective_ParameterAction", "source")),
+        )
+
+
+@dataclass
+class ToolEffective_ResultAction:
+    action: ToolResultAction
+    source: ToolEffective_Source
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolEffective_ResultAction":
+        return ToolEffective_ResultAction(
+            action=None if _req(data, "ToolEffective_ResultAction", "action") is None else _decode_ToolResultAction(_req(data, "ToolEffective_ResultAction", "action")),
+            source=None if _req(data, "ToolEffective_ResultAction", "source") is None else _decode_ToolEffective_Source(_req(data, "ToolEffective_ResultAction", "source")),
+        )
+
+
+@dataclass
+class ToolEffective_RuleError:
+    """A rule whose `when` expression failed to evaluate for this tool."""
+
+    rule: Source_Rule
+    message: str
+    applied: bool
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolEffective_RuleError":
+        return ToolEffective_RuleError(
+            rule=None if _req(data, "ToolEffective_RuleError", "rule") is None else Source_Rule._from_json(_req(data, "ToolEffective_RuleError", "rule")),
+            message=_req(data, "ToolEffective_RuleError", "message"),
+            applied=_req(data, "ToolEffective_RuleError", "applied"),
+        )
+
+ToolEffective_Source = Union["ToolEffective_Source_Rule", "ToolEffective_Source_Tool"]
+
+
+def _decode_ToolEffective_Source(data: Any) -> Any:
+    if data is None:
+        return None
+    tag = data.get("type")
+    if not tag:
+        return None
+    if tag == "rule":
+        return ToolEffective_Source_Rule._from_json(data)
+    if tag == "tool":
+        return ToolEffective_Source_Tool._from_json(data)
+    raise ValueError(f"ToolEffective_Source: unknown type {tag!r}")
+
+
+@dataclass
+class ToolEffective_WidgetArgumentExposure:
+    enabled: bool
+    source: ToolEffective_Source
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolEffective_WidgetArgumentExposure":
+        return ToolEffective_WidgetArgumentExposure(
+            enabled=_req(data, "ToolEffective_WidgetArgumentExposure", "enabled"),
+            source=None if _req(data, "ToolEffective_WidgetArgumentExposure", "source") is None else _decode_ToolEffective_Source(_req(data, "ToolEffective_WidgetArgumentExposure", "source")),
+        )
+
+
+@dataclass
 class ToolError:
     tool_call_id: str
     message: str
@@ -4667,8 +4801,7 @@ class ToolInfo:
     signature: str
     tool_set: Optional[ResourceMetadata] = None
     created_by: Optional[Profile] = None
-    overlays: Optional[List[str]] = None
-    effective_parameters: Optional[Dict[str, Any]] = None
+    effective: Optional[ToolEffective] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ToolInfo":
@@ -4676,106 +4809,71 @@ class ToolInfo:
             tool_set=None if data.get("toolSet") is None else ResourceMetadata._from_json(data.get("toolSet")),
             created_by=None if data.get("createdBy") is None else Profile._from_json(data.get("createdBy")),
             signature=_req(data, "ToolInfo", "signature"),
-            overlays=data.get("overlays"),
-            effective_parameters=data.get("effectiveParameters"),
+            effective=None if data.get("effective") is None else ToolEffective._from_json(data.get("effective")),
         )
 
-
-@dataclass
-class ToolOverlay:
-    """A tool overlay is a policy attached to a tool set that reshapes the tools  the model sees and calls. It pairs a selector (which tools it applies to)  with actions that run before a call — rewriting the tool's parameter  schema and the arguments the model supplied — and after a call —  rewriting the result before it enters the model's context. It can also  explicitly allow the final call arguments to cross the otherwise-private  widget API boundary.   Overlays exist for three reasons:     - Authority. Adapter-derived tool sets (OpenAPI especially) expose many      parameters the model must never guess — a workspace id, a tenant id,      an account scope. Overlays bind those parameters to the objective's      `pinned_parameters` (see CreateObjectiveRequest.pinned_parameters):      the parameter disappears from the schema and the value is forced      server-side, so the model has no opportunity to supply a different      one.    - Context. Large specs carry pagination cursors, expansion flags and      verbose responses that cost tokens without helping the model.      Overlays strip parameters, fix them to literals, and compact results.    - Widget presentation. Tool arguments are private by default. An overlay      can opt matching tools into exposing their final call arguments in      visitor-facing widget events so an embedding UI can select a custom      renderer or presentation.   Pinned parameters and overlays are complementary: pinned parameters are  *data* supplied per objective (or per widget session) by the caller;  overlays are *policy* authored once on the tool set. Pinning by name  still works without an overlay — a pinned key that matches a top-level  parameter name is applied to every tool in the objective — overlays are  for the cases that needs more: nested paths, renamed keys, a subset of  tools, or values that are literals rather than caller-supplied.   Evaluation model:     - Overlays are evaluated in list order; within an overlay, actions are      evaluated in list order. Later actions win on the same path (a `set`      followed by a `remove` leaves the parameter removed).    - The parameter schema the model sees is computed when tools are      assembled for an objective, so pre-call actions can consult that      objective's pinned parameters (this is what makes `pin` with      ON_MISSING_SKIP meaningful). Argument rewriting runs on every call.    - An action whose `path` does not exist in the tool's parameter schema      changes nothing in the schema the model sees. This is deliberate: a      broad selector (every `list_*` tool) may match tools with different      shapes, and one overlay should be able to cover all of them without      erroring on the ones that lack a given parameter. At call time the      model's arguments can still not widen what it controls: `remove`      strips the path whether or not it is declared, and `set`/`pin`      overwrite a value the model sent at an undeclared path (a schema this      evaluator cannot see through, e.g. behind $ref/allOf) while injecting      nothing into tools that lack the parameter.    - Overlays apply to just-in-time tool sets as well; the tools are      evaluated against overlays at the moment they are loaded.    - Result actions run once, when the tool call's result is recorded; the      stored result is the transformed one, so every reader (the model,      compaction, the API) sees the same content. They are not supported on      bare tool sets."""
-
-    key: str
-    selector: ToolOverlay_Selector
-    disabled: bool
-    parameter_actions: Optional[List[ToolOverlay_ParameterAction]] = None
-    result_actions: Optional[List[ToolOverlay_ResultAction]] = None
-    widget_argument_exposure: Optional[ToolOverlay_WidgetArgumentExposure] = None
-    auto_mode: Optional[AutoModeConfig] = None
-
-    @staticmethod
-    def _from_json(data: Any) -> "ToolOverlay":
-        return ToolOverlay(
-            key=_req(data, "ToolOverlay", "key"),
-            selector=None if _req(data, "ToolOverlay", "selector") is None else ToolOverlay_Selector._from_json(_req(data, "ToolOverlay", "selector")),
-            parameter_actions=None if data.get("parameterActions") is None else [_decode_ToolOverlay_ParameterAction(item) for item in (data.get("parameterActions"))],
-            result_actions=None if data.get("resultActions") is None else [_decode_ToolOverlay_ResultAction(item) for item in (data.get("resultActions"))],
-            disabled=_req(data, "ToolOverlay", "disabled"),
-            widget_argument_exposure=None if data.get("widgetArgumentExposure") is None else ToolOverlay_WidgetArgumentExposure._from_json(data.get("widgetArgumentExposure")),
-            auto_mode=None if data.get("autoMode") is None else AutoModeConfig._from_json(data.get("autoMode")),
-        )
-
-ToolOverlay_ParameterAction = Union["ToolOverlay_ParameterAction_Remove", "ToolOverlay_ParameterAction_Set", "ToolOverlay_ParameterAction_Pin"]
+ToolParameterAction = Union["ToolParameterAction_RemoveVariant", "ToolParameterAction_SetVariant", "ToolParameterAction_PinVariant"]
 
 
-def _decode_ToolOverlay_ParameterAction(data: Any) -> Any:
+def _decode_ToolParameterAction(data: Any) -> Any:
     if data is None:
         return None
     tag = data.get("type")
     if not tag:
         return None
     if tag == "remove":
-        return ToolOverlay_ParameterAction_Remove._from_json(data)
+        return ToolParameterAction_RemoveVariant._from_json(data)
     if tag == "set":
-        return ToolOverlay_ParameterAction_Set._from_json(data)
+        return ToolParameterAction_SetVariant._from_json(data)
     if tag == "pin":
-        return ToolOverlay_ParameterAction_Pin._from_json(data)
-    raise ValueError(f"ToolOverlay_ParameterAction: unknown type {tag!r}")
+        return ToolParameterAction_PinVariant._from_json(data)
+    raise ValueError(f"ToolParameterAction: unknown type {tag!r}")
+
+ToolParameterActionPinOnMissing = Literal["ON_MISSING_UNSPECIFIED", "ON_MISSING_FAIL", "ON_MISSING_SKIP"]
 
 
 @dataclass
-class ToolOverlay_ParameterPath:
-    """A dotted path into a tool's parameter schema. Each segment is a property  name; the path `filter.workspaceId` addresses  `properties.filter.properties.workspaceId` in the schema and  `arguments.filter.workspaceId` in the call. Only object properties are  addressable — there is no array indexing, wildcarding or filtering.   This is deliberately not JSONPath: every action needs a single,  unambiguous location in both the schema and the arguments so that  removing a parameter from the schema and stripping it from the call are  guaranteed to agree."""
+class ToolParameterAction_Pin:
+    """Bind the parameter to one of the objective's pinned parameters. It is  deleted from the schema (including any `required` entry), and on every  call the pinned value is written into the arguments, overwriting  anything the model supplied.  This is the authoritative-value action: the model never sees the  parameter and cannot influence it.   `pin` differs from `set` with `{{ pinned_parameters.key }}` only in  how a missing key is handled (see `on_missing`) and in intent —  reading the tool set config, `pin` says 'this comes from the caller'."""
+
+    path: str
+    pinned_parameter: str
+    on_missing: ToolParameterActionPinOnMissing
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolParameterAction_Pin":
+        return ToolParameterAction_Pin(
+            path=_req(data, "ToolParameterAction_Pin", "path"),
+            pinned_parameter=_req(data, "ToolParameterAction_Pin", "pinnedParameter"),
+            on_missing=_req(data, "ToolParameterAction_Pin", "onMissing"),
+        )
+
+
+@dataclass
+class ToolParameterAction_Remove:
+    """Remove the parameter entirely. It is deleted from the schema  (including any `required` entry) and stripped from the arguments if  the model supplies it anyway. The tool receives no value for it — the  upstream default, if any, applies. Use this to save context on  parameters the model has no business setting (pagination cursors,  expansion flags, debug toggles)."""
 
     path: str
 
     @staticmethod
-    def _from_json(data: Any) -> "ToolOverlay_ParameterPath":
-        return ToolOverlay_ParameterPath(
-            path=_req(data, "ToolOverlay_ParameterPath", "path"),
-        )
-
-ToolOverlay_ResultAction = Union["ToolOverlay_ResultAction_Transform"]
-
-
-def _decode_ToolOverlay_ResultAction(data: Any) -> Any:
-    if data is None:
-        return None
-    tag = data.get("type")
-    if not tag:
-        return None
-    if tag == "transform":
-        return ToolOverlay_ResultAction_Transform._from_json(data)
-    raise ValueError(f"ToolOverlay_ResultAction: unknown type {tag!r}")
-
-ToolOverlaySelectorOperator = Literal["OPERATOR_UNSPECIFIED", "OPERATOR_AND", "OPERATOR_OR"]
-
-
-@dataclass
-class ToolOverlay_Selector:
-    """Which tools in the tool set an overlay applies to. Conditions are  combined with `operator`; an overlay with no conditions matches every  tool in the set."""
-
-    operator: ToolOverlaySelectorOperator
-    conditions: Optional[List[Selector_Condition]] = None
-
-    @staticmethod
-    def _from_json(data: Any) -> "ToolOverlay_Selector":
-        return ToolOverlay_Selector(
-            conditions=None if data.get("conditions") is None else [_decode_Selector_Condition(item) for item in (data.get("conditions"))],
-            operator=_req(data, "ToolOverlay_Selector", "operator"),
+    def _from_json(data: Any) -> "ToolParameterAction_Remove":
+        return ToolParameterAction_Remove(
+            path=_req(data, "ToolParameterAction_Remove", "path"),
         )
 
 
 @dataclass
-class ToolOverlay_WidgetArgumentExposure:
-    """Controls whether matching tool calls may expose their final arguments to  visitor-facing widget events. The containing message's presence means the  overlay has an opinion; enabled selects whether that opinion is on or off."""
+class ToolParameterAction_Set:
+    """Force the parameter to a value. It is deleted from the schema  (including any `required` entry), and on every call the rendered  value is written into the arguments, overwriting anything the model  supplied.   `value_template` is a Liquid template rendered against the objective:     {{ pinned_parameters.<key> }}  the objective's pinned parameters    {{ objective.id }}             the objective's id    {{ objective.external_id }}    the objective's external id    {{ objective.labels.<key> }}   the objective's labels   Templates render with strict variables: referencing a pinned  parameter or label that does not exist fails the call rather than  rendering an empty value.   Tool set secrets are intentionally not exposed here: the values an  action sets are recorded as tool call arguments in events and tool call  history, and would leak. Use adapter headers for credentials.   The rendered string is coerced to the parameter's declared schema  type: for a non-string parameter (integer, number, boolean, object,  array) the output is parsed as JSON. A value that fails to parse  errors the tool call. Prefer `pin` when the value is simply a pinned  parameter — it fails loudly when the key is absent instead of  rendering an empty string."""
 
-    enabled: bool
+    path: str
+    value_template: str
 
     @staticmethod
-    def _from_json(data: Any) -> "ToolOverlay_WidgetArgumentExposure":
-        return ToolOverlay_WidgetArgumentExposure(
-            enabled=_req(data, "ToolOverlay_WidgetArgumentExposure", "enabled"),
+    def _from_json(data: Any) -> "ToolParameterAction_Set":
+        return ToolParameterAction_Set(
+            path=_req(data, "ToolParameterAction_Set", "path"),
+            value_template=_req(data, "ToolParameterAction_Set", "valueTemplate"),
         )
 
 
@@ -4793,6 +4891,67 @@ class ToolResult:
             result=None if _req(data, "ToolResult", "result") is None else ObjectiveToolCallResult._from_json(_req(data, "ToolResult", "result")),
             tool=None if data.get("tool") is None else _decode_CallableTool(data.get("tool")),
             llm_tool_name=_req(data, "ToolResult", "llmToolName"),
+        )
+
+ToolResultAction = Union["ToolResultAction_TransformVariant"]
+
+
+def _decode_ToolResultAction(data: Any) -> Any:
+    if data is None:
+        return None
+    tag = data.get("type")
+    if not tag:
+        return None
+    if tag == "transform":
+        return ToolResultAction_TransformVariant._from_json(data)
+    raise ValueError(f"ToolResultAction: unknown type {tag!r}")
+
+ToolResultActionTransformOnError = Literal["ON_ERROR_UNSPECIFIED", "ON_ERROR_RAW_CONTENT", "ON_ERROR_FAIL"]
+
+
+@dataclass
+class ToolResultAction_Transform:
+    """Replace the result's text content with a rendered Liquid template.  Used to compact verbose responses to the fields the model actually  needs, or to rewrite a JSON response into a smaller JSON document.   `content_template` is rendered against the call:     {{ result.text }}        the result's text content (text blocks                             joined with newlines)    {{ result.json }}        result.text parsed as JSON — objects and                             arrays are navigable (`result.json.items`,                             `| map: 'id'`); absent when the text is not                             valid JSON    {{ result.blocks }}      every content block: [{type, text?,                             mime_type?, size_bytes?}]    {{ parameters }}         the arguments the tool was called with,                             after parameter actions were applied    {{ tool.name }}          the tool's metadata.name    {{ tool.llm_tool_name }} the name the model called it by    {{ pinned_parameters }}  the objective's pinned parameters    {{ objective.id }} / {{ objective.external_id }} /    {{ objective.labels.<key> }}   Templates render with strict variables: referencing `result.json` on  a non-JSON result, or any other undefined variable, is a render error  and `on_error` decides the outcome. The `json` filter pretty-prints a  value as JSON; `sanitized_json` emits it compact and escaped for  embedding.   Transforms are text-only. `result.text` and `result.json` are built  from the result's text blocks; media blocks (images, audio) are opaque  to the template and pass through unchanged. The rendered text replaces  the text blocks as a single text block. A result with no text blocks  at all (an image-only or audio-only result) is out of scope: the  transform is skipped, the result is recorded as returned, and the  skip is noted in the tool call's debug log — this is not an `on_error`  case, nothing was attempted. The one exception is `expect_json`, where  a result with no text is a violated precondition and `on_error`  applies."""
+
+    content_template: str
+    on_error: ToolResultActionTransformOnError
+    expect_json: bool
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolResultAction_Transform":
+        return ToolResultAction_Transform(
+            content_template=_req(data, "ToolResultAction_Transform", "contentTemplate"),
+            on_error=_req(data, "ToolResultAction_Transform", "onError"),
+            expect_json=_req(data, "ToolResultAction_Transform", "expectJson"),
+        )
+
+
+@dataclass
+class ToolRule:
+    """ToolRule is a policy on a tool set: a `when` expression that selects tools  and the actions applied to every tool it selects.   A tool set's rules are an ordered list. Every enabled rule whose `when` is  true for a tool applies to that tool. When two rules disagree about the same  thing (the same parameter path, the auto mode policy, widget argument  exposure) the rule lower in the list wins. A match never stops later rules  from being evaluated. Put broad rules at the top and narrow rules at the  bottom."""
+
+    id: str
+    name: str
+    when: str
+    disabled: bool
+    position: int
+    description: Optional[str] = None
+    actions: Optional[ToolActions] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolRule":
+        return ToolRule(
+            id=_req(data, "ToolRule", "id"),
+            name=_req(data, "ToolRule", "name"),
+            description=data.get("description"),
+            when=_req(data, "ToolRule", "when"),
+            actions=None if data.get("actions") is None else ToolActions._from_json(data.get("actions")),
+            disabled=_req(data, "ToolRule", "disabled"),
+            position=_req(data, "ToolRule", "position"),
+            created_at=None if data.get("createdAt") is None else parse_datetime(data.get("createdAt")),
+            updated_at=None if data.get("updatedAt") is None else parse_datetime(data.get("updatedAt")),
         )
 
 ToolSetState = Literal["STATE_UNSPECIFIED", "STATE_ACTIVE", "STATE_ARCHIVED"]
@@ -5001,7 +5160,7 @@ class ToolSetEvent:
             info=None if data.get("info") is None else ToolSetEventInfo._from_json(data.get("info")),
         )
 
-ToolSetEventData = Union["ToolSetEventData_SyncStarted", "ToolSetEventData_SyncCompleted", "ToolSetEventData_SyncFailed"]
+ToolSetEventData = Union["ToolSetEventData_SyncStarted", "ToolSetEventData_SyncCompleted", "ToolSetEventData_SyncFailed", "ToolSetEventData_SyncDisabled"]
 
 
 def _decode_ToolSetEventData(data: Any) -> Any:
@@ -5016,6 +5175,8 @@ def _decode_ToolSetEventData(data: Any) -> Any:
         return ToolSetEventData_SyncCompleted._from_json(data)
     if tag == "syncFailed":
         return ToolSetEventData_SyncFailed._from_json(data)
+    if tag == "syncDisabled":
+        return ToolSetEventData_SyncDisabled._from_json(data)
     raise ValueError(f"ToolSetEventData: unknown type {tag!r}")
 
 
@@ -5038,6 +5199,9 @@ class ToolSetInfo:
     agent_count: int
     available_tools: int
     omitted_tools: int
+    sync_disabled: bool
+    consecutive_failure_count: int
+    last_sync_error: str
     last_sync: Optional[datetime] = None
     created_by: Optional[Profile] = None
 
@@ -5050,6 +5214,9 @@ class ToolSetInfo:
             created_by=None if data.get("createdBy") is None else Profile._from_json(data.get("createdBy")),
             available_tools=_req(data, "ToolSetInfo", "availableTools"),
             omitted_tools=_req(data, "ToolSetInfo", "omittedTools"),
+            sync_disabled=_req(data, "ToolSetInfo", "syncDisabled"),
+            consecutive_failure_count=_req(data, "ToolSetInfo", "consecutiveFailureCount"),
+            last_sync_error=_req(data, "ToolSetInfo", "lastSyncError"),
         )
 
 
@@ -5096,7 +5263,6 @@ class ToolSetSecretSpec:
 class ToolSetSpec:
     adapter: ToolSetAdapter
     description: Optional[str] = None
-    overlays: Optional[List[ToolOverlay]] = None
     secrets: Optional[List[ToolSetSpec_Secret]] = None
 
     @staticmethod
@@ -5104,7 +5270,6 @@ class ToolSetSpec:
         return ToolSetSpec(
             description=data.get("description"),
             adapter=None if _req(data, "ToolSetSpec", "adapter") is None else _decode_ToolSetAdapter(_req(data, "ToolSetSpec", "adapter")),
-            overlays=None if data.get("overlays") is None else [ToolOverlay._from_json(item) for item in (data.get("overlays"))],
             secrets=None if data.get("secrets") is None else [ToolSetSpec_Secret._from_json(item) for item in (data.get("secrets"))],
         )
 
@@ -5150,6 +5315,7 @@ class ToolSpec:
     parameters: Dict[str, Any]
     config: ToolSpec_Config
     llm_tool_name: Optional[str] = None
+    actions: Optional[ToolActions] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ToolSpec":
@@ -5159,6 +5325,7 @@ class ToolSpec:
             parameters=_req(data, "ToolSpec", "parameters"),
             config=None if _req(data, "ToolSpec", "config") is None else _decode_ToolSpec_Config(_req(data, "ToolSpec", "config")),
             llm_tool_name=data.get("llmToolName"),
+            actions=None if data.get("actions") is None else ToolActions._from_json(data.get("actions")),
         )
 
 ToolSpec_Config = Union["ToolSpec_Config_Http", "ToolSpec_Config_Mcp", "ToolSpec_Config_Openapi", "ToolSpec_Config_Bare"]
@@ -5179,6 +5346,19 @@ def _decode_ToolSpec_Config(data: Any) -> Any:
     if tag == "bare":
         return ToolSpec_Config_Bare._from_json(data)
     raise ValueError(f"ToolSpec_Config: unknown type {tag!r}")
+
+
+@dataclass
+class ToolWidgetArgumentExposure:
+    """Controls whether matching tool calls may expose their final arguments to  visitor-facing widget events. The message's presence means its rule or tool  has an opinion; enabled selects whether that opinion is on or off."""
+
+    enabled: bool
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolWidgetArgumentExposure":
+        return ToolWidgetArgumentExposure(
+            enabled=_req(data, "ToolWidgetArgumentExposure", "enabled"),
+        )
 
 
 @dataclass
@@ -5575,6 +5755,35 @@ class UpdateToolSetRequest:
             id=data.get("id"),
             metadata=None if data.get("metadata") is None else UpdateResourceMetadata._from_json(data.get("metadata")),
             spec=None if data.get("spec") is None else ToolSetSpec._from_json(data.get("spec")),
+            update_mask=data.get("updateMask"),
+        )
+
+
+@dataclass
+class UpdateToolSetRuleRequest:
+    workspace_id: Optional[str] = None
+    tool_set_id: Optional[str] = None
+    id: Optional[str] = None
+    name: Optional[str] = None
+    description: Optional[str] = None
+    when: Optional[str] = None
+    actions: Optional[ToolActions] = None
+    disabled: Optional[bool] = None
+    position: Optional[int] = None
+    update_mask: Optional[str] = None
+
+    @staticmethod
+    def _from_json(data: Any) -> "UpdateToolSetRuleRequest":
+        return UpdateToolSetRuleRequest(
+            workspace_id=data.get("workspaceId"),
+            tool_set_id=data.get("toolSetId"),
+            id=data.get("id"),
+            name=data.get("name"),
+            description=data.get("description"),
+            when=data.get("when"),
+            actions=None if data.get("actions") is None else ToolActions._from_json(data.get("actions")),
+            disabled=data.get("disabled"),
+            position=data.get("position"),
             update_mask=data.get("updateMask"),
         )
 
@@ -6150,6 +6359,8 @@ class ObjectiveEventWebhookDataData:
     agent_variation: ResourceMetadata
     objective: OperationMetadata
     objective_event: ObjectiveEvent
+    parent_objective: Optional[OperationMetadata] = None
+    root_objective: Optional[OperationMetadata] = None
 
     @staticmethod
     def _from_json(data: Any) -> "ObjectiveEventWebhookDataData":
@@ -6158,6 +6369,8 @@ class ObjectiveEventWebhookDataData:
             agent_variation=None if _req(data, "ObjectiveEventWebhookDataData", "agentVariation") is None else ResourceMetadata._from_json(_req(data, "ObjectiveEventWebhookDataData", "agentVariation")),
             objective=None if _req(data, "ObjectiveEventWebhookDataData", "objective") is None else OperationMetadata._from_json(_req(data, "ObjectiveEventWebhookDataData", "objective")),
             objective_event=None if _req(data, "ObjectiveEventWebhookDataData", "objectiveEvent") is None else ObjectiveEvent._from_json(_req(data, "ObjectiveEventWebhookDataData", "objectiveEvent")),
+            parent_objective=None if data.get("parentObjective") is None else OperationMetadata._from_json(data.get("parentObjective")),
+            root_objective=None if data.get("rootObjective") is None else OperationMetadata._from_json(data.get("rootObjective")),
         )
 
 
@@ -6305,6 +6518,19 @@ class ToolSetEventData_SyncFailed:
         return ToolSetEventData_SyncFailed(
             type=_req(data, "ToolSetEventData_SyncFailed", "type"),
             sync_failed=None if _req(data, "ToolSetEventData_SyncFailed", "syncFailed") is None else SyncFailed._from_json(_req(data, "ToolSetEventData_SyncFailed", "syncFailed")),
+        )
+
+
+@dataclass
+class ToolSetEventData_SyncDisabled:
+    type: Literal["syncDisabled"]
+    sync_disabled: SyncDisabled
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolSetEventData_SyncDisabled":
+        return ToolSetEventData_SyncDisabled(
+            type=_req(data, "ToolSetEventData_SyncDisabled", "type"),
+            sync_disabled=None if _req(data, "ToolSetEventData_SyncDisabled", "syncDisabled") is None else SyncDisabled._from_json(_req(data, "ToolSetEventData_SyncDisabled", "syncDisabled")),
         )
 
 
@@ -6512,93 +6738,80 @@ class ToolSetAdapter_OpenAPI_UploadId:
 
 
 @dataclass
-class Selector_Condition_Attribute:
-    type: Literal["attribute"]
-    attribute: ToolSetAdapter_AttributeFilter
-
-    @staticmethod
-    def _from_json(data: Any) -> "Selector_Condition_Attribute":
-        return Selector_Condition_Attribute(
-            type=_req(data, "Selector_Condition_Attribute", "type"),
-            attribute=None if _req(data, "Selector_Condition_Attribute", "attribute") is None else ToolSetAdapter_AttributeFilter._from_json(_req(data, "Selector_Condition_Attribute", "attribute")),
-        )
-
-
-@dataclass
-class Selector_Condition_HasParameter:
-    type: Literal["hasParameter"]
-    has_parameter: ToolOverlay_ParameterPath
-
-    @staticmethod
-    def _from_json(data: Any) -> "Selector_Condition_HasParameter":
-        return Selector_Condition_HasParameter(
-            type=_req(data, "Selector_Condition_HasParameter", "type"),
-            has_parameter=None if _req(data, "Selector_Condition_HasParameter", "hasParameter") is None else ToolOverlay_ParameterPath._from_json(_req(data, "Selector_Condition_HasParameter", "hasParameter")),
-        )
-
-
-@dataclass
-class Selector_Condition_Tools:
-    type: Literal["tools"]
-    tools: Selector_ToolNames
-
-    @staticmethod
-    def _from_json(data: Any) -> "Selector_Condition_Tools":
-        return Selector_Condition_Tools(
-            type=_req(data, "Selector_Condition_Tools", "type"),
-            tools=None if _req(data, "Selector_Condition_Tools", "tools") is None else Selector_ToolNames._from_json(_req(data, "Selector_Condition_Tools", "tools")),
-        )
-
-
-@dataclass
-class ToolOverlay_ParameterAction_Remove:
+class ToolParameterAction_RemoveVariant:
     type: Literal["remove"]
-    remove: ParameterAction_Remove
+    remove: ToolParameterAction_Remove
 
     @staticmethod
-    def _from_json(data: Any) -> "ToolOverlay_ParameterAction_Remove":
-        return ToolOverlay_ParameterAction_Remove(
-            type=_req(data, "ToolOverlay_ParameterAction_Remove", "type"),
-            remove=None if _req(data, "ToolOverlay_ParameterAction_Remove", "remove") is None else ParameterAction_Remove._from_json(_req(data, "ToolOverlay_ParameterAction_Remove", "remove")),
+    def _from_json(data: Any) -> "ToolParameterAction_RemoveVariant":
+        return ToolParameterAction_RemoveVariant(
+            type=_req(data, "ToolParameterAction_RemoveVariant", "type"),
+            remove=None if _req(data, "ToolParameterAction_RemoveVariant", "remove") is None else ToolParameterAction_Remove._from_json(_req(data, "ToolParameterAction_RemoveVariant", "remove")),
         )
 
 
 @dataclass
-class ToolOverlay_ParameterAction_Set:
+class ToolParameterAction_SetVariant:
     type: Literal["set"]
-    set: ParameterAction_Set
+    set: ToolParameterAction_Set
 
     @staticmethod
-    def _from_json(data: Any) -> "ToolOverlay_ParameterAction_Set":
-        return ToolOverlay_ParameterAction_Set(
-            type=_req(data, "ToolOverlay_ParameterAction_Set", "type"),
-            set=None if _req(data, "ToolOverlay_ParameterAction_Set", "set") is None else ParameterAction_Set._from_json(_req(data, "ToolOverlay_ParameterAction_Set", "set")),
+    def _from_json(data: Any) -> "ToolParameterAction_SetVariant":
+        return ToolParameterAction_SetVariant(
+            type=_req(data, "ToolParameterAction_SetVariant", "type"),
+            set=None if _req(data, "ToolParameterAction_SetVariant", "set") is None else ToolParameterAction_Set._from_json(_req(data, "ToolParameterAction_SetVariant", "set")),
         )
 
 
 @dataclass
-class ToolOverlay_ParameterAction_Pin:
+class ToolParameterAction_PinVariant:
     type: Literal["pin"]
-    pin: ParameterAction_Pin
+    pin: ToolParameterAction_Pin
 
     @staticmethod
-    def _from_json(data: Any) -> "ToolOverlay_ParameterAction_Pin":
-        return ToolOverlay_ParameterAction_Pin(
-            type=_req(data, "ToolOverlay_ParameterAction_Pin", "type"),
-            pin=None if _req(data, "ToolOverlay_ParameterAction_Pin", "pin") is None else ParameterAction_Pin._from_json(_req(data, "ToolOverlay_ParameterAction_Pin", "pin")),
+    def _from_json(data: Any) -> "ToolParameterAction_PinVariant":
+        return ToolParameterAction_PinVariant(
+            type=_req(data, "ToolParameterAction_PinVariant", "type"),
+            pin=None if _req(data, "ToolParameterAction_PinVariant", "pin") is None else ToolParameterAction_Pin._from_json(_req(data, "ToolParameterAction_PinVariant", "pin")),
         )
 
 
 @dataclass
-class ToolOverlay_ResultAction_Transform:
+class ToolResultAction_TransformVariant:
     type: Literal["transform"]
-    transform: ResultAction_Transform
+    transform: ToolResultAction_Transform
 
     @staticmethod
-    def _from_json(data: Any) -> "ToolOverlay_ResultAction_Transform":
-        return ToolOverlay_ResultAction_Transform(
-            type=_req(data, "ToolOverlay_ResultAction_Transform", "type"),
-            transform=None if _req(data, "ToolOverlay_ResultAction_Transform", "transform") is None else ResultAction_Transform._from_json(_req(data, "ToolOverlay_ResultAction_Transform", "transform")),
+    def _from_json(data: Any) -> "ToolResultAction_TransformVariant":
+        return ToolResultAction_TransformVariant(
+            type=_req(data, "ToolResultAction_TransformVariant", "type"),
+            transform=None if _req(data, "ToolResultAction_TransformVariant", "transform") is None else ToolResultAction_Transform._from_json(_req(data, "ToolResultAction_TransformVariant", "transform")),
+        )
+
+
+@dataclass
+class ToolEffective_Source_Rule:
+    type: Literal["rule"]
+    rule: Source_Rule
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolEffective_Source_Rule":
+        return ToolEffective_Source_Rule(
+            type=_req(data, "ToolEffective_Source_Rule", "type"),
+            rule=None if _req(data, "ToolEffective_Source_Rule", "rule") is None else Source_Rule._from_json(_req(data, "ToolEffective_Source_Rule", "rule")),
+        )
+
+
+@dataclass
+class ToolEffective_Source_Tool:
+    type: Literal["tool"]
+    tool: Source_Tool
+
+    @staticmethod
+    def _from_json(data: Any) -> "ToolEffective_Source_Tool":
+        return ToolEffective_Source_Tool(
+            type=_req(data, "ToolEffective_Source_Tool", "type"),
+            tool=None if _req(data, "ToolEffective_Source_Tool", "tool") is None else Source_Tool._from_json(_req(data, "ToolEffective_Source_Tool", "tool")),
         )
 
 
@@ -7859,24 +8072,7 @@ OpenAIConfigParam = TypedDict("OpenAIConfigParam", {
 OpenRouterConfigParam = TypedDict("OpenRouterConfigParam", {
     "region": str,
 }, total=False)
-ParameterAction_PinParam = TypedDict("ParameterAction_PinParam", {
-    "path": Required[str],
-    "pinned_parameter": Required[str],
-    "on_missing": Required["ParameterActionPinOnMissing"],
-}, total=False)
-ParameterAction_RemoveParam = TypedDict("ParameterAction_RemoveParam", {
-    "path": Required[str],
-}, total=False)
-ParameterAction_SetParam = TypedDict("ParameterAction_SetParam", {
-    "path": Required[str],
-    "value_template": Required[str],
-}, total=False)
 RemoveAgentVariationAssignmentRequestParam = Union["RemoveAgentVariationAssignmentRequest_ToolIdParam", "RemoveAgentVariationAssignmentRequest_ToolSetIdParam", "RemoveAgentVariationAssignmentRequest_SubAgentIdParam", "RemoveAgentVariationAssignmentRequest_AgentPoolIdParam"]
-ResultAction_TransformParam = TypedDict("ResultAction_TransformParam", {
-    "content_template": Required[str],
-    "on_error": Required["ResultActionTransformOnError"],
-    "expect_json": Required[bool],
-}, total=False)
 Schedule_CalendarParam = TypedDict("Schedule_CalendarParam", {
     "second": List["Schedule_RangeParam"],
     "minute": List["Schedule_RangeParam"],
@@ -7894,10 +8090,6 @@ Schedule_RangeParam = TypedDict("Schedule_RangeParam", {
     "start": int,
     "end": int,
     "step": int,
-}, total=False)
-Selector_ConditionParam = Union["Selector_Condition_AttributeParam", "Selector_Condition_HasParameterParam", "Selector_Condition_ToolsParam"]
-Selector_ToolNamesParam = TypedDict("Selector_ToolNamesParam", {
-    "names": List[str],
 }, total=False)
 SetToolCallContentRequest_AudioBlockParam = TypedDict("SetToolCallContentRequest_AudioBlockParam", {
     "data": Required[str],
@@ -7924,26 +8116,30 @@ TenantAssertionParam = TypedDict("TenantAssertionParam", {
     "id": Required[str],
     "name": str,
 }, total=False)
-ToolOverlayParam = TypedDict("ToolOverlayParam", {
-    "key": Required[str],
-    "selector": Required["ToolOverlay_SelectorParam"],
-    "parameter_actions": List["ToolOverlay_ParameterActionParam"],
-    "result_actions": List["ToolOverlay_ResultActionParam"],
-    "disabled": Required[bool],
-    "widget_argument_exposure": "ToolOverlay_WidgetArgumentExposureParam",
+ToolActionsParam = TypedDict("ToolActionsParam", {
+    "parameter_actions": List["ToolParameterActionParam"],
+    "result_actions": List["ToolResultActionParam"],
+    "widget_argument_exposure": "ToolWidgetArgumentExposureParam",
     "auto_mode": "AutoModeConfigParam",
 }, total=False)
-ToolOverlay_ParameterActionParam = Union["ToolOverlay_ParameterAction_RemoveParam", "ToolOverlay_ParameterAction_SetParam", "ToolOverlay_ParameterAction_PinParam"]
-ToolOverlay_ParameterPathParam = TypedDict("ToolOverlay_ParameterPathParam", {
+ToolParameterActionParam = Union["ToolParameterAction_RemoveVariantParam", "ToolParameterAction_SetVariantParam", "ToolParameterAction_PinVariantParam"]
+ToolParameterAction_PinParam = TypedDict("ToolParameterAction_PinParam", {
+    "path": Required[str],
+    "pinned_parameter": Required[str],
+    "on_missing": Required["ToolParameterActionPinOnMissing"],
+}, total=False)
+ToolParameterAction_RemoveParam = TypedDict("ToolParameterAction_RemoveParam", {
     "path": Required[str],
 }, total=False)
-ToolOverlay_ResultActionParam = Union["ToolOverlay_ResultAction_TransformParam"]
-ToolOverlay_SelectorParam = TypedDict("ToolOverlay_SelectorParam", {
-    "conditions": List["Selector_ConditionParam"],
-    "operator": Required["ToolOverlaySelectorOperator"],
+ToolParameterAction_SetParam = TypedDict("ToolParameterAction_SetParam", {
+    "path": Required[str],
+    "value_template": Required[str],
 }, total=False)
-ToolOverlay_WidgetArgumentExposureParam = TypedDict("ToolOverlay_WidgetArgumentExposureParam", {
-    "enabled": Required[bool],
+ToolResultActionParam = Union["ToolResultAction_TransformVariantParam"]
+ToolResultAction_TransformParam = TypedDict("ToolResultAction_TransformParam", {
+    "content_template": Required[str],
+    "on_error": Required["ToolResultActionTransformOnError"],
+    "expect_json": Required[bool],
 }, total=False)
 ToolSetAdapterParam = Union["ToolSetAdapter_McpVariantParam", "ToolSetAdapter_HttpVariantParam", "ToolSetAdapter_OpenapiVariantParam", "ToolSetAdapter_BareVariantParam"]
 ToolSetAdapter_ApprovalRequirementFilterParam = Union["ToolSetAdapter_ApprovalRequirementFilter_AlwaysParam", "ToolSetAdapter_ApprovalRequirementFilter_OnlyParam"]
@@ -7982,7 +8178,6 @@ ToolSetSecretSpecParam = TypedDict("ToolSetSecretSpecParam", {
 ToolSetSpecParam = TypedDict("ToolSetSpecParam", {
     "description": str,
     "adapter": Required["ToolSetAdapterParam"],
-    "overlays": List["ToolOverlayParam"],
     "secrets": List["ToolSetSpec_SecretParam"],
 }, total=False)
 ToolSetSpec_SecretParam = TypedDict("ToolSetSpec_SecretParam", {
@@ -7995,8 +8190,12 @@ ToolSpecParam = TypedDict("ToolSpecParam", {
     "parameters": Required[Dict[str, Any]],
     "config": Required["ToolSpec_ConfigParam"],
     "llm_tool_name": str,
+    "actions": "ToolActionsParam",
 }, total=False)
 ToolSpec_ConfigParam = Union["ToolSpec_Config_HttpParam", "ToolSpec_Config_McpParam", "ToolSpec_Config_OpenapiParam", "ToolSpec_Config_BareParam"]
+ToolWidgetArgumentExposureParam = TypedDict("ToolWidgetArgumentExposureParam", {
+    "enabled": Required[bool],
+}, total=False)
 TrustedEndpointSpecParam = TypedDict("TrustedEndpointSpecParam", {
     "host": Required[str],
 }, total=False)
@@ -8127,33 +8326,21 @@ ToolSetAdapter_OpenAPI_UploadIdParam = TypedDict("ToolSetAdapter_OpenAPI_UploadI
     "base_url": str,
     "server_name": str,
 }, total=False)
-Selector_Condition_AttributeParam = TypedDict("Selector_Condition_AttributeParam", {
-    "type": Required[Literal["attribute"]],
-    "attribute": Required["ToolSetAdapter_AttributeFilterParam"],
-}, total=False)
-Selector_Condition_HasParameterParam = TypedDict("Selector_Condition_HasParameterParam", {
-    "type": Required[Literal["hasParameter"]],
-    "has_parameter": Required["ToolOverlay_ParameterPathParam"],
-}, total=False)
-Selector_Condition_ToolsParam = TypedDict("Selector_Condition_ToolsParam", {
-    "type": Required[Literal["tools"]],
-    "tools": Required["Selector_ToolNamesParam"],
-}, total=False)
-ToolOverlay_ParameterAction_RemoveParam = TypedDict("ToolOverlay_ParameterAction_RemoveParam", {
+ToolParameterAction_RemoveVariantParam = TypedDict("ToolParameterAction_RemoveVariantParam", {
     "type": Required[Literal["remove"]],
-    "remove": Required["ParameterAction_RemoveParam"],
+    "remove": Required["ToolParameterAction_RemoveParam"],
 }, total=False)
-ToolOverlay_ParameterAction_SetParam = TypedDict("ToolOverlay_ParameterAction_SetParam", {
+ToolParameterAction_SetVariantParam = TypedDict("ToolParameterAction_SetVariantParam", {
     "type": Required[Literal["set"]],
-    "set": Required["ParameterAction_SetParam"],
+    "set": Required["ToolParameterAction_SetParam"],
 }, total=False)
-ToolOverlay_ParameterAction_PinParam = TypedDict("ToolOverlay_ParameterAction_PinParam", {
+ToolParameterAction_PinVariantParam = TypedDict("ToolParameterAction_PinVariantParam", {
     "type": Required[Literal["pin"]],
-    "pin": Required["ParameterAction_PinParam"],
+    "pin": Required["ToolParameterAction_PinParam"],
 }, total=False)
-ToolOverlay_ResultAction_TransformParam = TypedDict("ToolOverlay_ResultAction_TransformParam", {
+ToolResultAction_TransformVariantParam = TypedDict("ToolResultAction_TransformVariantParam", {
     "type": Required[Literal["transform"]],
-    "transform": Required["ResultAction_TransformParam"],
+    "transform": Required["ToolResultAction_TransformParam"],
 }, total=False)
 ToolSpec_Config_HttpParam = TypedDict("ToolSpec_Config_HttpParam", {
     "type": Required[Literal["http"]],
@@ -8923,33 +9110,6 @@ _FIELDS_OpenRouterConfig: Dict[str, Any] = {
 def _encode_OpenRouterConfig(data: Any) -> Any:
     return _encode_fields(_FIELDS_OpenRouterConfig, data)
 
-_FIELDS_ParameterAction_Pin: Dict[str, Any] = {
-    "path": ("path", None),
-    "pinned_parameter": ("pinnedParameter", None),
-    "pinnedParameter": ("pinnedParameter", None),
-    "on_missing": ("onMissing", None),
-    "onMissing": ("onMissing", None),
-}
-
-def _encode_ParameterAction_Pin(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ParameterAction_Pin, data)
-
-_FIELDS_ParameterAction_Remove: Dict[str, Any] = {
-    "path": ("path", None),
-}
-
-def _encode_ParameterAction_Remove(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ParameterAction_Remove, data)
-
-_FIELDS_ParameterAction_Set: Dict[str, Any] = {
-    "path": ("path", None),
-    "value_template": ("valueTemplate", None),
-    "valueTemplate": ("valueTemplate", None),
-}
-
-def _encode_ParameterAction_Set(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ParameterAction_Set, data)
-
 def _encode_RemoveAgentVariationAssignmentRequest(data: Any) -> Any:
     if not isinstance(data, dict):
         return data
@@ -8963,18 +9123,6 @@ def _encode_RemoveAgentVariationAssignmentRequest(data: Any) -> Any:
     if tag == "agentPoolId":
         return (lambda _v: _encode_RemoveAgentVariationAssignmentRequest_AgentPoolId(_v))(data)
     return data
-
-_FIELDS_ResultAction_Transform: Dict[str, Any] = {
-    "content_template": ("contentTemplate", None),
-    "contentTemplate": ("contentTemplate", None),
-    "on_error": ("onError", None),
-    "onError": ("onError", None),
-    "expect_json": ("expectJson", None),
-    "expectJson": ("expectJson", None),
-}
-
-def _encode_ResultAction_Transform(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ResultAction_Transform, data)
 
 _FIELDS_Schedule_Calendar: Dict[str, Any] = {
     "second": ("second", (lambda _v: [((lambda _v: _encode_Schedule_Range(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
@@ -9007,25 +9155,6 @@ _FIELDS_Schedule_Range: Dict[str, Any] = {
 
 def _encode_Schedule_Range(data: Any) -> Any:
     return _encode_fields(_FIELDS_Schedule_Range, data)
-
-def _encode_Selector_Condition(data: Any) -> Any:
-    if not isinstance(data, dict):
-        return data
-    tag = data.get("type")
-    if tag == "attribute":
-        return (lambda _v: _encode_Selector_Condition_Attribute(_v))(data)
-    if tag == "hasParameter":
-        return (lambda _v: _encode_Selector_Condition_HasParameter(_v))(data)
-    if tag == "tools":
-        return (lambda _v: _encode_Selector_Condition_Tools(_v))(data)
-    return data
-
-_FIELDS_Selector_ToolNames: Dict[str, Any] = {
-    "names": ("names", None),
-}
-
-def _encode_Selector_ToolNames(data: Any) -> Any:
-    return _encode_fields(_FIELDS_Selector_ToolNames, data)
 
 _FIELDS_SetToolCallContentRequest_AudioBlock: Dict[str, Any] = {
     "data": ("data", None),
@@ -9092,64 +9221,78 @@ _FIELDS_TenantAssertion: Dict[str, Any] = {
 def _encode_TenantAssertion(data: Any) -> Any:
     return _encode_fields(_FIELDS_TenantAssertion, data)
 
-_FIELDS_ToolOverlay: Dict[str, Any] = {
-    "key": ("key", None),
-    "selector": ("selector", (lambda _v: _encode_ToolOverlay_Selector(_v))),
-    "parameter_actions": ("parameterActions", (lambda _v: [((lambda _v: _encode_ToolOverlay_ParameterAction(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
-    "parameterActions": ("parameterActions", (lambda _v: [((lambda _v: _encode_ToolOverlay_ParameterAction(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
-    "result_actions": ("resultActions", (lambda _v: [((lambda _v: _encode_ToolOverlay_ResultAction(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
-    "resultActions": ("resultActions", (lambda _v: [((lambda _v: _encode_ToolOverlay_ResultAction(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
-    "disabled": ("disabled", None),
-    "widget_argument_exposure": ("widgetArgumentExposure", (lambda _v: _encode_ToolOverlay_WidgetArgumentExposure(_v))),
-    "widgetArgumentExposure": ("widgetArgumentExposure", (lambda _v: _encode_ToolOverlay_WidgetArgumentExposure(_v))),
+_FIELDS_ToolActions: Dict[str, Any] = {
+    "parameter_actions": ("parameterActions", (lambda _v: [((lambda _v: _encode_ToolParameterAction(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "parameterActions": ("parameterActions", (lambda _v: [((lambda _v: _encode_ToolParameterAction(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "result_actions": ("resultActions", (lambda _v: [((lambda _v: _encode_ToolResultAction(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "resultActions": ("resultActions", (lambda _v: [((lambda _v: _encode_ToolResultAction(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
+    "widget_argument_exposure": ("widgetArgumentExposure", (lambda _v: _encode_ToolWidgetArgumentExposure(_v))),
+    "widgetArgumentExposure": ("widgetArgumentExposure", (lambda _v: _encode_ToolWidgetArgumentExposure(_v))),
     "auto_mode": ("autoMode", (lambda _v: _encode_AutoModeConfig(_v))),
     "autoMode": ("autoMode", (lambda _v: _encode_AutoModeConfig(_v))),
 }
 
-def _encode_ToolOverlay(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ToolOverlay, data)
+def _encode_ToolActions(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ToolActions, data)
 
-def _encode_ToolOverlay_ParameterAction(data: Any) -> Any:
+def _encode_ToolParameterAction(data: Any) -> Any:
     if not isinstance(data, dict):
         return data
     tag = data.get("type")
     if tag == "remove":
-        return (lambda _v: _encode_ToolOverlay_ParameterAction_Remove(_v))(data)
+        return (lambda _v: _encode_ToolParameterAction_RemoveVariant(_v))(data)
     if tag == "set":
-        return (lambda _v: _encode_ToolOverlay_ParameterAction_Set(_v))(data)
+        return (lambda _v: _encode_ToolParameterAction_SetVariant(_v))(data)
     if tag == "pin":
-        return (lambda _v: _encode_ToolOverlay_ParameterAction_Pin(_v))(data)
+        return (lambda _v: _encode_ToolParameterAction_PinVariant(_v))(data)
     return data
 
-_FIELDS_ToolOverlay_ParameterPath: Dict[str, Any] = {
+_FIELDS_ToolParameterAction_Pin: Dict[str, Any] = {
+    "path": ("path", None),
+    "pinned_parameter": ("pinnedParameter", None),
+    "pinnedParameter": ("pinnedParameter", None),
+    "on_missing": ("onMissing", None),
+    "onMissing": ("onMissing", None),
+}
+
+def _encode_ToolParameterAction_Pin(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ToolParameterAction_Pin, data)
+
+_FIELDS_ToolParameterAction_Remove: Dict[str, Any] = {
     "path": ("path", None),
 }
 
-def _encode_ToolOverlay_ParameterPath(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ToolOverlay_ParameterPath, data)
+def _encode_ToolParameterAction_Remove(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ToolParameterAction_Remove, data)
 
-def _encode_ToolOverlay_ResultAction(data: Any) -> Any:
+_FIELDS_ToolParameterAction_Set: Dict[str, Any] = {
+    "path": ("path", None),
+    "value_template": ("valueTemplate", None),
+    "valueTemplate": ("valueTemplate", None),
+}
+
+def _encode_ToolParameterAction_Set(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ToolParameterAction_Set, data)
+
+def _encode_ToolResultAction(data: Any) -> Any:
     if not isinstance(data, dict):
         return data
     tag = data.get("type")
     if tag == "transform":
-        return (lambda _v: _encode_ToolOverlay_ResultAction_Transform(_v))(data)
+        return (lambda _v: _encode_ToolResultAction_TransformVariant(_v))(data)
     return data
 
-_FIELDS_ToolOverlay_Selector: Dict[str, Any] = {
-    "conditions": ("conditions", (lambda _v: [((lambda _v: _encode_Selector_Condition(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
-    "operator": ("operator", None),
+_FIELDS_ToolResultAction_Transform: Dict[str, Any] = {
+    "content_template": ("contentTemplate", None),
+    "contentTemplate": ("contentTemplate", None),
+    "on_error": ("onError", None),
+    "onError": ("onError", None),
+    "expect_json": ("expectJson", None),
+    "expectJson": ("expectJson", None),
 }
 
-def _encode_ToolOverlay_Selector(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ToolOverlay_Selector, data)
-
-_FIELDS_ToolOverlay_WidgetArgumentExposure: Dict[str, Any] = {
-    "enabled": ("enabled", None),
-}
-
-def _encode_ToolOverlay_WidgetArgumentExposure(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ToolOverlay_WidgetArgumentExposure, data)
+def _encode_ToolResultAction_Transform(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ToolResultAction_Transform, data)
 
 def _encode_ToolSetAdapter(data: Any) -> Any:
     if not isinstance(data, dict):
@@ -9269,7 +9412,6 @@ def _encode_ToolSetSecretSpec(data: Any) -> Any:
 _FIELDS_ToolSetSpec: Dict[str, Any] = {
     "description": ("description", None),
     "adapter": ("adapter", (lambda _v: _encode_ToolSetAdapter(_v))),
-    "overlays": ("overlays", (lambda _v: [((lambda _v: _encode_ToolOverlay(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
     "secrets": ("secrets", (lambda _v: [((lambda _v: _encode_ToolSetSpec_Secret(_v)))(_i) for _i in _v] if isinstance(_v, list) else _v)),
 }
 
@@ -9292,6 +9434,7 @@ _FIELDS_ToolSpec: Dict[str, Any] = {
     "config": ("config", (lambda _v: _encode_ToolSpec_Config(_v))),
     "llm_tool_name": ("llmToolName", None),
     "llmToolName": ("llmToolName", None),
+    "actions": ("actions", (lambda _v: _encode_ToolActions(_v))),
 }
 
 def _encode_ToolSpec(data: Any) -> Any:
@@ -9310,6 +9453,13 @@ def _encode_ToolSpec_Config(data: Any) -> Any:
     if tag == "bare":
         return (lambda _v: _encode_ToolSpec_Config_Bare(_v))(data)
     return data
+
+_FIELDS_ToolWidgetArgumentExposure: Dict[str, Any] = {
+    "enabled": ("enabled", None),
+}
+
+def _encode_ToolWidgetArgumentExposure(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ToolWidgetArgumentExposure, data)
 
 _FIELDS_TrustedEndpointSpec: Dict[str, Any] = {
     "host": ("host", None),
@@ -9597,62 +9747,37 @@ _FIELDS_ToolSetAdapter_OpenAPI_UploadId: Dict[str, Any] = {
 def _encode_ToolSetAdapter_OpenAPI_UploadId(data: Any) -> Any:
     return _encode_fields(_FIELDS_ToolSetAdapter_OpenAPI_UploadId, data)
 
-_FIELDS_Selector_Condition_Attribute: Dict[str, Any] = {
+_FIELDS_ToolParameterAction_RemoveVariant: Dict[str, Any] = {
     "type": ("type", None),
-    "attribute": ("attribute", (lambda _v: _encode_ToolSetAdapter_AttributeFilter(_v))),
+    "remove": ("remove", (lambda _v: _encode_ToolParameterAction_Remove(_v))),
 }
 
-def _encode_Selector_Condition_Attribute(data: Any) -> Any:
-    return _encode_fields(_FIELDS_Selector_Condition_Attribute, data)
+def _encode_ToolParameterAction_RemoveVariant(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ToolParameterAction_RemoveVariant, data)
 
-_FIELDS_Selector_Condition_HasParameter: Dict[str, Any] = {
+_FIELDS_ToolParameterAction_SetVariant: Dict[str, Any] = {
     "type": ("type", None),
-    "has_parameter": ("hasParameter", (lambda _v: _encode_ToolOverlay_ParameterPath(_v))),
-    "hasParameter": ("hasParameter", (lambda _v: _encode_ToolOverlay_ParameterPath(_v))),
+    "set": ("set", (lambda _v: _encode_ToolParameterAction_Set(_v))),
 }
 
-def _encode_Selector_Condition_HasParameter(data: Any) -> Any:
-    return _encode_fields(_FIELDS_Selector_Condition_HasParameter, data)
+def _encode_ToolParameterAction_SetVariant(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ToolParameterAction_SetVariant, data)
 
-_FIELDS_Selector_Condition_Tools: Dict[str, Any] = {
+_FIELDS_ToolParameterAction_PinVariant: Dict[str, Any] = {
     "type": ("type", None),
-    "tools": ("tools", (lambda _v: _encode_Selector_ToolNames(_v))),
+    "pin": ("pin", (lambda _v: _encode_ToolParameterAction_Pin(_v))),
 }
 
-def _encode_Selector_Condition_Tools(data: Any) -> Any:
-    return _encode_fields(_FIELDS_Selector_Condition_Tools, data)
+def _encode_ToolParameterAction_PinVariant(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ToolParameterAction_PinVariant, data)
 
-_FIELDS_ToolOverlay_ParameterAction_Remove: Dict[str, Any] = {
+_FIELDS_ToolResultAction_TransformVariant: Dict[str, Any] = {
     "type": ("type", None),
-    "remove": ("remove", (lambda _v: _encode_ParameterAction_Remove(_v))),
+    "transform": ("transform", (lambda _v: _encode_ToolResultAction_Transform(_v))),
 }
 
-def _encode_ToolOverlay_ParameterAction_Remove(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ToolOverlay_ParameterAction_Remove, data)
-
-_FIELDS_ToolOverlay_ParameterAction_Set: Dict[str, Any] = {
-    "type": ("type", None),
-    "set": ("set", (lambda _v: _encode_ParameterAction_Set(_v))),
-}
-
-def _encode_ToolOverlay_ParameterAction_Set(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ToolOverlay_ParameterAction_Set, data)
-
-_FIELDS_ToolOverlay_ParameterAction_Pin: Dict[str, Any] = {
-    "type": ("type", None),
-    "pin": ("pin", (lambda _v: _encode_ParameterAction_Pin(_v))),
-}
-
-def _encode_ToolOverlay_ParameterAction_Pin(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ToolOverlay_ParameterAction_Pin, data)
-
-_FIELDS_ToolOverlay_ResultAction_Transform: Dict[str, Any] = {
-    "type": ("type", None),
-    "transform": ("transform", (lambda _v: _encode_ResultAction_Transform(_v))),
-}
-
-def _encode_ToolOverlay_ResultAction_Transform(data: Any) -> Any:
-    return _encode_fields(_FIELDS_ToolOverlay_ResultAction_Transform, data)
+def _encode_ToolResultAction_TransformVariant(data: Any) -> Any:
+    return _encode_fields(_FIELDS_ToolResultAction_TransformVariant, data)
 
 _FIELDS_ToolSpec_Config_Http: Dict[str, Any] = {
     "type": ("type", None),

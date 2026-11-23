@@ -79,6 +79,7 @@ class Objectives:
         subject: Optional[types.SubjectAssertionParam] = None,
         pinned_parameters: Optional[Dict[str, str]] = None,
         client_tools: Optional[types.ClientToolsParam] = None,
+        system_prompt: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
     ) -> types.Objective:
         """Create a new objective"""
@@ -98,6 +99,7 @@ class Objectives:
             "subject": (lambda _v: types._encode_SubjectAssertion(_v))(subject),
             "pinnedParameters": pinned_parameters,
             "clientTools": (lambda _v: types._encode_ClientTools(_v))(client_tools),
+            "systemPrompt": system_prompt,
         }
         _body = {_k: _v for _k, _v in _body.items() if _v is not None}
         _data = self._core.request("POST", _path, body=_body, request_options=request_options)
@@ -511,6 +513,7 @@ class Objectives:
         subject: Optional[types.SubjectAssertionParam] = None,
         pinned_parameters: Optional[Dict[str, str]] = None,
         client_tools: Optional[types.ClientToolsParam] = None,
+        system_prompt: Optional[str] = None,
         include_deltas: Optional[bool] = None,
         last_event_id: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
@@ -532,6 +535,7 @@ class Objectives:
             "subject": (lambda _v: types._encode_SubjectAssertion(_v))(subject),
             "pinnedParameters": pinned_parameters,
             "clientTools": (lambda _v: types._encode_ClientTools(_v))(client_tools),
+            "systemPrompt": system_prompt,
             "includeDeltas": include_deltas,
         }
         _body = {_k: _v for _k, _v in _body.items() if _v is not None}

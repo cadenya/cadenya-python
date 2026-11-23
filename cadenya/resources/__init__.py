@@ -17,6 +17,7 @@ from .objectives import Objectives
 from .tool_search import ToolSearch
 from .tenants import Tenants
 from .tool_sets import ToolSets
+from .tool_set_rules import ToolSetRules
 from .tool_set_secrets import ToolSetSecrets
 from .tools import Tools
 from .uploads import Uploads
