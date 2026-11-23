@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.10.0](https://github.com/cadenya/cadenya-python/compare/v1.9.0...v1.10.0) (2026-11-23)
+
+
+### Features
+
+* temporary workspace claim status, duration fields typed as strings ([#37](https://github.com/cadenya/cadenya-python/issues/37)) ([6fc7d84](https://github.com/cadenya/cadenya-python/commit/6fc7d8417ea013140981bf6936292e5b4836f584))
+* tool set rules, tool set sync, and iteration ids on objective events ([#36](https://github.com/cadenya/cadenya-python/issues/36)) ([2e7e485](https://github.com/cadenya/cadenya-python/commit/2e7e4851b60a52dd96547d18f410afd3e2a29f61))
+
 ## [1.9.0](https://github.com/cadenya/cadenya-python/compare/v1.8.0...v1.9.0) (2026-10-28)
 
 
