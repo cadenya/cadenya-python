@@ -10,12 +10,14 @@ from .._pagination import SyncPage
 from .._sse import Stream
 
 
+from .tool_set_rules import ToolSetRules
 from .tool_set_secrets import ToolSetSecrets
 from .tools import Tools
 
 class ToolSets:
     def __init__(self, core: Core) -> None:
         self._core = core
+        self.rules = ToolSetRules(core)
         self.secrets = ToolSetSecrets(core)
         self.tools = Tools(core)
 
@@ -134,6 +136,19 @@ class ToolSets:
         _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/tool_sets/{path_param('id', id)}:archive"
         _data = self._core.request("POST", _path, request_options=request_options)
         return decode_response("tool_sets.archive", _data, lambda _d: types.ToolSet._from_json(_d))
+
+    def sync(
+        self,
+        id: str,
+        *,
+        workspace_id: Optional[str] = None,
+        request_options: Optional[RequestOptions] = None,
+    ) -> None:
+        """Sync a tool set"""
+        workspace_id = self._core.resolve_default("workspaceId", "CADENYA_WORKSPACE_ID", workspace_id)
+        _path = f"/v1/workspaces/{path_param('workspaceId', workspace_id)}/tool_sets/{path_param('id', id)}:sync"
+        self._core.request("POST", _path, expects_body=False, request_options=request_options)
+        return None
 
     def unarchive(
         self,
